@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StorixPK</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="container-fluid topbar p-1">
+    <div class="row d-lg-flex">
+        <div class="col-lg-6 px-3">                                           <a href="https://wa.me/923428453606" target="_blank" class="phone-link">
+    <a href="https://wa.me/923428453606"
+   style="text-decoration:none;">
+    <small>
+        <i class="fas fa-phone-alt me-2"></i>
+        +923428453606
+    </small>
+</a>
+</a>
+        </div>
+        <div class="col-lg-6 text-end px-3">
+            <a class="btn btn-sm-square bg-white me-1" href="#"><i class="fab fa-facebook-f"></i></a>
+
+            <a class="btn btn-sm-square bg-white me-1 daraz-btn"
+href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
+
+    <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png"
+    class="daraz-icon">
+
+</a>
+
+            <a class="btn btn-sm-square bg-white me-1" href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a class="btn btn-sm-square bg-white" href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar bg-white shadow-sm sticky-top d-flex justify-content-between align-items-center">
+
+    <!-- LOGO -->
+    <a href="https://storix.live" class="brand-link">
+        <sub><sub><sub></sub></sub></sub><img src="2.png" style="height:35px; margin-right:10px;">
+        <span class="logo-text">
+    Storix<span>PK</span>
+</span>
+    </a>
+
+
+    <!-- SEARCH BAR -->
+    <div class="search-box d-flex">
+       <input
+    type="text"
+    id="searchInput"
+    class="form-control"
+    placeholder="Search products..."
+    oninput="searchProducts()"
+    onkeydown="if(event.key==='Enter'){searchProducts();}"
+>
+        <button class="btn search-btn" onclick="searchProducts()">
+            <i class="fas fa-search"></i>
+        </button>
+    </div>
+
+
+    <!-- CART -->
+    <div>
+        <button class="btn btn-light position-relative me-2" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCount" class="badge cart-count">0</span>
+        </button>
+
+        <button class="btn place-order-btn" onclick="placeOrder()">
+            Place Order
+        </button>
+    </div>
+
+</nav>
+
+        <!--cart toggle dropdown -->
+
+   <div id="cartBox" style="
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    width: 300px;
+    background: white;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    padding: 15px;
+    display: none;
+    z-index: 99999;
+">
+
+    <h6 style="margin-bottom:10px;">Your Cart</h6>
+    <div id="cartItems"></div>
+
+    <hr>
+    <button onclick="goCheckout()"
+class="btn w-100 checkout-btn">
+    Checkout
+</button>
+</div>
+<div class="container" style="max-width:1200px; margin:30px auto;">
+
+    <!-- Section Heading -->
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:15px;
+        font-size:20px;
+        font-weight:600;
+    ">
+        <span style="
+            width:4px;
+            height:20px;
+            background:#0f766e;
+            border-radius:2px;
+        "></span>
+        Most Sold Products
+    </div>
+
+    <!-- Products Grid -->
+    <div id="mostSoldContainer" class="row g-3"></div>
+
+</div>
+<!-- HERO -->
+<div class="hero">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <button id="btn1" onclick="loadCategory('1', this)">Electronics</button>
+        <button onclick="loadCategory('2', this)">Fashion</button>
+        <button onclick="loadCategory('3', this)">Home</button>
+    </div>
+
+    <!-- SLIDER -->
+    <div class="slider">
+        <div class="slides" id="slides"></div>
+
+
+        <button class="prev" onclick="prevSlide()">❮</button>
+        <button class="next" onclick="nextSlide()">❯</button>
+
+        <div class="dots" id="dots"></div>
+    </div>
+
+</div>
+       <div class="container" style="max-width:1200px; margin:40px auto;">
+
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        margin-bottom:20px;
+        font-size:22px;
+        font-weight:600;
+    ">
+        <span style="
+            width:4px;
+            height:22px;
+            background:#0f766e;
+            border-radius:2px;
+        "></span>
+        All Products
+    </div>
+
+    <div id="allProductsContainer" class="row g-3"></div>
+
+</div>
+<script src="script.js"></script>
+</body>
+</html>
