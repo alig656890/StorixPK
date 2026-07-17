@@ -58,7 +58,7 @@ body{
 
 .logo-text{
     font-family:'Ubuntu',sans-serif;
-    font-size:30px;
+    font-size:clamp(18px,2vw,30px);
     font-weight:700;
     color:#0F766E;
     letter-spacing:0.5px;
@@ -74,8 +74,10 @@ body{
 }
 
         /* nav bar    */
-        .search-box{
-    width:350px;
+     .search-box{
+    flex:1;
+    min-width:180px;
+    max-width:450px;
 }
      .checkout-btn{
     background:#0f766e !important;
@@ -103,6 +105,10 @@ body{
 }
 .brand-link{
     text-decoration:none !important;
+}
+
+.brand-link img{
+    height:clamp(26px,3vw,35px);
 }
 
 .brand-link:hover{
@@ -133,6 +139,7 @@ body{
 .search-box input{
     border-radius:8px 0 0 8px;
     border:1px solid #ddd;
+    min-width:0;
 }
 
 .search-btn{
@@ -158,8 +165,14 @@ body{
     }
 
     .navbar{
-        flex-wrap:wrap;
-    }
+
+    padding:12px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:nowrap;      /* Never go to second line */
+    gap:8px;
+}
 
 }
 
@@ -373,6 +386,8 @@ padding: 16px 28px;
 
 }
 
+
+
 .delivery-popup h2{
 
     margin-top:20px;
@@ -490,6 +505,13 @@ padding: 16px 28px;
 
     }
 
+}
+.custom-navbar{
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:20px;
+    padding:14px 24px;
 }
 
 .free-delivery-btn:hover{
@@ -619,8 +641,8 @@ padding: 16px 28px;
 }
 
 .daraz-icon{
-    width:18px;
-    height:18px;
+    width:23px;
+    height:20px;
     filter:
         grayscale(1)
         brightness(0.7)
@@ -675,6 +697,13 @@ border:1px solid #e2e8f0;
 
     padding: 10px 18px;
 
+}
+.navbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:nowrap;      /* Never go to second line */
+    gap:10px;
 }
 
 /* NAV BUTTONS */
@@ -780,4 +809,26 @@ border:1px solid #e2e8f0;
     .sidebar { display:flex; overflow-x:auto; }
     .sidebar button { flex:1; text-align:center; }
 }
+      @media(max-width:1100px){
+
+.place-order-btn{
+
+    padding:10px;
+
+    width:44px;
+
+    font-size:0;
+
+}
+
+.place-order-btn::before{
+
+    content:"🛒";
+
+    font-size:18px;
+
+}
+
+}
+
 </style>
