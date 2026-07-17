@@ -17,6 +17,7 @@ img.decoding = "async";
 img.src = item.img;
     });
 }
+
 // FETCH DATA
 fetch(sheetURL)
 .then(res => res.text())
