@@ -54,7 +54,7 @@ href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
 
     <!-- LOGO -->
     <a href="https://storix.live" class="brand-link">
-        <sub><sub><sub></sub></sub></sub><img src="2.png" style="height:35px; margin-right:10px;">
+        <img src="2.png" style="height:35px; margin-right:10px;">
         <span class="logo-text">
     Storix<span>PK</span>
 </span>
@@ -75,22 +75,38 @@ href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
             <i class="fas fa-search"></i>
         </button>
     </div>
+       <!-- SEARCH -->
+<div class="search-box d-flex">
+        ...
+</div>
 
+<!-- FREE DELIVERY -->
 
-    <!-- CART -->
-    <div>
-        <button class="btn btn-light position-relative me-2" onclick="toggleCart()">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cartCount" class="badge cart-count">0</span>
+<!-- CART -->
+<div>
+          <button class="free-delivery-btn"
+                onclick="showDeliveryInfo()">
+        🚚 Free Delivery
+</button>
+<sub></sub>
+        <button class="btn btn-light position-relative me-2"
+                        onclick="toggleCart()">
+
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cartCount"
+                            class="badge cart-count">0</span>
+
         </button>
 
-        <button class="btn place-order-btn" onclick="placeOrder()">
-            Place Order
-        </button>
-    </div>
+        <button class="btn place-order-btn"
+                        onclick="placeOrder()">
 
+                Place Order
+
+        </button>
+
+</div>
 </nav>
-
         <!--cart toggle dropdown -->
 
    <div id="cartBox" style="
@@ -184,5 +200,85 @@ class="btn w-100 checkout-btn">
 
 </div>
 <script src="script.js"></script>
+<div id="deliveryModal" class="delivery-modal">
+          <div class="delivery-popup">
+
+    <button class="delivery-close" onclick="closeDeliveryInfo()">
+        &times;
+    </button>
+
+    <span class="offer-tag">
+        🔥 LIMITED TIME OFFER
+    </span>
+
+    <div class="delivery-icon">
+        🚚
+    </div>
+
+    <h2>FREE DELIVERY</h2>
+
+    <p class="delivery-subtitle">
+        On Every Order — No Minimum Purchase
+    </p>
+
+    <div class="offer-box">
+
+        <div class="offer-item">
+            🚚 <strong>100% FREE Delivery</strong>
+        </div>
+
+        <div class="offer-item">
+            ⭐ Premium Quality Products
+        </div>
+
+        <div class="offer-item">
+            📦 Secure & Professional Packaging
+        </div>
+
+        <div class="offer-item">
+            💯 Customer Satisfaction Guaranteed
+        </div>
+
+    </div>
+
+    <div class="delivery-message">
+
+        <strong>Why is delivery free?</strong>
+
+        <p>
+            At Storix, we invest in long-term customer relationships instead of
+            charging delivery fees. Your product quality, packaging, and service
+            will never be compromised.
+        </p>
+
+
+          <div class="offer-marquee">
+    <div class="offer-track">
+
+        🚚 FREE DELIVERY only on our Official Website
+        <strong>Storix.live</strong>
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+
+        🔥 LIMITED TIME OFFER
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+
+        ❌ Not Available on Daraz or any other Marketplace
+        &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+
+        ⭐ Premium Quality Guaranteed
+
+    </div>
+</div>
+
+    </div>
+
+    <button class="delivery-ok" onclick="closeDeliveryInfo()">
+        Continue Shopping
+    </button>
+
+</div>
+
+
+</div>
 </body>
 </html>
