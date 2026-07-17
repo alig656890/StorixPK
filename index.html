@@ -62,18 +62,31 @@ href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
 
     <!-- SEARCH BAR -->
     <div class="search-box d-flex">
-       <input
-    type="text"
-    id="searchInput"
-    class="form-control"
-    placeholder="Search products..."
-    oninput="searchProducts()"
-    onkeydown="if(event.key==='Enter'){searchProducts();}"
->
-        <button class="btn search-btn" onclick="searchProducts()">
-            <i class="fas fa-search"></i>
+
+    <div class="search-wrapper">
+
+        <input
+            type="text"
+            id="searchInput"
+            class="form-control"
+            placeholder="Search products..."
+            oninput="handleSearchInput()"
+            onkeydown="if(event.key==='Enter'){searchProducts();}">
+
+        <button
+            id="clearSearch"
+            class="clear-search-btn"
+            onclick="clearSearch()">
+            &times;
         </button>
+
     </div>
+
+    <button class="btn search-btn" onclick="searchProducts()">
+        <i class="fas fa-search"></i>
+    </button>
+
+</div>
        <!-- SEARCH -->
 
 
@@ -262,9 +275,23 @@ class="btn w-100 checkout-btn">
 
     </div>
 
-    <button class="delivery-ok" onclick="closeDeliveryInfo()">
-        Continue Shopping
+   <div class="delivery-actions">
+
+    <button onclick="closeDeliveryInfo()" class="delivery-ok">
+        Continue Shopping here
     </button>
+
+    <a href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp"
+       target="_blank"
+       class="daraz-popup-btn"
+       title="Visit our Daraz Store">
+
+        <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png"
+             class="daraz-popup-icon">
+
+    </a>
+
+</div>
 
 </div>
 
