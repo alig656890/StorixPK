@@ -70,7 +70,31 @@ fetch(sheetURL)
 
     createSidebar();
     renderAllProducts();
-});     
+});
+
+function showDeliveryInfo(){
+
+    document.getElementById("deliveryModal").style.display="flex";
+
+}
+
+function closeDeliveryInfo(){
+
+    document.getElementById("deliveryModal").style.display="none";
+
+}
+
+window.addEventListener("click",function(e){
+
+    const modal=document.getElementById("deliveryModal");
+
+    if(e.target===modal){
+
+        closeDeliveryInfo();
+
+    }
+
+});
 // CREATE SIDEBAR (NO DUPLICATES)
 function createSidebar(){
     sidebar.innerHTML = "";
