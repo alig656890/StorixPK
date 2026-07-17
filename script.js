@@ -257,6 +257,7 @@ function renderCart(){
                         <img src="${item.img}"
                              style="width:100%; height:160px; object-fit:cover; border-radius:8px; cursor:pointer;"
                              onclick="openProductById('${item.id}')">
+                              style="cursor:pointer;">
 
                         <h6 style="margin-top:8px;">${item.name}</h6>
 
@@ -459,16 +460,20 @@ function searchProducts(){
 
 
                         <img src="${item.img}"
-                        style="
-                        width:100%;
-                        height:160px;
-                        object-fit:cover;
-                        border-radius:8px;
-                        cursor:pointer;
-                        ">
+     style="
+        width:100%;
+        height:160px;
+        object-fit:cover;
+        border-radius:8px;
+        cursor:pointer;
+     "
+     onclick="openProductById('${item.id}')">
 
 
-                        <h6>${item.name}</h6>
+                       <h6 onclick="openProductById('${item.id}')"
+    style="cursor:pointer;">
+    ${item.name}
+</h6>
 
 
                         <p style="font-size:12px;color:#666;">
@@ -501,7 +506,31 @@ function searchProducts(){
 
 
 }
+           function handleSearchInput(){
 
+    const input = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("clearSearch");
+
+    if(input.value.trim() !== ""){
+        clearBtn.style.display = "flex";
+    }else{
+        clearBtn.style.display = "none";
+    }
+
+    searchProducts();
+}
+
+function clearSearch(){
+
+    document.getElementById("searchInput").value = "";
+
+    document.getElementById("clearSearch").style.display = "none";
+
+    renderAllProducts();
+
+    document.getElementById("searchInput").focus();
+
+}
 
 // SLIDER UPDATE
 function updateSlider(){
@@ -524,6 +553,23 @@ function updateSlider(){
     document.getElementById("productPrice").innerText =
         "Rs. " + (currentItems[index].price || "0");
 }
+
+window.addEventListener("pageshow", function () {
+
+    const input = document.getElementById("searchInput");
+
+    if (!input) return;
+
+    input.value = "";
+
+    renderAllProducts();
+
+    const clearBtn = document.getElementById("clearSearch");
+    if (clearBtn) {
+        clearBtn.style.display = "none";
+    }
+
+});
 
 // NEXT / PREV
 function nextSlide(){
