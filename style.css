@@ -54,7 +54,21 @@ body{
 .place-order-btn:active{
     transform:translateY(0);
 }
+       .contact-info {
+    display: flex;
+    align-items: center;   /* Vertically centers everything */
+    gap: 10px;
+}
 
+.contact-info img,
+.contact-info i {
+    vertical-align: middle;
+}
+
+.contact-info span,
+.contact-info a {
+    line-height: 1;
+}
 
 .logo-text{
     font-family:'Ubuntu',sans-serif;
@@ -470,6 +484,112 @@ padding: 16px 28px;
     transform:translateY(-2px);
 
 }
+        .delivery-actions{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:25px;
+
+}
+
+/* Continue Shopping (Long Button) */
+
+.delivery-ok{
+
+    flex:1;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#0f766e;
+
+    color:#fff;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.delivery-ok:hover{
+
+    background:#115e59;
+
+    transform:translateY(-2px);
+
+}
+
+/* Daraz Icon Button */
+
+.daraz-popup-btn{
+
+    width:54px;
+
+    height:54px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:12px;
+
+    background:#fff;
+
+    border:2px solid #0f766e;
+
+    text-decoration:none;
+
+    transition:.3s;
+
+}
+
+.daraz-popup-btn:hover{
+
+    background:#ecfdf5;
+
+    transform:translateY(-2px) scale(1.08);
+
+    box-shadow:0 8px 20px rgba(15,118,110,.25);
+
+}
+
+/* Spinning Icon */
+
+.daraz-popup-icon{
+
+    width:28px;
+
+    height:28px;
+
+    animation:darazSpin 3s linear infinite;
+
+}
+
+@keyframes darazSpin{
+
+    from{ transform:rotate(0deg); }
+
+    to{ transform:rotate(360deg); }
+
+}
+
+
+
 
 @keyframes popup{
 
@@ -689,6 +809,54 @@ padding: 16px 28px;
     font-weight: 700;
      color:#fff;
 }
+.search-wrapper{
+
+    position:relative;
+
+    flex:1;
+
+}
+
+.clear-search-btn{
+
+    position:absolute;
+
+    right:12px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:28px;
+    height:28px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#f3f4f6;
+
+    color:#666;
+
+    font-size:18px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    display:none;
+
+    transition:.25s;
+
+}
+
+.clear-search-btn:hover{
+
+    background:#0f766e;
+
+    color:#fff;
+
+}
 
 .shop-btn {
   background:#f1f5f9;   /* very light grey-blue */
@@ -756,6 +924,50 @@ border:1px solid #e2e8f0;
 
 }
 
+
+.daraz-popup-icon{
+
+    width:34px;
+
+    height:34px;
+
+    animation:darazPulse 2s infinite;
+
+}
+
+@keyframes darazPulse{
+
+    0%{
+
+        transform:scale(1) rotate(0deg);
+
+    }
+
+    25%{
+
+        transform:scale(1.15) rotate(10deg);
+
+    }
+
+    50%{
+
+        transform:scale(1.25) rotate(-10deg);
+
+    }
+
+    75%{
+
+        transform:scale(1.15) rotate(10deg);
+
+    }
+
+    100%{
+
+        transform:scale(1) rotate(0deg);
+
+    }
+
+}
 .offer-track{
 
     display:inline-block;
