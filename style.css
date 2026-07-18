@@ -29,6 +29,67 @@ body{
     background:var(--secondary);
     color:var(--text);
 }
+       .topbar-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+    flex-wrap:nowrap;   /* Keeps everything on one line */
+}
+  /* Top Bar */
+.topbar{
+    background:#fff;
+    border-bottom:1px solid #eee;
+
+   }
+
+.topbar-content{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+        padding:8px 45px;
+}
+
+.topbar-left,
+.topbar-right{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    white-space:nowrap;
+}
+
+/* WhatsApp */
+.topbar-whatsapp{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    text-decoration:none;
+    color:#6b7280;
+    font-size:13px;
+    font-weight:500;
+    transition:.25s ease;
+}
+
+.topbar-whatsapp i{
+    color:#25D366;
+    font-size:16px;
+}
+
+.topbar-whatsapp:hover{
+    color:#0f766e;
+}
+
+.topbar-whatsapp:hover i{
+    transform:scale(1.08);
+}
+
+/* Contact Info */
+.contact-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
    .place-order-btn{
     background:#0F766E;
     color:#fff;
@@ -54,11 +115,8 @@ body{
 .place-order-btn:active{
     transform:translateY(0);
 }
-       .contact-info {
-    display: flex;
-    align-items: top    ;   /* Vertically centers everything */
-    gap: 10px;
-}
+
+
 
 .contact-info img,
 .contact-info i {
@@ -86,6 +144,7 @@ body{
     width:auto;
     object-fit:contain;
 }
+
 
         /* nav bar    */
      .search-box{
@@ -197,49 +256,7 @@ body{
 
 
 
-.topbar{
 
-    background:#fff;
-
-    border-bottom:1px solid #eee;
-
-    padding:8px 20px;
-
-}
-
-.topbar-content{
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    gap:20px;
-
-}
-
-.topbar-left{
-
-    display:flex;
-
-    align-items:center;
-
-    white-space:nowrap;
-
-}
-
-.topbar-right{
-
-    display:flex;
-
-    align-items:center;
-
-    gap:8px;
-
-    white-space:nowrap;
-
-}
 
 .phone-link{
 
@@ -319,9 +336,9 @@ padding: 16px 28px;
 }
         .free-delivery-btn{
 
-    margin:0 18px;
+    margin:0 6px;
 
-    padding:10px 18px;
+    padding:8px 12px;
 
     border:none;
     border-radius:30px;
@@ -330,14 +347,14 @@ padding: 16px 28px;
 
     color:#fff;
 
-    font-size:14px;
+    font-size:12px;
     font-weight:700;
 
     white-space:nowrap;
 
     cursor:pointer;
 
-    animation:deliveryBlink 1.4s infinite;
+    animation:deliveryBlink 1.9s infinite;
 
     box-shadow:0 0 18px rgba(255,87,34,.45);
 
@@ -487,6 +504,7 @@ padding: 16px 28px;
     border-radius:30px;
 
 }
+
 
 .delivery-ok{
 
@@ -794,7 +812,7 @@ padding: 16px 28px;
 }
 
 .daraz-icon{
-    width:23px;
+    width:20px;
     height:20px;
     filter:
         grayscale(1)
@@ -1079,13 +1097,7 @@ border:1px solid #e2e8f0;
         font-size:13px;
     }
 
-     .topbar-content{
 
-        flex-wrap:wrap;
-
-        justify-content:center;
-
-    }
     .free-delivery-btn,
 .place-order-btn,
 .cart-btn,
