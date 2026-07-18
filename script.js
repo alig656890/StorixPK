@@ -4,6 +4,7 @@ const sheetURL = "https://docs.google.com/spreadsheets/d/1Z516TmqefcNcyGVPgTamh_
 
 let allData = {};
 let currentItems = [];
+
 let index = 0;
 
 const slidesContainer = document.getElementById("slides");
