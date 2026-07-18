@@ -306,6 +306,27 @@ function createSidebar(){
     window.location.href = "checkout.html";
 }
 
+function scrollCategoryRight(){
+
+    const slider = document.getElementById("categorySlider");
+
+    slider.scrollBy({
+        left:220,
+        behavior:"smooth"
+    });
+
+}
+
+function scrollCategoryLeft(){
+
+    const slider = document.getElementById("categorySlider");
+
+    slider.scrollBy({
+        left:-220,
+        behavior:"smooth"
+    });
+
+}
 //change in cart products
 function renderCart(){
     let container = document.getElementById("cartItems");
