@@ -1,673 +1,444 @@
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-              updateCartUI();
-const sheetURL = "https://docs.google.com/spreadsheets/d/1Z516TmqefcNcyGVPgTamh_OpNXjzO_s84udPnYN3new/gviz/tq?tqx=out:csv";
+const urlParams = new URLSearchParams(window.location.search);
+const selectedProductId = urlParams.get("id");
+document.getElementById("productId").textContent = selectedProductId || "No ID";
 
-let allData = {};
-let currentItems = [];
-let index = 0;
+console.log("URL:", window.location.href);
+console.log("Selected Product ID:", selectedProductId);// ==============================
+// GLOBAL VARIABLES
+// ==============================
 
-const slidesContainer = document.getElementById("slides");
-const dotsContainer = document.getElementById("dots");
-const sidebar = document.querySelector(".sidebar");
-function preloadImages(items){
-    items.forEach(item => {
-        const img = new Image();
-        img.loading = "lazy";
-img.decoding = "async";
-img.src = item.img;
-    });
-}
-// FETCH DATA
-fetch(sheetURL)
-.then(res => res.text())
-.then(data => {
+let currentProduct = null;
+let currentImage = 0;
+let quantity = 1;
 
-    const rows = data.split("\n").slice(1);
+let allProducts = [];
+let currentIndex = 0;
 
-    rows.forEach(row => {
-        if(!row.trim()) return;
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-        const cols = row.split(",");
+// ==============================
+// DOM ELEMENTS
+// ==============================
+                      const imageTab = document.getElementById("imageTab");
+const videoTab = document.getElementById("videoTab");
+const youtubeTab = document.getElementById("youtubeTab");
+const modelTab = document.getElementById("modelTab");
+const imageViewer = document.getElementById("imageViewer");
+const videoViewer = document.getElementById("videoViewer");
+const youtubeViewer = document.getElementById("youtubeViewer");
+const modelViewer = document.getElementById("modelViewer");
 
-        if(cols.length < 7) return;
+const thumbnailStrip = document.getElementById("thumbnailStrip");
 
-        let category = (cols[0] || "").replace(/"/g,"").trim().toLowerCase();
-        let img = (cols[1] || "").replace(/"/g,"").trim();
-        let name = (cols[2] || "").replace(/"/g,"").trim();
-        let desc = (cols[3] || "").replace(/"/g,"").trim();
-        let price = (cols[4] || "").replace(/"/g,"").trim();
-        let originalPrice = (cols[5] || "").replace(/"/g,"").trim();
+const productName = document.getElementById("productName");
+const salePrice = document.getElementById("salePrice");
+const originalPrice = document.getElementById("originalPrice");
+const discountPercent = document.getElementById("discountPercent");
 
-        let productId = (cols[6] || "").replace(/"/g,"").trim();
-        if(!productId){
-            productId = name.toLowerCase().replace(/\s+/g,"-") + "-" + Date.now();
-        }
+const stockStatus = document.getElementById("stockStatus");
+const shortDescription = document.getElementById("shortDescription");
 
-        let totalPurchased = parseInt(cols[7] || 0);
-        let soldQty = parseInt(cols[8] || 0);
-        let inStock = parseInt(cols[9] || 0);
-        let totalSold = parseInt(cols[10] || 0);
+const productIdElement = document.getElementById("productId");
+const category = document.getElementById("category");
+const soldQty = document.getElementById("soldQty");
 
-        if(!category || !img) return;
+// ==============================
+// GOOGLE SHEETS
+// ==============================
 
-        if(!allData[category]) allData[category] = [];
+const sheet1URL =
+"https://docs.google.com/spreadsheets/d/1Z516TmqefcNcyGVPgTamh_OpNXjzO_s84udPnYN3new/gviz/tq?tqx=out:csv";
 
-        allData[category].push({
-            type: category,
-            img,
-            name,
-            desc,
-            price,
-            originalPrice,
-            id: productId,
-            totalPurchased,
-            soldQty,
-            inStock,
-            totalSold
-        });
+const mediaSheetURL =
+"https://docs.google.com/spreadsheets/d/10oAlsT3IVuJ8cZNNeEKy10ZNbSHO4KCkBTwkY218bSk/gviz/tq?tqx=out:csv";
 
-    });
+// ==============================
+// MEDIA
+// ==============================
 
-    createSidebar();
-    renderAllProducts();
-});
+const media = {
+    images: [],
+    videos: [],
+    youtube: [],
+    model3d: []
+};
 
-function showDeliveryInfo(){
+// ==============================
+// URL PARAMS
+// ==============================
 
-    document.getElementById("deliveryModal").style.display="flex";
 
-}
+// ==============================
+// CART
+// ==============================
 
-function closeDeliveryInfo(){
+function updateCartUI() {
 
-    document.getElementById("deliveryModal").style.display="none";
-
-}
-
-window.addEventListener("click",function(e){
-
-    const modal=document.getElementById("deliveryModal");
-
-    if(e.target===modal){
-
-        closeDeliveryInfo();
-
-    }
-
-});
-// CREATE SIDEBAR (NO DUPLICATES)
-function createSidebar(){
-    sidebar.innerHTML = "";
-
-    Object.keys(allData).forEach((cat, i) => {
-        let btn = document.createElement("button");
-       btn.innerText = cat.charAt(0).toUpperCase() + cat.slice(1);
-
-        btn.onclick = () => loadCategory(cat, btn);
-
-        if(i === 0){
-            btn.classList.add("active");
-            loadCategory(cat, btn);
-        }
-
-        sidebar.appendChild(btn);
-    });
-}
-      localStorage.setItem("cart", JSON.stringify(cart));
-    // updateCartUI
- function updateCartUI(){
     let totalQty = 0;
 
     cart.forEach(item => {
         totalQty += item.qty;
     });
 
-    document.getElementById("cartCount").innerText = totalQty;
+    const cartCount = document.getElementById("cartCount");
+
+    if (cartCount) {
+        cartCount.textContent = totalQty;
+    }
 }
- // updateCartUI end
-         // addToCart
 
+updateCartUI();
 
+// ==============================
+// CSV PARSER
+// ==============================
 
-    // toggle car
-     function toggleCart(){
-    let box = document.getElementById("cartBox");
-    box.style.display = box.style.display === "none" ? "block" : "none";
+function parseCSVRow(row) {
 
-    renderCart();
+    return row
+        .split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/)
+        .map(col => col.replace(/^"|"$/g, "").trim());
+
 }
-              // checkout function call
+            function nextProduct() {
 
-              function goCheckout(){
-
-    if(cart.length === 0){
-        alert("Your cart is empty!");
-        return;
+    if (currentIndex < allProducts.length - 1) {
+        window.location.href =
+            `product.html?id=${allProducts[currentIndex + 1]}`;
     }
 
-    window.location.href = "checkout.html";
 }
 
-//change in cart products
-function renderCart(){
-    let container = document.getElementById("cartItems");
-    container.innerHTML = "";
+function setActiveButton(activeBtn){
 
-    if(cart.length === 0){
-        container.innerHTML = "<p style='font-size:13px'>Cart is empty</p>";
-        return;
-    }
-
-    let total = 0;
-
-    cart.forEach((item, i) => {
-
-        let price = parseFloat(item.price) || 0;
-        let itemTotal = price * item.qty;
-        total += itemTotal;
-
-       container.innerHTML += `
-<div style="
-    display:flex;
-    gap:10px;
-    margin-bottom:12px;
-    border-bottom:1px solid #eee;
-    padding-bottom:10px;
-">
-
-    <img src="${item.img}"
-         style="
-            width:60px;
-            height:60px;
-            object-fit:cover;
-            border-radius:8px;
-            border:1px solid #ddd;
-         ">
-
-    <div style="flex:1;">
-
-        <div style="display:flex; justify-content:space-between;">
-
-            <b>${item.name}</b>
-
-            <button onclick="removeItem(${i})"
-    class="remove-cart-btn">
-    ✕
-</button>
-
-        </div>
-
-        <div style="font-size:13px; color:#666;">
-            Rs. ${item.price}
-        </div>
-
-        <div style="
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-top:8px;
-        ">
-
-            <div>
-                <button onclick="changeQty(${i}, -1)">−</button>
-
-                <span style="margin:0 8px;">
-                    ${item.qty}
-                </span>
-
-                <button onclick="changeQty(${i}, 1)">+</button>
-            </div>
-
-            <div style="font-weight:700; color:#0f766e;">
-    Rs. ${itemTotal}
-</div>
-
-        </div>
-
-    </div>
-
-</div>
-`;
+    document.querySelectorAll(".media-btn").forEach(btn=>{
+        btn.classList.remove("active");
     });
 
+    activeBtn.classList.add("active");
 
-
-    container.innerHTML += `
-        <hr>
-        <div style="display:flex; justify-content:space-between; font-weight:700;">
-            <span>Total</span>
-            <span style="color:#0f766e;">Rs. ${total}</span>
-        </div>
-    `;
 }
-         function renderAllProducts(){
-    const container = document.getElementById("allProductsContainer");
-    container.innerHTML = "";
 
-    Object.keys(allData).forEach(category => {
+function previousProduct() {
 
-        allData[category].forEach((item, i) => {
-
-            let price = parseFloat(item.price) || 0;
-
-            container.innerHTML += `
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="product-card">
-
-                        <img src="${item.img}"
-                             style="width:100%; height:160px; object-fit:cover; border-radius:8px; cursor:pointer;"
-                             onclick="openProductById('${item.id}')">
-                              style="cursor:pointer;">
-
-                        <h6 style="margin-top:8px;">${item.name}</h6>
-
-                        <p style="font-size:12px; color:#666;">
-                            ${item.desc || ""}
-                        </p>
-
-                        <div style="color:#0f766e; font-weight:700; font-size:17px;">
-    Rs. ${price}
-                        </div>
-
-                        <button class="btn w-100 mt-2"
-                            onclick="addToCartByIndex('${category}', ${i})">
-                            Add to Cart
-                        </button>
-
-                    </div>
-                </div>
-            `;
-        });
-
-    });
-}
-           function changeQty(index, change){
-    if(!cart[index]) return;
-
-    cart[index].qty += change;
-
-    // remove if qty goes 0
-    if(cart[index].qty <= 0){
-        cart.splice(index, 1);
+    if (currentIndex > 0) {
+        window.location.href =
+            `product.html?id=${allProducts[currentIndex - 1]}`;
     }
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartUI();
-    renderCart();
 }
+// ==============================
+// LOAD PRODUCT
+// ==============================
 
-            function addToCartByIndex(category, index){
-    addToCart(allData[category][index]);
-}
+async function loadProducts() {
 
-     function removeItem(index){
-    index = Number(index);
+    try {
 
-    cart.splice(index, 1);
+        const response = await fetch(sheet1URL);
 
-    localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartUI();
-    renderCart();
-}
+        if (!response.ok) {
+            throw new Error("Unable to fetch product sheet.");
+        }
 
-        function openProduct(product){
-    alert(
-        product.name + "\n\n" +
-        product.desc + "\n\nPrice: Rs. " + product.price
-    );
-}
-       function addToCart(product){
-    let existing = cart.find(p => p.name === product.name);
+        const csv = await response.text();
 
-    if(existing){
-        existing.qty += 1;
-    } else {
-        cart.push({
-            ...product,
-            qty: 1
-        });
-    }
-           localStorage.setItem("cart", JSON.stringify(cart));
-    updateCartUI();
-    renderCart(); // always update
-        alert(product.name + " added to cart");
+        const rows = csv.split("\n").slice(1);
 
-}
+        rows.forEach(row => {
 
+            if (!row.trim()) return;
 
+            const cols = parseCSVRow(row);
 
+            const id = cols[6];
 
-// LOAD CATEGORY
-function loadCategory(category, btn){
-    currentItems = allData[category] || [];
-    index = 0;
-    slidesContainer.innerHTML = "";
-      preloadImages(currentItems);
-    currentItems.forEach(item => {
-        let slide = document.createElement("div");
-        slide.style.minWidth = "100%";
-        slide.style.position = "relative";
+            if (!id) return;
 
-        slide.innerHTML = `
-<img src="${item.img}">
+            allProducts.push(id);
 
-<div style="
-    position:absolute;
-    bottom:30px;
-    left:30px;
-    color:white;
-    background:rgba(0,0,0,0.0);
-    padding:15px;
-    border-radius:12px;
-    max-width:70%;
-">
+            if (id === selectedProductId) {
 
-    <h4>${item.name || ""}</h4>
-    <p style="font-size:13px">${item.desc || ""}</p>
-   ${(() => {
-    let price = parseFloat(item.price) || 0;
-    let increased = Math.round(price * 1.04);
+                currentIndex = allProducts.length - 1;
 
-    return `
-        <div>
-            <span style="
-                text-decoration: line-through;
-                color: #ddd;
-                font-size: 13px;
-                margin-right: 6px;
-            ">
-                Rs. ${increased}
-            </span>
+                currentProduct = {
 
-            <span style="
-    color:#0f766e;
-    font-weight:800;
-    font-size:21px;
-    letter-spacing:.5px;
-    text-shadow:0 2px 6px rgba(15,118,110,.18);
-">
-    Rs. ${price}
-</span><sub><sub></sub></sub>
-        </div>
-    `;
-})()}
+                    id: id,
 
-    <div style="margin-top:10px;">
-        <button class="shop-btn" onclick='addToCart(${JSON.stringify(item)})'>
-            <i class="fas fa-shopping-cart me-1"></i> Add to Cart
-        </button>
+                    image: cols[1],
 
-        <button class="btn btn-outline-light ms-2" onclick="openProductById('${item.id}')">
-    View Details
-</button>
-    </div>
+                    name: cols[2],
 
-</div>
-`;
-        slidesContainer.appendChild(slide);
-    });
+                    description: cols[3],
 
-    createDots();
-    updateSlider();
+                    price: parseFloat(cols[4]) || 0,
 
-    document.querySelectorAll(".sidebar button")
-        .forEach(b => b.classList.remove("active"));
+                    originalPrice: parseFloat(cols[5]) || 0,
 
-    if(btn) btn.classList.add("active");
-}
+                    category: cols[0] || "",
 
-//searchproducts
+                    totalPurchased: parseInt(cols[7]) || 0,
 
-function searchProducts(){
+                    soldQty: parseInt(cols[8]) || 0,
 
-    let keyword = document
-        .getElementById("searchInput")
-        .value
-        .toLowerCase()
-        .trim();
+                    stock: parseInt(cols[9]) || 0,
 
+                    totalSold: parseInt(cols[10]) || 0
 
-    const container = document.getElementById("allProductsContainer");
+                };
 
-    container.innerHTML="";
-
-
-    if(keyword===""){
-        renderAllProducts();
-        return;
-    }
-
-
-    Object.keys(allData).forEach(category=>{
-
-        allData[category].forEach((item,i)=>{
-
-
-            if(
-                item.name.toLowerCase().includes(keyword) ||
-                item.desc.toLowerCase().includes(keyword) ||
-                category.toLowerCase().includes(keyword)
-            ){
-
-                let price=parseFloat(item.price)||0;
-
-
-                container.innerHTML += `
-
-                <div class="col-6 col-md-4 col-lg-3">
-
-                    <div class="product-card">
-
-
-                        <img src="${item.img}"
-     style="
-        width:100%;
-        height:160px;
-        object-fit:cover;
-        border-radius:8px;
-        cursor:pointer;
-     "
-     onclick="openProductById('${item.id}')">
-
-
-                       <h6 onclick="openProductById('${item.id}')"
-    style="cursor:pointer;">
-    ${item.name}
-</h6>
-
-
-                        <p style="font-size:12px;color:#666;">
-                        ${item.desc || ""}
-                        </p>
-
-
-                        <div style="color:#ff6600;font-weight:600;">
-                        Rs. ${price}
-                        </div>
-
-
-                        <button class="btn w-100 mt-2"
-                        onclick="addToCartByIndex('${category}',${i})">
-                        Add to Cart
-                        </button>
-
-
-                    </div>
-
-                </div>
-
-                `;
             }
 
+        });
+
+    } catch (error) {
+
+        console.error("Error loading products:", error);
+
+    }
+
+}
+       async function loadMedia() {
+
+    try {
+
+        media.images = [];
+        media.videos = [];
+        media.youtube = [];
+        media.model3d = [];
+
+        const response = await fetch(mediaSheetURL);
+
+        const csv = await response.text();
+
+        const rows = csv.split("\n").slice(1);
+
+        rows.forEach(row => {
+
+            const cols = parseCSVRow(row);
+
+            if (!cols.length) return;
+
+            if (cols[0].trim() !== selectedProductId.trim()) return;
+
+            const type = cols[1].trim().toLowerCase();
+            const url = cols[2].trim();
+
+            switch (type) {
+
+                case "image":
+                    media.images.push(url);
+                    break;
+
+                case "video":
+                    media.videos.push(url);
+                    break;
+
+                case "youtube":
+                    media.youtube.push(url);
+                    break;
+
+                case "model":
+                    media.model3d.push(url);
+                    break;
+            }
 
         });
 
-    });
-
-
-}
-           function handleSearchInput(){
-
-    const input = document.getElementById("searchInput");
-    const clearBtn = document.getElementById("clearSearch");
-
-    if(input.value.trim() !== ""){
-        clearBtn.style.display = "flex";
-    }else{
-        clearBtn.style.display = "none";
-    }
-
-    searchProducts();
-}
-
-function clearSearch(){
-
-    document.getElementById("searchInput").value = "";
-
-    document.getElementById("clearSearch").style.display = "none";
-
-    renderAllProducts();
-
-    document.getElementById("searchInput").focus();
-
-}
-
-// SLIDER UPDATE
-function updateSlider(){
-    slidesContainer.style.transform = `translateX(-${index * 100}%)`;
-
-    [...dotsContainer.children].forEach((d,i)=>
-        d.classList.toggle("active", i===index)
-    );
-}
-
-    function updateOverlay(){
-    if(!currentItems[index]) return;
-
-    document.getElementById("productName").innerText =
-        currentItems[index].name || "Product";
-
-    document.getElementById("productDesc").innerText =
-        currentItems[index].desc || "";
-
-    document.getElementById("productPrice").innerText =
-        "Rs. " + (currentItems[index].price || "0");
-}
-
-window.addEventListener("pageshow", function () {
-
-    const input = document.getElementById("searchInput");
-
-    if (!input) return;
-
-    input.value = "";
-
-    renderAllProducts();
-
-    const clearBtn = document.getElementById("clearSearch");
-    if (clearBtn) {
-        clearBtn.style.display = "none";
-    }
-
-});
-
-// NEXT / PREV
-function nextSlide(){
-    if(currentItems.length === 0) return;
-    index = (index + 1) % currentItems.length;
-    updateSlider();
-}
-
-function prevSlide(){
-    if(currentItems.length === 0) return;
-    index = (index - 1 + currentItems.length) % currentItems.length;
-    updateSlider();
-}
-
-let startX = 0;
-let endX = 0;
-
-const slider = document.querySelector(".slider");
-
-// TOUCH EVENTS (mobile)
-slider.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-});
-
-slider.addEventListener("touchend", (e) => {
-    endX = e.changedTouches[0].clientX;
-    handleSwipe();
-});
-
-// MOUSE EVENTS (desktop drag)
-slider.addEventListener("mousedown", (e) => {
-    startX = e.clientX;
-});
-
-slider.addEventListener("mouseup", (e) => {
-    endX = e.clientX;
-    handleSwipe();
-});
-     document.addEventListener("click", function(e){
-    const cartBox = document.getElementById("cartBox");
-    const cartBtn = document.querySelector('[onclick="toggleCart()"]');
-
-    // if cart is open AND click is outside
-    if(
-        cartBox.style.display === "block" &&
-        !cartBox.contains(e.target) &&
-        !cartBtn.contains(e.target)
-    ){
-        cartBox.style.display = "none";
-    }
-});
-// SWIPE LOGIC
-function handleSwipe(){
-    let diff = startX - endX;
-
-    if(Math.abs(diff) > 50){ // swipe threshold
-        if(diff > 0){
-            nextSlide();   // swipe left → next
-        } else {
-            prevSlide();   // swipe right → previous
+        if (media.images.length === 0 && currentProduct?.image) {
+            media.images.push(currentProduct.image);
         }
+
+    } catch (error) {
+
+        console.error("Error loading media:", error);
+
     }
+
+}
+function renderProduct() {
+
+    productName.textContent = currentProduct.name;
+
+    salePrice.textContent = "Rs. " + currentProduct.price;
+
+    originalPrice.textContent =
+        currentProduct.originalPrice > 0
+            ? "Rs. " + currentProduct.originalPrice
+            : "";
+
+    shortDescription.textContent = currentProduct.description;
+
+    productIdElement.textContent = currentProduct.id;
+
+    category.textContent = currentProduct.category;
+
+    soldQty.textContent = currentProduct.soldQty;
+
 }
 
-function openProductById(id){
-    window.location.href = `product.html?id=${id}`;
-}
-    
-    
-// DOTS
-function createDots(){
-    dotsContainer.innerHTML = "";
 
-    currentItems.forEach((_, i) => {
-        let d = document.createElement("span");
-        d.onclick = () => {
-            index = i;
-            updateSlider();
-        };
-        dotsContainer.appendChild(d);
+function renderImages(){
+
+    thumbnailStrip.innerHTML="";
+
+    imageViewer.style.display="block";
+    videoViewer.style.display="none";
+    youtubeViewer.style.display="none";
+    modelViewer.style.display="none";
+                                       if (media.images.length > 0) {
+    imageViewer.src = media.images[0];
+}
+
+    media.images.forEach((url,index)=>{
+
+        const img=document.createElement("img");
+
+        img.src=url;
+
+        img.className="thumb";
+
+        img.onclick = () => {
+
+    imageViewer.src = url;
+
+    document.querySelectorAll(".thumb").forEach(t=>{
+        t.classList.remove("active");
     });
+
+    img.classList.add("active");
+};
+
+        thumbnailStrip.appendChild(img);
+
+    });
+
 }
 
-// AUTO SLIDE (ONLY IMAGES)
-setInterval(() => {
-    if(currentItems.length) nextSlide();
-}, 4000);
 
-function placeOrder(){
 
-    if(cart.length === 0){
-        alert("Your cart is empty!");
+function renderVideos(){
+
+    if(media.videos.length===0){
+
+        alert("No videos available");
+
         return;
+
     }
 
-    // Save latest cart
-    localStorage.setItem("cart", JSON.stringify(cart));
+    function changeImage(url){
 
-    // Open checkout page
-    window.location.href = "checkout.html";
+    imageViewer.style.opacity=0;
+
+    setTimeout(()=>{
+
+        imageViewer.src=url;
+
+        imageViewer.style.opacity=1;
+
+    },150);
+
 }
+
+
+let currentImage=0;
+
+function showImage(index){
+
+    currentImage=index;
+
+    imageViewer.src=media.images[index];
+}
+
+function nextImage(){
+
+    currentImage++;
+
+    if(currentImage>=media.images.length)
+        currentImage=0;
+
+    showImage(currentImage);
+}
+
+function previousImage(){
+
+    currentImage--;
+
+    if(currentImage<0)
+        currentImage=media.images.length-1;
+
+    showImage(currentImage);
+}
+
+    imageViewer.style.display="none";
+    youtubeViewer.style.display="none";
+    modelViewer.style.display="none";
+
+    videoViewer.style.display="block";
+
+    videoViewer.src=media.videos[0];
+
+}
+
+function youtubeEmbed(url){
+
+    const id=url.split("/").pop();
+
+    return "https://www.youtube.com/embed/"+id;
+
+}
+
+
+                              imageTab.onclick = () => {
+
+    setActiveButton(imageTab);
+    renderImages();
+
+};
+                                 videoTab.onclick = () => {
+
+    setActiveButton(videoTab);
+    renderVideos();
+
+};
+
+youtubeTab.onclick = () => {
+
+    setActiveButton(youtubeTab);
+    renderYoutube();
+
+};
+modelTab.onclick = () => {
+
+    alert("3D View is not available right now.");
+
+};
+
+
+// ==============================
+// INITIALIZE
+// ==============================
+
+async function init() {
+
+    await loadProducts();
+
+    if (!currentProduct) {
+
+        console.error("Product not found.");
+
+        return;
+
+    }
+                 console.log("Selected ID:", selectedProductId);
+console.log("Current Product:", currentProduct);
+    renderProduct();
+
+    await loadMedia();
+
+    renderImages();
+
+}
+
+init();
