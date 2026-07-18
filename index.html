@@ -192,24 +192,36 @@ class="btn w-100 checkout-btn">
     </div>
 
 </div>
-       <div class="container" style="max-width:1200px; margin:40px auto;">
+       <sub><sub></sub></sub>
+       <!-- Category Navigation -->
+<div class="category-nav">
 
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        margin-bottom:20px;
-        font-size:22px;
-        font-weight:600;
-    ">
-        <span style="
-            width:4px;
-            height:22px;
-            background:#0f766e;
-            border-radius:2px;
-        "></span>
-        All Products
+    <button class="cat-arrow" id="catPrev">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <div class="category-slider-wrapper">
+
+        <div id="categorySlider" class="category-slider">
+
+        </div>
+
     </div>
+
+    <button class="cat-arrow" id="catNext">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
+    <div class="category-dropdown">
+
+        <select id="categorySelect">
+            <option value="all">Categories</option>
+        </select>
+
+    </div>
+
+</div>
+
 
     <div id="allProductsContainer" class="row g-3"></div>
 
