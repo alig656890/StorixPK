@@ -192,25 +192,21 @@ class="btn w-100 checkout-btn">
     </div>
 
 </div>
-       <sub><sub></sub></sub>
+
        <!-- Category Navigation -->
 <div class="category-nav">
 
-    <button class="cat-arrow" id="catPrev">
-        <i class="fas fa-chevron-left"></i>
-    </button>
+    <button class="cat-btn" onclick="scrollCategoryLeft()">
+    <i class="fas fa-chevron-left"></i>
+</button>
 
-    <div class="category-slider-wrapper">
+<div class="category-slider-wrapper">
+    <div id="categorySlider" class="category-slider"></div>
+</div>
 
-        <div id="categorySlider" class="category-slider">
-
-        </div>
-
-    </div>
-
-    <button class="cat-arrow" id="catNext">
-        <i class="fas fa-chevron-right"></i>
-    </button>
+<button class="cat-btn" onclick="scrollCategoryRight()">
+    <i class="fas fa-chevron-right"></i>
+</button>
 
     <div class="category-dropdown">
 
@@ -225,7 +221,7 @@ class="btn w-100 checkout-btn">
 
     <div id="allProductsContainer" class="row g-3"></div>
 
-</div>
+
 <script src="script.js"></script>
 <div id="deliveryModal" class="delivery-modal">
           <div class="delivery-popup">
@@ -319,3 +315,4 @@ class="btn w-100 checkout-btn">
 </div>
 </body>
 </html>
+        
