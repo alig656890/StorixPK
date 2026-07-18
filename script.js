@@ -71,7 +71,164 @@ fetch(sheetURL)
 
     createSidebar();
     renderAllProducts();
+    createCategorySlider();
 });
+
+
+function createCategorySlider(){
+
+    const slider=document.getElementById("categorySlider");
+    const select=document.getElementById("categorySelect");
+
+    slider.innerHTML="";
+    select.innerHTML="";
+
+    // ALL PRODUCTS
+
+    const all=document.createElement("button");
+
+    all.className="category-pill active";
+
+    all.innerText="All Products";
+
+    all.onclick=function(){
+
+        renderAllProducts();
+
+        setActiveCategory(this);
+
+    };
+
+    slider.appendChild(all);
+
+    select.innerHTML+=`
+        <option value="all">All Products</option>
+    `;
+
+    // Categories
+
+    Object.keys(allData).forEach(category=>{
+
+        const btn=document.createElement("button");
+
+        btn.className="category-pill";
+
+        btn.innerText=
+        category.charAt(0).toUpperCase()+category.slice(1);
+
+        btn.onclick=function(){
+
+            renderCategoryProducts(category);
+
+            loadCategory(category);
+
+            setActiveCategory(this);
+
+            select.value=category;
+
+        };
+
+        slider.appendChild(btn);
+
+        select.innerHTML+=`
+            <option value="${category}">
+                ${category.charAt(0).toUpperCase()+category.slice(1)}
+            </option>`;
+
+    });
+
+}
+
+function setActiveCategory(btn){
+
+    document.querySelectorAll(".category-pill")
+    .forEach(x=>x.classList.remove("active"));
+
+    btn.classList.add("active");
+
+    btn.scrollIntoView({
+        behavior:"smooth",
+        inline:"center",
+        block:"nearest"
+    });
+
+}
+
+function renderCategoryProducts(category){
+
+    const container=document.getElementById("allProductsContainer");
+
+    container.innerHTML="";
+
+    allData[category].forEach((item,i)=>{
+
+        let price=parseFloat(item.price)||0;
+
+        container.innerHTML+=`
+
+        <div class="col-6 col-md-4 col-lg-3">
+
+            <div class="product-card">
+
+                <img src="${item.img}"
+                onclick="openProductById('${item.id}')">
+
+                <h6>${item.name}</h6>
+
+                <p>${item.desc}</p>
+
+                <div class="price">
+                    Rs. ${price}
+                </div>
+
+                <button class="btn w-100"
+                onclick="addToCartByIndex('${category}',${i})">
+
+                    Add to Cart
+
+                </button>
+
+            </div>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+
+categorySelect.onchange=function(){
+
+    if(this.value=="all"){
+
+        renderAllProducts();
+
+        document.querySelector(".category-pill").click();
+
+        return;
+
+    }
+
+    renderCategoryProducts(this.value);
+
+    loadCategory(this.value);
+
+    document.querySelectorAll(".category-pill")
+    .forEach(btn=>{
+
+        if(btn.innerText.toLowerCase()==this.value){
+
+            btn.click();
+
+        }
+
+    });
+
+};
+
+
 
 function showDeliveryInfo(){
 
@@ -258,8 +415,6 @@ function renderCart(){
                         <img src="${item.img}"
                              style="width:100%; height:160px; object-fit:cover; border-radius:8px; cursor:pointer;"
                              onclick="openProductById('${item.id}')">
-                              style="cursor:pointer;">
-
                         <h6 style="margin-top:8px;">${item.name}</h6>
 
                         <p style="font-size:12px; color:#666;">
