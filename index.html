@@ -100,7 +100,7 @@
 <div class="nav-right">
               <button class="free-delivery-btn"
                 onclick="showDeliveryInfo()">
-        🚚 Free Delivery
+        <i class="fas fa-shipping-fast"></i> Free Delivery
 </button>
         <button class="btn btn-light position-relative me-2"
                         onclick="toggleCart()">
@@ -194,19 +194,20 @@ class="btn w-100 checkout-btn">
 </div>
 
        <!-- Category Navigation -->
-<div class="category-nav">
+<div class="category-carousel">
 
-    <button class="cat-btn" onclick="scrollCategoryLeft()">
-    <i class="fas fa-chevron-left"></i>
-</button>
+    <button class="cat-nav-btn" onclick="moveCategory(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </button>
 
-<div class="category-slider-wrapper">
-    <div id="categorySlider" class="category-slider"></div>
+    <div id="categoryCarousel" class="category-carousel-track">
+    </div>
+
+    <button class="cat-nav-btn" onclick="moveCategory(1)">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+
 </div>
-
-<button class="cat-btn" onclick="scrollCategoryRight()">
-    <i class="fas fa-chevron-right"></i>
-</button>
 
     <div class="category-dropdown">
 
@@ -216,7 +217,6 @@ class="btn w-100 checkout-btn">
 
     </div>
 
-</div>
 
 
     <div id="allProductsContainer" class="row g-3"></div>
@@ -315,4 +315,3 @@ class="btn w-100 checkout-btn">
 </div>
 </body>
 </html>
-        
