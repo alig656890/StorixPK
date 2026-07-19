@@ -152,47 +152,22 @@ function setActiveCategory(btn){
         block:"nearest"
     });
 
-}
+}                                                    //rendercatagory
 
 function renderCategoryProducts(category){
 
-    const container=document.getElementById("allProductsContainer");
+    const container =
+        document.getElementById("allProductsContainer");
 
-    container.innerHTML="";
+    container.innerHTML = "";
 
-    allData[category].forEach((item,i)=>{
+    allData[category].forEach((item,index)=>{
 
-        let price=parseFloat(item.price)||0;
-
-        container.innerHTML+=`
-
-        <div class="col-6 col-md-4 col-lg-3">
-
-            <div class="product-card">
-
-                <img src="${item.img}"
-                onclick="openProductById('${item.id}')">
-
-                <h6>${item.name}</h6>
-
-                <p>${item.desc}</p>
-
-                <div class="price">
-                    Rs. ${price}
-                </div>
-
-                <button class="btn w-100"
-                onclick="addToCartByIndex('${category}',${i})">
-
-                    Add to Cart
-
-                </button>
-
-            </div>
-
-        </div>
-
-        `;
+        container.innerHTML += createProductCard(
+            item,
+            category,
+            index
+        );
 
     });
 
@@ -419,44 +394,114 @@ function renderCart(){
         </div>
     `;
 }
-         function renderAllProducts(){
+            //universal product call
+            function createProductCard(item, category, index){
+
+    const price = parseFloat(item.price) || 0;
+    const original = parseFloat(item.originalPrice) || Math.round(price * 1.08);
+
+    const discount =
+        original > price
+        ? Math.round(((original - price) / original) * 100)
+        : 0;
+
+    return `
+
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+
+        <div class="product-card">
+
+            <div class="product-image-box">
+
+                ${
+                    discount > 0
+                    ?
+                    `<div class="discount-badge">
+                        <span class="discount-percent">${discount}%</span>
+                        <span class="discount-text">OFF</span>
+                    </div>`
+                    :
+                    ""
+                }
+
+                <img
+                    src="${item.img}"
+                    loading="lazy"
+                    decoding="async"
+                    onclick="openProductById('${item.id}')">
+
+            </div>
+
+            <div class="product-content">
+
+                <h6 onclick="openProductById('${item.id}')">
+                    ${item.name}
+                </h6>
+
+                <p onclick="openProductById('${item.id}')">
+                    ${item.desc || ""}
+                </p>
+
+                <div class="price-area">
+
+                    <span class="old-price">
+                        Rs. ${original}
+                    </span>
+
+                    <span class="new-price">
+                        Rs. ${price}
+                    </span>
+
+                </div>
+
+                <button
+                    class="btn w-100"
+                    onclick="addToCartByIndex('${category}',${index})">
+
+                    <i class="fas fa-shopping-cart"></i>
+                    Add to Cart
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    `;
+}
+
+
+
+
+
+
+
+
+ //allproducts loading on start
+
+
+       function renderAllProducts(){
+
     const container = document.getElementById("allProductsContainer");
+
     container.innerHTML = "";
 
-    Object.keys(allData).forEach(category => {
+    Object.keys(allData).forEach(category=>{
 
-        allData[category].forEach((item, i) => {
+        allData[category].forEach((item,index)=>{
 
-            let price = parseFloat(item.price) || 0;
+            container.innerHTML += createProductCard(
+                item,
+                category,
+                index
+            );
 
-            container.innerHTML += `
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="product-card">
-
-                        <img src="${item.img}"
-                             style="width:100%; height:160px; object-fit:cover; border-radius:8px; cursor:pointer;"
-                             onclick="openProductById('${item.id}')">
-                        <h6 style="margin-top:8px;">${item.name}</h6>
-
-                        <p style="font-size:12px; color:#666;">
-                            ${item.desc || ""}
-                        </p>
-
-                        <div style="color:#0f766e; font-weight:700; font-size:17px;">
-    Rs. ${price}
-                        </div>
-
-                        <button class="btn w-100 mt-2"
-                            onclick="addToCartByIndex('${category}', ${i})">
-                            Add to Cart
-                        </button>
-
-                    </div>
-                </div>
-            `;
         });
 
     });
+
 }
            function changeQty(index, change){
     if(!cart[index]) return;
@@ -564,7 +609,7 @@ function loadCategory(category, btn){
     text-shadow:0 2px 6px rgba(15,118,110,.18);
 ">
     Rs. ${price}
-</span><sub><sub></sub></sub>
+</span>
         </div>
     `;
 })()}
@@ -597,91 +642,52 @@ function loadCategory(category, btn){
 
 function searchProducts(){
 
-    let keyword = document
+    const keyword = document
         .getElementById("searchInput")
         .value
         .toLowerCase()
         .trim();
 
-
     const container = document.getElementById("allProductsContainer");
 
-    container.innerHTML="";
-
-
-    if(keyword===""){
+    if(keyword === ""){
         renderAllProducts();
         return;
     }
 
+    let html = "";
 
-    Object.keys(allData).forEach(category=>{
+    Object.keys(allData).forEach(category => {
 
-        allData[category].forEach((item,i)=>{
-
+        allData[category].forEach((item,index) => {
 
             if(
                 item.name.toLowerCase().includes(keyword) ||
-                item.desc.toLowerCase().includes(keyword) ||
+                (item.desc || "").toLowerCase().includes(keyword) ||
                 category.toLowerCase().includes(keyword)
             ){
 
-                let price=parseFloat(item.price)||0;
+                html += createProductCard(
+                    item,
+                    category,
+                    index
+                );
 
-
-                container.innerHTML += `
-
-                <div class="col-6 col-md-4 col-lg-3">
-
-                    <div class="product-card">
-
-
-                        <img src="${item.img}"
-     style="
-        width:100%;
-        height:160px;
-        object-fit:cover;
-        border-radius:8px;
-        cursor:pointer;
-     "
-     onclick="openProductById('${item.id}')">
-
-
-                       <h6 onclick="openProductById('${item.id}')"
-    style="cursor:pointer;">
-    ${item.name}
-</h6>
-
-
-                        <p style="font-size:12px;color:#666;">
-                        ${item.desc || ""}
-                        </p>
-
-
-                        <div style="color:#ff6600;font-weight:600;">
-                        Rs. ${price}
-                        </div>
-
-
-                        <button class="btn w-100 mt-2"
-                        onclick="addToCartByIndex('${category}',${i})">
-                        Add to Cart
-                        </button>
-
-
-                    </div>
-
-                </div>
-
-                `;
             }
-
 
         });
 
     });
 
+    if(html === ""){
+        html = `
+            <div class="text-center py-5">
+                <h5>No products found</h5>
+            </div>
+        `;
+    }
 
+    container.innerHTML = html;
 }
            function handleSearchInput(){
 
@@ -730,23 +736,17 @@ function updateSlider(){
     document.getElementById("productPrice").innerText =
         "Rs. " + (currentItems[index].price || "0");
 }
+         window.addEventListener("pageshow", function (event) {
 
-window.addEventListener("pageshow", function () {
-
-    const input = document.getElementById("searchInput");
-
-    if (!input) return;
-
-    input.value = "";
-
-    renderAllProducts();
-
-    const clearBtn = document.getElementById("clearSearch");
-    if (clearBtn) {
-        clearBtn.style.display = "none";
+    if (event.persisted) {
+        // User came back using browser Back button.
+        // Don't reload anything.
+        return;
     }
 
 });
+
+
 
 // NEXT / PREV
 function nextSlide(){
@@ -815,7 +815,10 @@ function openProductById(id){
     window.location.href = `product.html?id=${id}`;
 }
     
-    
+//create catagory slider let see
+
+
+
 // DOTS
 function createDots(){
     dotsContainer.innerHTML = "";
