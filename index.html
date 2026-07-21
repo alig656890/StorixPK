@@ -52,9 +52,7 @@
 
 </div>
 <!-- NAVBAR -->
-<nav class="navbar custom-navbar bg-white shadow-sm sticky-top">
-    <!-- LOGO -->
-    <a href="https://storix.live" class="brand-link">
+<nav class="navbar custom-navbar sticky-top">    <a href="https://storix.live" class="brand-link">
         <img src="2.png" style="height:35px; margin-right:10px;">
         <span class="logo-text">
     Storix<span>PK</span>
@@ -65,37 +63,40 @@
        <!-- SEARCH -->
 
  <!-- SEARCH BAR -->
- <div class="searchbar custom-searchar bg-white shadow-sm sticky-top">
+ <div class="searchbar custom-searchar  sticky-top"
+ align=center>
 
   <div class="search-box d-flex">
 
-    <div class="search-wrapper">
+     <div class="search-wrapper">
 
-        <input
-            type="text"
-            id="searchInput"
-            class="form-control"
-            placeholder="Search products..."
-            oninput="handleSearchInput()"
-            onkeydown="if(event.key==='Enter'){searchProducts();}">
+    <input
+        id="searchInput"
+        type="text"
+        class="form-control"
+        placeholder="Search products..."
+        autocomplete="off"
+        oninput="handleSearchInput()"
+        onkeydown="if(event.key==='Enter'){searchProducts();}">
 
-        <button
-            id="clearSearch"
-            class="clear-search-btn"
-            onclick="clearSearch()">
-            &times;
-        </button>
+    <button
+        id="clearSearch"
+        type="button"
+        onclick="clearSearch()"
+        title="Clear Search">
 
-    </div>
+        <i class="fas fa-times"></i>
 
-    <button class="btn search-btn" onclick="searchProducts()">
-        <i class="fas fa-search"></i>
     </button>
 
 </div>
 
-</div>
+<button class="search-btn" onclick="searchProducts()">
+    <i class="fas fa-search"></i>
+</button>
 
+</div>
+       </div>
 
 <div class="nav-right">
               <button class="free-delivery-btn"
