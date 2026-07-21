@@ -7,21 +7,15 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
-
 <!-- Icons -->
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
-
 <!-- Bootstrap -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-
 </head>
-
 <body>
-
 <!-- TOPBAR -->
               <div class="topbar-content">
-
     <!-- Left -->
     <div class="topbar-left">
         <a href="https://wa.me/923428453606?text=Hello%20Storix!"
@@ -30,26 +24,20 @@
             <span>+92 342 8453606</span>
         </a>
     </div>
-
     <!-- Right -->
     <div class="topbar-right">
-
         <a class="btn btn-sm-square bg-white" href="#">
             <i class="fab fa-facebook-f"></i>
         </a>
-
         <a class="btn btn-sm-square bg-white daraz-btn"
            href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
             <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png"
                  class="daraz-icon">
         </a>
-
         <a class="btn btn-sm-square bg-white" href="#">
             <i class="fab fa-instagram"></i>
         </a>
-
     </div>
-
 </div>
 <!-- NAVBAR -->
 <nav class="navbar custom-navbar sticky-top">    <a href="https://storix.live" class="brand-link">
@@ -58,18 +46,12 @@
     Storix<span>PK</span>
 </span>
     </a>
-
-
        <!-- SEARCH -->
-
  <!-- SEARCH BAR -->
  <div class="searchbar custom-searchar  sticky-top"
  align=center>
-
   <div class="search-box d-flex">
-
      <div class="search-wrapper">
-
     <input
         id="searchInput"
         type="text"
@@ -78,26 +60,19 @@
         autocomplete="off"
         oninput="handleSearchInput()"
         onkeydown="if(event.key==='Enter'){searchProducts();}">
-
     <button
         id="clearSearch"
         type="button"
         onclick="clearSearch()"
         title="Clear Search">
-
         <i class="fas fa-times"></i>
-
     </button>
-
 </div>
-
 <button class="search-btn" onclick="searchProducts()">
     <i class="fas fa-search"></i>
 </button>
-
 </div>
        </div>
-
 <div class="nav-right">
               <button class="free-delivery-btn"
                 onclick="showDeliveryInfo()">
@@ -105,26 +80,17 @@
 </button>
         <button class="btn btn-light position-relative me-2"
                         onclick="toggleCart()">
-
                 <i class="fas fa-shopping-cart"></i>
                 <span id="cartCount"
                             class="badge cart-count">0</span>
-
         </button>
-
         <button class="btn place-order-btn"
                         onclick="placeOrder()">
-
                 Place Order
-
         </button>
-
 </div>
-
 </nav>
-
         <!--cart toggle dropdown -->
-
    <div id="cartBox" style="
     position: fixed;
     right: 20px;
@@ -137,182 +103,122 @@
     display: none;
     z-index: 99999;
 ">
-
     <h6 style="margin-bottom:10px;">Your Cart</h6>
     <div id="cartItems"></div>
-
     <hr>
     <button onclick="goCheckout()"
 class="btn w-100 checkout-btn">
     Checkout
 </button>
 </div>
-<div class="container" style="max-width:1200px; margin:30px auto;">
 
+<!-- MOST SOLD -->
+<div class="container most-sold-section" style="max-width:1200px; margin:30px auto;">
     <!-- Section Heading -->
-    <div style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        margin-bottom:15px;
-        font-size:20px;
-        font-weight:600;
-    ">
-        <span style="
-            width:4px;
-            height:20px;
-            background:#0f766e;
-            border-radius:2px;
-        "></span>
-        Most Sold Products
+    <div class="most-sold-header">
+        <span class="most-sold-eyebrow">
+            <i class="fas fa-fire"></i> BESTSELLERS
+        </span>
+        <h2 class="most-sold-title" id="mostSoldTitle">
+            Most Sold <span>Products</span>
+        </h2>
     </div>
+    </div> 
+    <!-- Compact category switch for the most-sold slider (mobile-friendly) -->
 
-    <!-- Products Grid -->
-    <div id="mostSoldContainer" class="row g-3"></div>
 
-</div>
 <!-- HERO -->
 <div class="hero">
-
     <!-- SIDEBAR -->
     <div class="sidebar">
         <button id="btn1" onclick="loadCategory('1', this)">Electronics</button>
         <button onclick="loadCategory('2', this)">Fashion</button>
         <button onclick="loadCategory('3', this)">Home</button>
     </div>
-
     <!-- SLIDER -->
     <div class="slider">
         <div class="slides" id="slides"></div>
-
-
         <button class="prev" onclick="prevSlide()">❮</button>
         <button class="next" onclick="nextSlide()">❯</button>
-
         <div class="dots" id="dots"></div>
     </div>
-
 </div>
-
        <!-- Category Navigation -->
 <div class="category-carousel">
-
     <button class="cat-nav-btn" onclick="moveCategory(-1)">
         <i class="fas fa-chevron-left"></i>
     </button>
-
     <div id="categoryCarousel" class="category-carousel-track">
     </div>
-
     <button class="cat-nav-btn" onclick="moveCategory(1)">
         <i class="fas fa-chevron-right"></i>
     </button>
-
+    <button class="cat-reset-btn" id="catResetBtn" onclick="resetCategoryCarousel()" title="Reset to All Products">
+        <i class="fas fa-rotate-left"></i>
+        <span>Reset</span>
+    </button>
 </div>
-
-    <div class="category-dropdown">
-
-        <select id="categorySelect">
-            <option value="all">Categories</option>
-        </select>
-
-    </div>
-
-
-
     <div id="allProductsContainer" class="row g-3"></div>
-
-
 <script src="script.js"></script>
 <div id="deliveryModal" class="delivery-modal">
           <div class="delivery-popup">
-
     <button class="delivery-close" onclick="closeDeliveryInfo()">
         &times;
     </button>
-
     <div class="delivery-icon">
         🚚
     </div>
-
     <h2>FREE DELIVERY</h2>
-
     <p class="delivery-subtitle">
         On Every Order — No Minimum Purchase
     </p>
-
     <div class="offer-box">
-
         <div class="offer-item">
             🚚 <strong>100% FREE Delivery</strong>
         </div>
-
         <div class="offer-item">
             ⭐ Premium Quality Products
         </div>
-
         <div class="offer-item">
             📦 Secure & Professional Packaging
         </div>
-
         <div class="offer-item">
             💯 Customer Satisfaction Guaranteed
         </div>
-
     </div>
-
     <div class="delivery-message">
-
         <strong>Why is delivery free?</strong>
-
         <p>
             At Storix, we invest in long-term customer relationships instead of
             charging delivery fees. Your product quality, packaging, and service
             will never be compromised.
         </p>
-
-
           <div class="offer-marquee">
     <div class="offer-track">
-
         🚚 FREE DELIVERY only on our Official Website
         <strong>Storix.live</strong>
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-
         🔥 No minimum purchase restriction
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-
         ❌ Not Available on our Daraz selling account or any other Platform
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-
         ⭐ Premium Quality Guaranteed
-
     </div>
 </div>
-
     </div>
-
    <div class="delivery-actions">
-
     <button onclick="closeDeliveryInfo()" class="delivery-ok">
-        >> Avail Free Shopping on StorixPK <<
+        >> Avail Free Shopping on StorixPK 
             </button>
-
     <a href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp"
        target="_blank"
        class="daraz-popup-btn"
        title="Visit our Daraz Store">
-
         <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png"
              class="daraz-popup-icon">
-
     </a>
-
 </div>
-
 </div>
-
-
 </div>
 </body>
 </html>
