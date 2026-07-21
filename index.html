@@ -131,16 +131,19 @@ class="btn w-100 checkout-btn">
 <div class="hero">
     <!-- SIDEBAR -->
     <div class="sidebar">
-        <button id="btn1" onclick="loadCategory('1', this)">Electronics</button>
-        <button onclick="loadCategory('2', this)">Fashion</button>
-        <button onclick="loadCategory('3', this)">Home</button>
+        <div class="sk-bar"></div>
+        <div class="sk-bar"></div>
+        <div class="sk-bar"></div>
     </div>
     <!-- SLIDER -->
     <div class="slider">
-        <div class="slides" id="slides"></div>
+        <div class="slides" id="slides">
+            <div class="hero-skeleton-slide"></div>
+        </div>
         <button class="prev" onclick="prevSlide()">❮</button>
         <button class="next" onclick="nextSlide()">❯</button>
         <div class="dots" id="dots"></div>
+        <div class="hero-progress"><div class="hero-progress-bar" id="heroProgressBar"></div></div>
     </div>
 </div>
        <!-- Category Navigation -->
@@ -154,11 +157,99 @@ class="btn w-100 checkout-btn">
         <i class="fas fa-chevron-right"></i>
     </button>
     <button class="cat-reset-btn" id="catResetBtn" onclick="resetCategoryCarousel()" title="Reset to All Products">
-        <i class="fas fa-rotate-left"></i>
-        <span>Reset</span>
+        <i class="fas fa-recycle"></i>
     </button>
 </div>
-    <div id="allProductsContainer" class="row g-3"></div>
+    <div id="allProductsContainer" class="row g-3">
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-4 col-lg-3 mb-4">
+            <div class="product-card sk-card">
+                <div class="sk-img"></div>
+                <div class="sk-card-body">
+                    <div class="sk-line sk-line-title"></div>
+                    <div class="sk-line sk-line-title2"></div>
+                    <div class="sk-line sk-line-price"></div>
+                    <div class="sk-line sk-line-btn"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 <script src="script.js"></script>
 <div id="deliveryModal" class="delivery-modal">
           <div class="delivery-popup">
@@ -206,6 +297,32 @@ class="btn w-100 checkout-btn">
     </div>
 </div>
     </div>
+
+    <div class="vs-compare">
+        <div class="vs-col vs-storix">
+            <div class="vs-head">
+                <span class="logo-text">Storix<span>PK</span></span>
+            </div>
+            <ul>
+                <li><i class="fas fa-check-circle"></i> 100% Free Delivery</li>
+                <li><i class="fas fa-check-circle"></i> Direct Discount Pricing</li>
+                <li><i class="fas fa-check-circle"></i> Official Quality Guarantee</li>
+            </ul>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="vs-col vs-daraz">
+            <div class="vs-head">
+                <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png" class="vs-daraz-logo">
+                Daraz
+            </div>
+            <ul>
+                <li><i class="fas fa-times-circle"></i> No Free Delivery</li>
+                <li><i class="fas fa-times-circle"></i> Extra Platform Fees</li>
+                <li><i class="fas fa-times-circle"></i> Standard Marketplace Pricing</li>
+            </ul>
+        </div>
+    </div>
+
    <div class="delivery-actions">
     <button onclick="closeDeliveryInfo()" class="delivery-ok">
         >> Avail Free Shopping on StorixPK 
