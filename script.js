@@ -53,7 +53,7 @@ fetch(sheetURL)
         let totalPurchased = parseInt(cols[7] || 0);
         let soldQty = parseInt(cols[8] || 0);
         let inStock = parseInt(cols[9] || 0);
-        let totalSold = parseInt(cols[10] || 0);
+        let totalSold = parseInt(cols[11] || 0);
 
         if(!category || !img) return;
 
@@ -519,7 +519,7 @@ function createProductCard(item, category, index){
                 </div>
                 <button
                     class="btn w-100"
-                    onclick="addToCartByIndex('${category}',${index})">
+                    onclick="addToCartByIndex('${category}',${index},event)">
                     <i class="fas fa-shopping-cart"></i>
                     Add to Cart
                 </button>
@@ -558,8 +558,8 @@ function changeQty(index, change){
     renderCart();
 }
 
-function addToCartByIndex(category, index){
-    addToCart(allData[category][index]);
+function addToCartByIndex(category, index, evt){
+    addToCart(allData[category][index], evt);
 }
 
 function removeItem(index){
@@ -577,7 +577,7 @@ function openProduct(product){
     );
 }
 
-function addToCart(product){
+function addToCart(product, evt){
     let existing = cart.find(p => p.name === product.name);
     if(existing){
         existing.qty += 1;
@@ -587,7 +587,53 @@ function addToCart(product){
     localStorage.setItem("cart", JSON.stringify(cart));
     updateCartUI();
     renderCart();
-    alert(product.name + " added to cart");
+    bumpCartBadge();
+    showToast(product.name + " added to cart");
+    if(evt && evt.currentTarget){
+        animateAddToCart(evt.currentTarget);
+    }
+}
+
+// Brief "Added!" state on the button that was clicked
+function animateAddToCart(btn){
+    if(!btn || btn.dataset.animating === "1") return;
+    btn.dataset.animating = "1";
+    const original = btn.innerHTML;
+    btn.classList.add("added-pulse");
+    btn.innerHTML = '<i class="fas fa-check"></i> Added!';
+    setTimeout(() => {
+        btn.innerHTML = original;
+        btn.classList.remove("added-pulse");
+        btn.dataset.animating = "0";
+    }, 1100);
+}
+
+// Little bounce on the cart badge whenever something is added
+function bumpCartBadge(){
+    const badge = document.getElementById("cartCount");
+    if(!badge) return;
+    badge.classList.remove("bump");
+    void badge.offsetWidth; // restart animation
+    badge.classList.add("bump");
+}
+
+// Non-blocking toast instead of alert()
+function showToast(message){
+    let toast = document.getElementById("appToast");
+    if(!toast){
+        toast = document.createElement("div");
+        toast.id = "appToast";
+        toast.className = "app-toast";
+        document.body.appendChild(toast);
+    }
+    toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+    toast.classList.remove("show");
+    void toast.offsetWidth;
+    toast.classList.add("show");
+    clearTimeout(toast._hideTimer);
+    toast._hideTimer = setTimeout(() => {
+        toast.classList.remove("show");
+    }, 2200);
 }
 
 // LOAD CATEGORY (hero slider only) — top 3 best sellers, ranked by units sold
@@ -621,15 +667,8 @@ function loadCategory(category, btn){
     max-width:70%;
     z-index:3;
 ">
-    ${
-        sold > 0
-        ?
-        `<span class="hero-sold-badge"><i class="fas fa-fire"></i> ${sold} Sold</span>`
-        :
-        ""
-    }
+    <span class="hero-sold-badge"><i class="fas fa-fire"></i> ${sold} Sold</span>
     <h4>${item.name || ""}</h4>
-    <p style="font-size:13px">${item.desc || ""}</p>
    ${(() => {
     let price = parseFloat(item.price) || 0;
     let increased = Math.round(price * 1.04);
@@ -656,7 +695,7 @@ function loadCategory(category, btn){
     `;
 })()}
     <div style="margin-top:10px;">
-        <button class="shop-btn" onclick='addToCart(${JSON.stringify(item)})'>
+        <button class="shop-btn" onclick='addToCart(${JSON.stringify(item)}, event)'>
             <i class="fas fa-shopping-cart me-1"></i> Add to Cart
         </button>
         <button class="btn btn-outline-light ms-2" onclick="openProductById('${item.id}')">
@@ -728,11 +767,14 @@ function clearSearch(){
 }
 
 // SLIDER UPDATE
+const heroProgressBar = document.getElementById("heroProgressBar");
+
 function updateSlider(){
     slidesContainer.style.transform = `translateX(-${index * 100}%)`;
     [...dotsContainer.children].forEach((d, i) =>
         d.classList.toggle("active", i === index)
     );
+    resetHeroProgress();
 }
 
 window.addEventListener("pageshow", function (event) {
@@ -757,10 +799,12 @@ let startX = 0;
 let endX = 0;
 const slider = document.querySelector(".slider");
 
-slider.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; });
-slider.addEventListener("touchend", (e) => { endX = e.changedTouches[0].clientX; handleSwipe(); });
+slider.addEventListener("touchstart", (e) => { startX = e.touches[0].clientX; heroPaused = true; });
+slider.addEventListener("touchend", (e) => { endX = e.changedTouches[0].clientX; handleSwipe(); setTimeout(() => { heroPaused = false; }, 1500); });
 slider.addEventListener("mousedown", (e) => { startX = e.clientX; });
 slider.addEventListener("mouseup", (e) => { endX = e.clientX; handleSwipe(); });
+slider.addEventListener("mouseenter", () => { heroPaused = true; });
+slider.addEventListener("mouseleave", () => { heroPaused = false; });
 
 document.addEventListener("click", function(e){
     const cartBox = document.getElementById("cartBox");
@@ -799,10 +843,28 @@ function createDots(){
     });
 }
 
-// AUTO SLIDE (hero, images only)
+// AUTO SLIDE (hero) — tick-based so it can pause on hover/touch and
+// drive a filling progress bar in sync with the actual autoplay timer.
+const HERO_AUTOPLAY_MS = 4000;
+let heroElapsed = 0;
+let heroPaused = false;
+
+function resetHeroProgress(){
+    heroElapsed = 0;
+    if(heroProgressBar) heroProgressBar.style.width = "0%";
+}
+
 setInterval(() => {
-    if(currentItems.length) nextSlide();
-}, 4000);
+    if(heroPaused || currentItems.length <= 1) return;
+    heroElapsed += 50;
+    if(heroProgressBar){
+        const pct = Math.min(100, (heroElapsed / HERO_AUTOPLAY_MS) * 100);
+        heroProgressBar.style.width = pct + "%";
+    }
+    if(heroElapsed >= HERO_AUTOPLAY_MS){
+        nextSlide();
+    }
+}, 50);
 
 function placeOrder(){
     if(cart.length === 0){
