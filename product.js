@@ -201,11 +201,9 @@ function renderProduct(){
     const rounded = Math.round(currentProduct.rating || 0);
     starEl.textContent = "★".repeat(Math.min(5, Math.max(0, rounded))) + "☆".repeat(5 - Math.min(5, Math.max(0, rounded)));
 
-    document.getElementById("reviewCount").textContent =
-        currentProduct.reviewCount > 0 ? `(${currentProduct.reviewCount} Reviews)` : "(No reviews yet)";
 
     renderMeta();
-    renderSpecs();
+
     renderLongDescription();
     renderRelatedProducts();
 }
@@ -218,22 +216,7 @@ function renderMeta(){
     `;
 }
 
-function renderSpecs(){
-    const table = document.getElementById("specTable");
-    const rows = [
-        ["Category", currentProduct.category],
-        ["Size", currentProduct.size],
-        ["Material", currentProduct.material],
-        ["Shipping Cost", currentProduct.shippingCost ? "Rs. " + currentProduct.shippingCost : ""],
-        ["Stock Available", currentProduct.inStock],
-        ["Limited Stock", currentProduct.limitedStock],
-        ["Total Sold", currentProduct.totalSold]
-    ].filter(([, value]) => value !== "" && value !== null && value !== undefined);
 
-    table.innerHTML = rows.length
-        ? rows.map(([label, value]) => `<tr><td>${label}</td><td>${value}</td></tr>`).join("")
-        : `<tr><td colspan="2" style="color:#94a3b8;">No specifications listed for this product.</td></tr>`;
-}
 
 function renderLongDescription(){
     const el = document.getElementById("longDescription");
