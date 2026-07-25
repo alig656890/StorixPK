@@ -646,7 +646,15 @@ body{
 
 @media (max-width:768px){
 
-
+        .navbar {
+    background:var(--primary) !important;
+    padding: 16px 28px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:nowrap;
+        gap:8px;
+}
     .product-gallery{
         flex-direction:column;
         padding:16px;
@@ -670,12 +678,13 @@ body{
 
    /* Make the product-id-nav visually match main page nav */
 .product-id-nav.mobile-nav{
+    width:0px;
+        height:0px;
 display:flex;
 align-items:center;
 gap:8px;
 padding:8px 12px;
 background:transparent;
-width:100%;
 box-sizing:border-box;
 }
 
