@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>StorixPK</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Shared Styles -->
+<link rel="stylesheet" href="style.css">
+
+<!-- Product Page Styles -->
+<link rel="stylesheet" href="product.css">
+
+<!-- 3D model support (used only if a product has a model file) -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar-content">
+
+    <div class="topbar-left">
+        <a href="https://wa.me/923428453606?text=Hello%20Storix!" class="topbar-whatsapp">
+            <i class="fab fa-whatsapp"></i>
+            <span>+92 342 8453606</span>
+        </a>
+    </div>
+
+    <div class="topbar-right">
+        <a class="btn btn-sm-square bg-white" href="#">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a class="btn btn-sm-square bg-white daraz-btn"
+           href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp">
+            <img src="https://vectorseek.com/wp-content/uploads/2023/06/vectorseek.com-Daraz-Icon-Vector.png" class="daraz-icon">
+        </a>
+        <a class="btn btn-sm-square bg-white" href="#">
+            <i class="fab fa-instagram"></i>
+        </a>
+    </div>
+
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar custom-navbar sticky-top">
+
+    <a href="index.html" class="brand-link">
+        <img src="2.png" style="height:35px; margin-right:10px;">
+        <span class="logo-text">Storix<span>PK</span></span>
+    </a>
+
+    <!-- PRODUCT ID NAVIGATOR -->
+    <div class="product-id-nav">
+
+        <button class="id-nav-btn" onclick="previousProduct()" title="Previous product">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+
+        <div class="id-input-wrapper">
+            <i class="fas fa-hashtag"></i>
+            <input
+                type="text"
+                id="productIdInput"
+                placeholder="Jump to Product ID..."
+                autocomplete="off"
+                onkeydown="if(event.key==='Enter'){goToProductId();}">
+        </div>
+
+        <button class="id-nav-btn" onclick="nextProduct()" title="Next product">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+    <div class="nav-right">
+        <button class="btn btn-light position-relative me-2" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCount" class="badge cart-count">0</span>
+        </button>
+
+        <button class="btn place-order-btn" onclick="placeOrder()">
+            Place Order
+        </button>
+    </div>
+
+</nav>
+
+<!-- CART DROPDOWN -->
+<div id="cartBox" class="cart-box" style="display:none;">
+    <div class="cart-header">
+        <h5>Your Cart</h5>
+    </div>
+    <div id="cartItems"></div>
+    <button class="btn w-100 checkout-btn mt-3" onclick="goCheckout()">
+        Checkout
+    </button>
+</div>
+
+<div class="container product-page">
+
+    <div id="productLoader" class="page-loader">
+        <div class="spinner"></div>
+        <p>Loading product...</p>
+    </div>
+
+    <div id="productContent" style="display:none;">
+
+        <div class="row">
+
+            <!-- LEFT SIDE — MEDIA GALLERY -->
+            <div class="col-lg-8">
+
+                <div class="product-gallery d-flex">
+
+                    <!-- Side Buttons -->
+                    <div class="media-menu">
+
+                        <button class="media-btn active" id="imageTab">
+                            <i class="far fa-image"></i>
+                            <span>Images</span>
+                        </button>
+
+                        <button class="media-btn" id="videoTab">
+                            <i class="fas fa-video"></i>
+                            <span>Videos</span>
+                        </button>
+
+                        <button class="media-btn" id="youtubeTab">
+                            <i class="fab fa-youtube"></i>
+                            <span>YouTube</span>
+                        </button>
+
+                        <button class="media-btn" id="modelTab">
+                            <i class="fas fa-cube"></i>
+                            <span>3D</span>
+                        </button>
+
+                    </div>
+
+                    <!-- Main Viewer -->
+                    <div class="viewer-wrapper">
+
+                        <div class="viewer">
+
+                            <img id="imageViewer" alt="Product Image">
+                            <video id="videoViewer" controls></video>
+                            <iframe id="youtubeViewer" allowfullscreen></iframe>
+                            <model-viewer id="modelViewer" camera-controls auto-rotate></model-viewer>
+
+                            <div id="viewerEmpty" class="viewer-empty">
+                                <i class="fas fa-image"></i>
+                                <p id="viewerEmptyText">Nothing to show here yet</p>
+                            </div>
+
+                        </div>
+
+                        <div class="thumbnail-strip" id="thumbnailStrip"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE — PRODUCT DETAILS -->
+            <div class="col-lg-4">
+
+                <div class="product-info-card">
+
+                    <div class="badge-row">
+                        <span id="stockStatus" class="stock-badge">In Stock</span>
+                        <span id="categoryBadge" class="category-badge"></span>
+                    </div>
+
+                    <h1 id="productName"></h1>
+
+                    <div class="rating-row">
+                        <span id="starRating" class="star-rating"></span>
+                        <span id="reviewCount" class="review-count"></span>
+                        <span class="sold-count"><i class="fas fa-fire"></i> <span id="soldQty"></span> sold</span>
+                    </div>
+
+                    <div class="price-box">
+                        <span id="salePrice" class="sale-price"></span>
+                        <span id="originalPrice" class="old-price"></span>
+                        <span id="discountPercent" class="discount"></span>
+                    </div>
+
+                    <p id="shortDescription" class="short-desc"></p>
+
+                    <div class="product-meta" id="productMeta">
+                        <div><strong>SKU</strong><span id="productId"></span></div>
+                    </div>
+
+                    <div class="action-row">
+
+                        <div class="qty-box">
+                            <button id="minusQty">−</button>
+                            <input type="number" id="qty" value="1" min="1">
+                            <button id="plusQty">+</button>
+                        </div>
+
+                        <div class="buttons">
+                            <button id="buyNowBtn" class="buy-btn">Buy Now</button>
+                            <button id="addToCartBtn" class="cart-btn">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="trust-row">
+                        <span><i class="fas fa-truck"></i> Free Delivery</span>
+                        <span><i class="fas fa-shield-alt"></i> Quality Checked</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Specifications -->
+        <section class="details-section">
+            <h3>Specifications</h3>
+            <table class="table spec-table">
+                <tbody id="specTable"></tbody>
+            </table>
+        </section>
+
+        <!-- Long Description -->
+        <section class="details-section">
+            <h3>Description</h3>
+            <div id="longDescription" class="long-desc"></div>
+        </section>
+
+        <!-- Related Products -->
+        <section class="details-section" id="relatedSection">
+            <h3>Related Products</h3>
+            <div class="row" id="relatedProducts"></div>
+        </section>
+
+    </div>
+
+    <div id="productNotFound" class="page-loader" style="display:none;">
+        <i class="fas fa-box-open"></i>
+        <p>We couldn't find that product.</p>
+        <a href="index.html" class="btn checkout-btn">Back to Storix</a>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-top">
+
+        <div class="footer-col footer-brand">
+            <span class="logo-text">Storix<span>PK</span></span>
+            <p>Quality products, honest prices, and free delivery across Pakistan — every single order.</p>
+            <div class="footer-social">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/923428453606"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://www.daraz.pk/shop/hulmq2wk/?itemId=1954398719&channelSource=pdp"><i class="fas fa-store"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-col">
+            <h6>Quick Links</h6>
+            <a href="index.html">Home</a>
+            <a href="index.html">All Products</a>
+            <a href="#">Track Order</a>
+            <a href="#">Contact Us</a>
+        </div>
+
+        <div class="footer-col">
+            <h6>Customer Care</h6>
+            <a href="#">Delivery Info</a>
+            <a href="#">Return Policy</a>
+            <a href="#">FAQs</a>
+            <a href="https://wa.me/923428453606">WhatsApp Support</a>
+        </div>
+
+        <div class="footer-col">
+            <h6>Get in Touch</h6>
+            <p><i class="fas fa-phone-alt"></i> +92 342 8453606</p>
+            <p><i class="fas fa-envelope"></i> support@storix.live</p>
+            <p><i class="fas fa-map-marker-alt"></i> Pakistan</p>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <span>© <span id="footerYear"></span> StorixPK. All rights reserved.</span>
+        <span>Free delivery only on storix.live</span>
+    </div>
+</footer>
+
+<script src="product.js"></script>
+
+</body>
+</html>
