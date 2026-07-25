@@ -322,11 +322,23 @@ body{
 }
 
 .sold-count{
-    color:#ea580c;
-    font-weight:600;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:6px 12px;
+    background:#fff7ed;
+    color:#c2410c;
+    border:1px solid #fdba74;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    box-shadow:0 2px 8px rgba(234,88,12,.15);
 }
 
-.sold-count i{ margin-right:3px; }
+.sold-count i{
+    color:#ef4444;
+    font-size:14px;
+}
 
 .price-box{
     display:flex;
@@ -630,13 +642,10 @@ body{
 }
 
 /* ================= RESPONSIVE ================= */
-@media(max-width:992px){
-    .footer-top{
-        grid-template-columns:1fr 1fr;
-    }
-}
+
 
 @media (max-width:768px){
+
 
     .product-gallery{
         flex-direction:column;
@@ -659,12 +668,52 @@ body{
 
     .viewer{ height:320px; }
 
-    .product-id-nav{
-        order:3;
-        width:100%;
-        max-width:none;
-        margin-top:8px;
-    }
+   /* Make the product-id-nav visually match main page nav */
+.product-id-nav.mobile-nav{
+display:flex;
+align-items:center;
+gap:8px;
+padding:8px 12px;
+background:transparent;
+width:100%;
+box-sizing:border-box;
+}
+
+.product-id-nav.mobile-nav .cat-arrow{
+width:40px;
+height:40px;
+border-radius:50%;
+background:#fff;
+color:var(--accent);
+box-shadow:0 6px 18px rgba(0,0,0,.06);
+flex-shrink:0;
+}
+
+.product-id-nav.mobile-nav .category-scroll{
+display:flex;
+gap:10px;
+overflow-x:auto;
+scrollbar-width:none;
+padding:6px 4px;
+-webkit-overflow-scrolling:touch;
+flex:1 1 auto;
+}
+
+.product-id-nav.mobile-nav .category-scroll::-webkit-scrollbar{ display:none; }
+
+.product-id-nav.mobile-nav .category-pill,
+.product-id-nav.mobile-nav .ms-cat-pill{
+border:none;
+background:#fff;
+color:#374151;
+padding:8px 14px;
+border-radius:999px;
+font-weight:700;
+font-size:14px;
+white-space:nowrap;
+box-shadow:0 6px 18px rgba(15,23,42,.06);
+flex:0 0 auto;
+}
 
     .id-input-wrapper{ max-width:none; }
 
@@ -673,10 +722,10 @@ body{
         padding:22px;
     }
 
-    .footer-top{
-        grid-template-columns:1fr;
-        padding:40px 20px 24px;
-    }
+
+                            .footer-top{
+                                grid-template-columns:1fr 1fr;
+                                                                                }
 
     .footer-bottom{
         flex-direction:column;
