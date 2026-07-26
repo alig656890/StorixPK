@@ -28,32 +28,87 @@ function preloadImages(items){
     });
 }
 
+/* ==============================
+   PROPER CSV PARSER
+   A plain row.split(",") breaks the moment any field (name, short
+   description, long description) contains a comma — Google Sheets
+   wraps such fields in quotes, so a naive split shifts every column
+   after it and corrupts numeric fields like Sold Quantity / Total
+   Sold. This parser respects quoted fields (including escaped "" )
+   so every column stays aligned no matter what's inside the text.
+============================== */
+function parseCSV(text){
+    const rows = [];
+    let row = [];
+    let field = "";
+    let inQuotes = false;
+
+    for(let i = 0; i < text.length; i++){
+        const char = text[i];
+        const next = text[i + 1];
+
+        if(inQuotes){
+            if(char === '"' && next === '"'){
+                field += '"';
+                i++; // skip escaped quote
+            } else if(char === '"'){
+                inQuotes = false;
+            } else {
+                field += char;
+            }
+        } else {
+            if(char === '"'){
+                inQuotes = true;
+            } else if(char === ","){
+                row.push(field);
+                field = "";
+            } else if(char === "\r"){
+                // ignore, handled by \n
+            } else if(char === "\n"){
+                row.push(field);
+                rows.push(row);
+                row = [];
+                field = "";
+            } else {
+                field += char;
+            }
+        }
+    }
+    // push last field/row if file doesn't end with a newline
+    if(field.length > 0 || row.length > 0){
+        row.push(field);
+        rows.push(row);
+    }
+    return rows;
+}
+
 // FETCH DATA
 fetch(sheetURL)
 .then(res => res.text())
 .then(data => {
-    const rows = data.split("\n").slice(1);
-    rows.forEach(row => {
-        if(!row.trim()) return;
-        const cols = row.split(",");
-        if(cols.length < 7) return;
+    const rows = parseCSV(data).slice(1); // drop header row
+    rows.forEach(cols => {
+        if(!cols || cols.length < 7) return;
+        if(cols.every(c => !c || !c.trim())) return; // skip blank rows
 
-        let category = (cols[0] || "").replace(/"/g,"").trim().toLowerCase();
-        let img = (cols[1] || "").replace(/"/g,"").trim();
-        let name = (cols[2] || "").replace(/"/g,"").trim();
-        let desc = (cols[3] || "").replace(/"/g,"").trim();
-        let price = (cols[4] || "").replace(/"/g,"").trim();
-        let originalPrice = (cols[5] || "").replace(/"/g,"").trim();
-        let productId = (cols[6] || "").replace(/"/g,"").trim();
+        let category = (cols[0] || "").trim().toLowerCase();
+        let img = (cols[1] || "").trim();
+        let name = (cols[2] || "").trim();
+        let desc = (cols[3] || "").trim();
+        let price = (cols[4] || "").trim();
+        let originalPrice = (cols[5] || "").trim();
+        let productId = (cols[6] || "").trim();
 
         if(!productId){
             productId = name.toLowerCase().replace(/\s+/g,"-") + "-" + Date.now();
         }
-
-     let totalPurchased = parseInt(cols[9] || 0);
-        let soldQty = parseInt(cols[10] || 0);
-        let inStock = parseInt(cols[11] || 0);
-        let totalSold = parseInt(cols[12] || 0);
+        let longDesc = (cols[7] || "").trim();
+        let status = (cols[8] || "").trim();
+        let sellerNo = (cols[9] || "").trim();
+        let totalPurchased = parseInt(cols[10]) || 0;
+        let soldQty = parseInt(cols[11]) || 0;
+        let inStock = parseInt(cols[12]) || 0;
+        let totalSold = parseInt(cols[13]) || 0;
 
         if(!category || !img) return;
 
@@ -63,9 +118,12 @@ fetch(sheetURL)
             img,
             name,
             desc,
+            longDesc,
             price,
             originalPrice,
             id: productId,
+            status,
+            sellerNo,
             totalPurchased,
             soldQty,
             inStock,
@@ -74,7 +132,6 @@ fetch(sheetURL)
     });
 
     createSidebar();
-    renderAllProducts();
     createCategorySlider();
     createMostSoldPills();
     updateMostSold("all");
@@ -244,6 +301,7 @@ function getTopSold(category){
     } else {
         items = allData[category] || [];
     }
+
     return [...items]
         .sort((a, b) => (b.totalSold || 0) - (a.totalSold || 0))
         .slice(0, 3);
