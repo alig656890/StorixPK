@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storix Admin Portal</title>
+<style>
+  :root{
+    --ink:#12151c;
+    --panel:#181c26;
+    --panel-2:#1f2430;
+    --line:#2b3140;
+    --text:#e7e9ee;
+    --muted:#8b93a7;
+    --accent:#4fd1c5;
+    --accent-2:#f2a154;
+    --danger:#e5586c;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:radial-gradient(circle at 20% 0%, #1a2130 0%, var(--ink) 55%);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+  }
+  ::selection{background:var(--accent);color:#08110f;}
+
+  #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 32px;position:relative;overflow:hidden;}
+  .login-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
+  .login-eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:6px;}
+  .login-card h1{font-size:22px;margin:0 0 26px 0;font-weight:650;letter-spacing:-.01em;}
+  .field{margin-bottom:16px;}
+  .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px;font-family:var(--mono);}
+  .field input, .field select, .field textarea{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    padding:11px 12px;color:var(--text);font-size:14px;font-family:var(--sans);outline:none;
+    transition:border-color .15s ease;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{border-color:var(--accent);}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:8px;
+    padding:11px 18px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);
+    transition:transform .1s ease, opacity .15s ease;
+  }
+  .btn:disabled{opacity:.55;cursor:not-allowed;}
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--accent);color:#08201d;width:100%;}
+  .btn-primary:hover{opacity:.9;}
+  .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--accent);}
+  .btn-danger{background:rgba(229,88,108,.15);color:var(--danger);border:1px solid rgba(229,88,108,.4);}
+  .btn-danger:hover{background:rgba(229,88,108,.28);}
+  .btn-small{padding:6px 12px;font-size:12px;}
+  .error-msg{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
+
+  #app{display:none;min-height:100vh;}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--line);background:var(--panel);}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a0d12;font-size:14px;font-family:var(--mono);}
+  .brand h2{margin:0;font-size:15px;font-weight:650;}
+  .brand span{display:block;font-size:11px;color:var(--muted);font-family:var(--mono);}
+
+  nav{display:flex;gap:6px;padding:14px 28px 0 28px;flex-wrap:wrap;}
+  .tab-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:9px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;}
+  .tab-btn.active{color:var(--text);border:1px solid var(--line);border-bottom-color:var(--ink);background:var(--panel-2);}
+
+  main{padding:0 28px 40px 28px;}
+  .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:22px;margin-top:-1px;}
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
+  .panel-head h3{margin:0;font-size:16px;}
+  .panel-head p{margin:2px 0 0 0;color:var(--muted);font-size:12.5px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);}
+  tbody td{padding:12px;border-bottom:1px solid rgba(43,49,64,.6);vertical-align:middle;}
+  tbody tr:hover{background:rgba(79,209,197,.04);}
+  .thumb{width:38px;height:38px;border-radius:6px;object-fit:cover;background:#0d1017;border:1px solid var(--line);}
+  .row-actions{display:flex;gap:6px;}
+  .empty-state{padding:40px 20px;text-align:center;color:var(--muted);}
+  .empty-state b{color:var(--text);display:block;margin-bottom:4px;}
+  .loading{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;}
+  .link-cell{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:12px;word-break:break-all;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);color:var(--muted);}
+
+  .overlay{display:none;position:fixed;inset:0;background:rgba(6,8,12,.7);align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(2px);}
+  .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:26px;}
+  .modal h3{margin:0 0 18px 0;font-size:17px;}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px;}
+  .upload-row{display:flex;align-items:center;gap:12px;}
+  .upload-row img{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:#0d1017;}
+  .status-msg{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:6px;}
+
+  .media-panel-inner{max-width:600px;}
+  .dropzone{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .15s ease, background .15s ease;position:relative;}
+  .dropzone:hover, .dropzone.dragover{border-color:var(--accent);background:rgba(79,209,197,.05);}
+  .dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+  .dropzone .dz-icon{font-size:26px;margin-bottom:8px;}
+  .dropzone .dz-title{font-weight:600;font-size:14px;}
+  .dropzone .dz-sub{font-size:12px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+
+  .queue{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
+  .queue-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
+  .queue-item .qi-icon{width:34px;height:34px;border-radius:6px;object-fit:cover;background:#0d1017;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);flex-shrink:0;}
+  .queue-item .qi-info{flex:1;min-width:0;}
+  .queue-item .qi-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .queue-item .qi-status{font-size:11px;font-family:var(--mono);color:var(--muted);margin-top:2px;}
+  .queue-item .qi-status.ok{color:var(--accent);}
+  .queue-item .qi-status.err{color:var(--danger);}
+  .queue-item .qi-bar{width:60px;height:4px;background:var(--line);border-radius:4px;overflow:hidden;flex-shrink:0;}
+  .queue-item .qi-bar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .2s ease;}
+  .queue-item select{width:auto;padding:6px 8px;font-size:12px;flex-shrink:0;}
+  .queue-item .qi-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;flex-shrink:0;}
+  .queue-item .qi-remove:hover{color:var(--danger);}
+
+  .media-error{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
+  .media-summary{display:none;margin-top:14px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+
+  @media(max-width:640px){
+    header,nav,main{padding-left:16px;padding-right:16px;}
+    .grid-2{grid-template-columns:1fr;}
+    table, thead, tbody, tr, td{display:block;}
+    thead{display:none;}
+    tbody tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:10px;}
+    tbody td{border:none;padding:6px 4px;}
+    tbody td:before{content:attr(data-label);display:block;color:var(--muted);font-size:10px;font-family:var(--mono);text-transform:uppercase;margin-bottom:2px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-eyebrow">Storix // Restricted Access</div>
+    <h1>Admin Sign In</h1>
+    <div class="field"><label>Username</label><input type="text" id="loginUser" autocomplete="username"></div>
+    <div class="field"><label>Password</label><input type="password" id="loginPass" autocomplete="current-password"></div>
+    <button class="btn btn-primary" onclick="handleLogin()">Sign In</button>
+    <div class="error-msg" id="loginError">Incorrect username or password.</div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <header>
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div><h2>Storix Admin</h2><span>Products &amp; Media Links</span></div>
+    </div>
+    <button class="btn btn-ghost btn-small" onclick="handleLogout()">Log Out</button>
+  </header>
+
+  <nav>
+    <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
+    <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
+    <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
+  </nav>
+
+  <main>
+    <!-- PRODUCTS PANEL -->
+    <div class="panel" id="panelProducts">
+      <div class="panel-head">
+        <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
+        <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+      </div>
+      <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
+    </div>
+
+    <!-- FILES PANEL -->
+    <div class="panel" id="panelFiles" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
+        <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
+      </div>
+      <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
+    </div>
+
+    <!-- BULK UPLOAD PANEL -->
+    <div class="panel" id="panelMedia" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Bulk Media Upload</h3><p>Pick a product, add several files, and each one gets uploaded to Cloudinary and saved as its own row in Sheet 2.</p></div>
+      </div>
+      <div class="media-panel-inner">
+        <div class="field">
+          <label>Product</label>
+          <select id="bulk_productId"></select>
+        </div>
+
+        <div class="dropzone" id="mediaDropzone">
+          <input type="file" id="mediaFileInput" multiple onchange="handleMediaFilesSelect(this.files)">
+          <div class="dz-icon">⇪</div>
+          <div class="dz-title">Click to choose files, or drag several here</div>
+          <div class="dz-sub">Images and videos — type is auto-detected per file, editable below</div>
+        </div>
+
+        <div class="queue" id="mediaQueue"></div>
+
+        <button class="btn btn-primary btn-small" id="mediaUploadAllBtn" style="margin-top:16px;display:none;" onclick="uploadAllMediaFiles()">Upload &amp; Save All</button>
+        <div class="media-error" id="mediaError"></div>
+        <div class="media-summary" id="mediaSummary"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ============ PRODUCT MODAL ============ -->
+<div class="overlay" id="productOverlay">
+  <div class="modal">
+    <h3 id="productModalTitle">Add Product</h3>
+    <div class="upload-row" style="margin-bottom:16px;">
+      <img id="productPicturePreview" src="" alt="">
+      <div style="flex:1;">
+        <input type="file" id="productPictureFile" accept="image/*" onchange="uploadProductImage(this)">
+        <div class="status-msg" id="productUploadStatus"></div>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Type</label><input id="p_type"></div>
+      <div class="field"><label>Product Name</label><input id="p_name"></div>
+      <div class="field"><label>Price With Discount</label><input id="p_price" type="number" step="0.01"></div>
+      <div class="field"><label>Original Price</label><input id="p_originalPrice" type="number" step="0.01"></div>
+      <div class="field"><label>Product Unique ID</label><input id="p_productId"></div>
+      <div class="field"><label>Status</label>
+        <select id="p_status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+      <div class="field"><label>Seller No.</label><input id="p_sellerNo"></div>
+      <div class="field"><label>In Stock</label><input id="p_stock" type="number"></div>
+    </div>
+    <div class="field"><label>Short Description</label><input id="p_shortDescription"></div>
+    <div class="field"><label>Long Description</label><textarea id="p_longDescription" rows="3"></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeProductModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FILE MODAL ============ -->
+<div class="overlay" id="fileOverlay">
+  <div class="modal">
+    <h3 id="fileModalTitle">Add Media Link</h3>
+    <div class="field">
+      <label>Product</label>
+      <select id="f_productId"></select>
+    </div>
+    <div class="field">
+      <label>File Type</label>
+      <select id="f_fileType">
+        <option value="image">Image</option>
+        <option value="video">Video</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Upload to Cloudinary (fills the link below)</label>
+      <input type="file" id="fileUploadInput" onchange="uploadFileLink(this)">
+      <div class="status-msg" id="fileUploadStatus"></div>
+    </div>
+    <div class="field"><label>Link</label><input id="f_link" placeholder="https://..."></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeFileModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveFile()">Save Media Link</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= CONFIG ================= */
+const ADMIN_USER = "112233";
+const ADMIN_PASS = "P@kistan";
+
+const PRODUCTS_URL = "https://script.google.com/macros/s/AKfycbxg-irSc9cHevNptiQm_bLPas1KTkgPidTVMhk-_35FwZ9D5_rdbdWtEqXeyKe_h505/exec";
+const FILES_URL = "https://script.google.com/macros/s/AKfycbyuLMFuxoCQ1iEesrOA2uy9v8JrrMUVqXKlo21a7Pktf0_0eFRFbPlQr4vn16_PIXqR/exec";
+
+const CLOUDINARY_CLOUD = "dgnprxuay";
+const CLOUDINARY_PRESET = "storix_upload";
+const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`;
+
+let products = [];
+let files = [];
+let editingProductRow = null;
+let editingFileRow = null;
+let mediaQueueItems = []; // { file, type, status, url, error }
+
+/* ================= LOGIN ================= */
+function handleLogin(){
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  if(u === ADMIN_USER && p === ADMIN_PASS){
+    sessionStorage.setItem('storix_admin_session','1');
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadProducts();
+    loadFiles();
+  } else {
+    document.getElementById('loginError').style.display='block';
+  }
+}
+function handleLogout(){
+  sessionStorage.removeItem('storix_admin_session');
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+window.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('loginUser').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
+  if(sessionStorage.getItem('storix_admin_session')==='1'){
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('app').style.display='block';
+    loadProducts();
+    loadFiles();
+  }
+
+  const dz = document.getElementById('mediaDropzone');
+  ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.add('dragover'); }));
+  ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.remove('dragover'); }));
+  dz.addEventListener('drop', e=>{ if(e.dataTransfer.files.length) handleMediaFilesSelect(e.dataTransfer.files); });
+});
+
+/* ================= TABS ================= */
+function switchTab(tab){
+  document.getElementById('panelProducts').style.display = tab==='products' ? 'block' : 'none';
+  document.getElementById('panelFiles').style.display = tab==='files' ? 'block' : 'none';
+  document.getElementById('panelMedia').style.display = tab==='media' ? 'block' : 'none';
+  document.getElementById('tabBtnProducts').classList.toggle('active', tab==='products');
+  document.getElementById('tabBtnFiles').classList.toggle('active', tab==='files');
+  document.getElementById('tabBtnMedia').classList.toggle('active', tab==='media');
+  if(tab==='media') populateProductDropdown('bulk_productId');
+}
+
+/* ================= HELPERS ================= */
+async function postAction(url, payload){
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body: JSON.stringify(payload)
+  });
+  const json = await res.json();
+  if(json && json.error) throw new Error(json.error);
+  return json;
+}
+async function getJson(url){
+  const res = await fetch(url);
+  const json = await res.json();
+  if(json && json.error) throw new Error(json.error);
+  return json;
+}
+function esc(s){
+  return (s===undefined||s===null) ? '' : String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatBytes(bytes){
+  if(!bytes) return '';
+  const units = ['B','KB','MB','GB'];
+  let i = 0, n = bytes;
+  while(n >= 1024 && i < units.length-1){ n/=1024; i++; }
+  return `${n.toFixed(n<10 && i>0 ? 1 : 0)} ${units[i]}`;
+}
+function nextProductId(){
+  const nums = products
+    .map(p => parseInt(String(p.productId).replace(/[^0-9]/g,''), 10))
+    .filter(n => !isNaN(n));
+  if(nums.length === 0) return '1';
+  return String(Math.max(...nums) + 1);
+}
+
+/* ================= PRODUCTS ================= */
+async function loadProducts(){
+  document.getElementById('productsTableWrap').innerHTML = '<div class="loading">Fetching products…</div>';
+  try{
+    products = await getJson(PRODUCTS_URL);
+    renderProducts();
+    populateProductDropdown('f_productId');
+    populateProductDropdown('bulk_productId');
+  }catch(err){
+    document.getElementById('productsTableWrap').innerHTML = `<div class="empty-state"><b>Could not load products</b>${esc(err.message)}</div>`;
+  }
+}
+function renderProducts(){
+  document.getElementById('productsCount').textContent = `${products.length} item${products.length===1?'':'s'}`;
+  if(products.length===0){
+    document.getElementById('productsTableWrap').innerHTML = '<div class="empty-state"><b>No products yet</b>Add your first product to get started.</div>';
+    return;
+  }
+  let rows = products.map(p=>`
+    <tr>
+      <td data-label="Picture">${p.picture ? `<img class="thumb" src="${esc(p.picture)}">` : ''}</td>
+      <td data-label="Product ID">${esc(p.productId)}</td>
+      <td data-label="Name">${esc(p.name)}</td>
+      <td data-label="Type">${esc(p.type)}</td>
+      <td data-label="Price">${esc(p.price)}</td>
+      <td data-label="Stock">${esc(p.stock)}</td>
+      <td data-label="Status"><span class="badge">${esc(p.status)}</span></td>
+      <td data-label="Actions">
+        <div class="row-actions">
+          <button class="btn btn-ghost btn-small" onclick='openProductModal(${p._row})'>Edit</button>
+          <button class="btn btn-danger btn-small" onclick="deleteProduct(${p._row})">Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+  document.getElementById('productsTableWrap').innerHTML = `
+    <table>
+      <thead><tr><th>Picture</th><th>Product ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+function openProductModal(row){
+  editingProductRow = row || null;
+  const p = row ? products.find(x=>x._row===row) : null;
+  document.getElementById('productModalTitle').textContent = p ? 'Edit Product' : 'Add Product';
+  document.getElementById('p_type').value = p?.type || '';
+  document.getElementById('p_name').value = p?.name || '';
+  document.getElementById('p_price').value = p?.price || '';
+  document.getElementById('p_originalPrice').value = p?.originalPrice || '';
+  document.getElementById('p_productId').value = p ? (p.productId || '') : nextProductId();
+  document.getElementById('p_status').value = p?.status || 'active';
+  document.getElementById('p_sellerNo').value = p?.sellerNo || '';
+  document.getElementById('p_stock').value = p?.stock || '';
+  document.getElementById('p_shortDescription').value = p?.shortDescription || '';
+  document.getElementById('p_longDescription').value = p?.longDescription || '';
+  document.getElementById('productPicturePreview').src = p?.picture || '';
+  document.getElementById('productPicturePreview').dataset.url = p?.picture || '';
+  document.getElementById('productUploadStatus').textContent = '';
+  document.getElementById('productOverlay').style.display='flex';
+}
+function closeProductModal(){ document.getElementById('productOverlay').style.display='none'; }
+
+async function uploadProductImage(input){
+  const file = input.files[0];
+  if(!file) return;
+  const statusEl = document.getElementById('productUploadStatus');
+  statusEl.textContent = 'Uploading…';
+  try{
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    const res = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
+    const data = await res.json();
+    if(data.secure_url){
+      document.getElementById('productPicturePreview').src = data.secure_url;
+      document.getElementById('productPicturePreview').dataset.url = data.secure_url;
+      statusEl.textContent = 'Uploaded.';
+    } else {
+      statusEl.textContent = 'Upload failed: ' + (data.error?.message || 'unknown error');
+    }
+  }catch(err){
+    statusEl.textContent = 'Upload failed: ' + err.message;
+  }
+}
+
+async function saveProduct(){
+  const payload = {
+    action: editingProductRow ? 'edit' : 'add',
+    type: document.getElementById('p_type').value,
+    picture: document.getElementById('productPicturePreview').dataset.url || '',
+    name: document.getElementById('p_name').value,
+    shortDescription: document.getElementById('p_shortDescription').value,
+    price: document.getElementById('p_price').value,
+    originalPrice: document.getElementById('p_originalPrice').value,
+    productId: document.getElementById('p_productId').value,
+    longDescription: document.getElementById('p_longDescription').value,
+    status: document.getElementById('p_status').value,
+    sellerNo: document.getElementById('p_sellerNo').value,
+    stock: document.getElementById('p_stock').value
+  };
+  if(editingProductRow) payload._row = editingProductRow;
+
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try{
+    await postAction(PRODUCTS_URL, payload);
+    closeProductModal();
+    await loadProducts();
+  }catch(err){
+    alert('Save failed: ' + err.message);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Save Product';
+  }
+}
+async function deleteProduct(row){
+  if(!confirm('Delete this product? This cannot be undone.')) return;
+  try{
+    await postAction(PRODUCTS_URL, { action:'delete', _row: row });
+    await loadProducts();
+  }catch(err){
+    alert('Delete failed: ' + err.message);
+  }
+}
+
+/* ================= FILES (MEDIA LINKS) ================= */
+function populateProductDropdown(selectId){
+  const sel = document.getElementById(selectId);
+  const current = sel.value;
+  sel.innerHTML = products.map(p =>
+    `<option value="${esc(p.productId)}">${esc(p.productId)} — ${esc(p.name)}</option>`
+  ).join('') || '<option value="">No products yet</option>';
+  if(current) sel.value = current;
+}
+
+async function loadFiles(){
+  document.getElementById('filesTableWrap').innerHTML = '<div class="loading">Fetching media links…</div>';
+  try{
+    files = await getJson(FILES_URL);
+    renderFiles();
+  }catch(err){
+    document.getElementById('filesTableWrap').innerHTML = `<div class="empty-state"><b>Could not load media links</b>${esc(err.message)}</div>`;
+  }
+}
+function renderFiles(){
+  document.getElementById('filesCount').textContent = `${files.length} item${files.length===1?'':'s'}`;
+  if(files.length===0){
+    document.getElementById('filesTableWrap').innerHTML = '<div class="empty-state"><b>No media links yet</b>Add your first one to get started.</div>';
+    return;
+  }
+  let rows = files.map(f=>`
+    <tr>
+      <td data-label="Product ID">${esc(f.id)}</td>
+      <td data-label="Type"><span class="badge">${esc(f.fileType)}</span></td>
+      <td data-label="Link"><a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a></td>
+      <td data-label="Actions">
+        <div class="row-actions">
+          <button class="btn btn-ghost btn-small" onclick='openFileModal(${f._row})'>Edit</button>
+          <button class="btn btn-danger btn-small" onclick='deleteFile(${f._row})'>Delete</button>
+        </div>
+      </td>
+    </tr>`).join('');
+  document.getElementById('filesTableWrap').innerHTML = `
+    <table>
+      <thead><tr><th>Product ID</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+function openFileModal(row){
+  editingFileRow = row || null;
+  const f = row ? files.find(x=>x._row===row) : null;
+  document.getElementById('fileModalTitle').textContent = f ? 'Edit Media Link' : 'Add Media Link';
+  populateProductDropdown('f_productId');
+  document.getElementById('f_productId').value = f?.id || '';
+  document.getElementById('f_fileType').value = f?.fileType || 'image';
+  document.getElementById('f_link').value = f?.link || '';
+  document.getElementById('fileUploadStatus').textContent = '';
+  document.getElementById('fileOverlay').style.display='flex';
+}
+function closeFileModal(){ document.getElementById('fileOverlay').style.display='none'; }
+
+async function uploadFileLink(input){
+  const file = input.files[0];
+  if(!file) return;
+  const statusEl = document.getElementById('fileUploadStatus');
+  statusEl.textContent = 'Uploading…';
+  try{
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    const res = await fetch(CLOUDINARY_URL, { method:'POST', body:fd });
+    const data = await res.json();
+    if(data.secure_url){
+      document.getElementById('f_link').value = data.secure_url;
+      statusEl.textContent = 'Uploaded.';
+    } else {
+      statusEl.textContent = 'Upload failed: ' + (data.error?.message || 'unknown error');
+    }
+  }catch(err){
+    statusEl.textContent = 'Upload failed: ' + err.message;
+  }
+}
+
+async function saveFile(){
+  const id = document.getElementById('f_productId').value;
+  const fileType = document.getElementById('f_fileType').value;
+  const link = document.getElementById('f_link').value;
+  if(!id){ alert('Select a product first.'); return; }
+  if(!link){ alert('Upload a file or paste a link first.'); return; }
+
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  try{
+    if(editingFileRow){
+      await postAction(FILES_URL, { action:'update', _row: editingFileRow, id, fileType, link });
+    } else {
+      await postAction(FILES_URL, { action:'add', id, fileType, link });
+    }
+    closeFileModal();
+    await loadFiles();
+  }catch(err){
+    alert('Save failed: ' + err.message);
+  }finally{
+    btn.disabled = false; btn.textContent = 'Save Media Link';
+  }
+}
+async function deleteFile(row){
+  if(!confirm('Delete this media link? This cannot be undone.')) return;
+  try{
+    await postAction(FILES_URL, { action:'delete', _row: row });
+    await loadFiles();
+  }catch(err){
+    alert('Delete failed: ' + err.message);
+  }
+}
+
+/* ================= BULK MEDIA UPLOAD ================= */
+function handleMediaFilesSelect(fileList){
+  const newFiles = Array.from(fileList);
+  newFiles.forEach(file=>{
+    mediaQueueItems.push({
+      file,
+      type: file.type.startsWith('video/') ? 'video' : 'image',
+      status: 'pending', // pending | uploading | done | error
+      progress: 0,
+      url: '',
+      error: ''
+    });
+  });
+  renderMediaQueue();
+}
+function removeQueueItem(idx){
+  mediaQueueItems.splice(idx,1);
+  renderMediaQueue();
+}
+function updateQueueItemType(idx, type){
+  mediaQueueItems[idx].type = type;
+}
+function renderMediaQueue(){
+  const wrap = document.getElementById('mediaQueue');
+  const btn = document.getElementById('mediaUploadAllBtn');
+  if(mediaQueueItems.length === 0){
+    wrap.innerHTML = '';
+    btn.style.display = 'none';
+    return;
+  }
+  btn.style.display = 'inline-flex';
+  wrap.innerHTML = mediaQueueItems.map((item, idx)=>{
+    const statusClass = item.status==='done' ? 'ok' : item.status==='error' ? 'err' : '';
+    const statusText = item.status==='pending' ? formatBytes(item.file.size)
+      : item.status==='uploading' ? 'Uploading…'
+      : item.status==='done' ? 'Saved'
+      : 'Failed: ' + esc(item.error);
+    return `
+      <div class="queue-item">
+        <div class="qi-icon">${item.type==='video' ? '🎬' : '🖼️'}</div>
+        <div class="qi-info">
+          <div class="qi-name">${esc(item.file.name)}</div>
+          <div class="qi-status ${statusClass}">${statusText}</div>
+        </div>
+        <select onchange="updateQueueItemType(${idx}, this.value)" ${item.status!=='pending' ? 'disabled' : ''}>
+          <option value="image" ${item.type==='image'?'selected':''}>Image</option>
+          <option value="video" ${item.type==='video'?'selected':''}>Video</option>
+        </select>
+        <div class="qi-bar"><div class="qi-bar-fill" style="width:${item.progress}%"></div></div>
+        <button class="qi-remove" onclick="removeQueueItem(${idx})" ${item.status==='uploading' ? 'disabled' : ''}>&times;</button>
+      </div>`;
+  }).join('');
+}
+
+function uploadSingleToCloudinary(item, idx){
+  return new Promise((resolve, reject)=>{
+    const fd = new FormData();
+    fd.append('file', item.file);
+    fd.append('upload_preset', CLOUDINARY_PRESET);
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', CLOUDINARY_URL);
+    xhr.upload.onprogress = (e)=>{
+      if(e.lengthComputable){
+        mediaQueueItems[idx].progress = Math.round((e.loaded/e.total)*100);
+        renderMediaQueue();
+      }
+    };
+    xhr.onload = ()=>{
+      try{
+        const data = JSON.parse(xhr.responseText);
+        if(data.secure_url) resolve(data.secure_url);
+        else reject(new Error(data.error?.message || 'Upload failed'));
+      }catch(e){ reject(new Error('Unexpected response from Cloudinary')); }
+    };
+    xhr.onerror = ()=> reject(new Error('Network error during upload'));
+    xhr.send(fd);
+  });
+}
+
+async function uploadAllMediaFiles(){
+  const productId = document.getElementById('bulk_productId').value;
+  const errEl = document.getElementById('mediaError');
+  const summaryEl = document.getElementById('mediaSummary');
+  errEl.style.display = 'none';
+  summaryEl.style.display = 'none';
+
+  if(!productId){
+    errEl.textContent = 'Select a product first.';
+    errEl.style.display = 'block';
+    return;
+  }
+  const pending = mediaQueueItems.filter(i => i.status === 'pending' || i.status === 'error');
+  if(pending.length === 0) return;
+
+  const btn = document.getElementById('mediaUploadAllBtn');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  let succeeded = 0, failed = 0;
+
+  for(let idx=0; idx<mediaQueueItems.length; idx++){
+    const item = mediaQueueItems[idx];
+    if(item.status === 'done') continue;
+    item.status = 'uploading';
+    item.progress = 0;
+    renderMediaQueue();
+    try{
+      const url = await uploadSingleToCloudinary(item, idx);
+      await postAction(FILES_URL, { action:'add', id: productId, fileType: item.type, link: url });
+      item.status = 'done';
+      item.url = url;
+      succeeded++;
+    }catch(err){
+      item.status = 'error';
+      item.error = err.message;
+      failed++;
+    }
+    renderMediaQueue();
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Upload & Save All';
+  summaryEl.textContent = `${succeeded} saved, ${failed} failed.`;
+  summaryEl.style.display = 'block';
+
+  if(succeeded > 0) await loadFiles();
+}
+
+document.getElementById('productOverlay').addEventListener('click', e=>{ if(e.target.id==='productOverlay') closeProductModal(); });
+document.getElementById('fileOverlay').addEventListener('click', e=>{ if(e.target.id==='fileOverlay') closeFileModal(); });
+</script>
+</body>
+</html>
