@@ -50,10 +50,10 @@ fetch(sheetURL)
             productId = name.toLowerCase().replace(/\s+/g,"-") + "-" + Date.now();
         }
 
-        let totalPurchased = parseInt(cols[7] || 0);
-        let soldQty = parseInt(cols[8] || 0);
-        let inStock = parseInt(cols[9] || 0);
-        let totalSold = parseInt(cols[11] || 0);
+     let totalPurchased = parseInt(cols[10] || 0);
+        let soldQty = parseInt(cols[11] || 0);
+        let inStock = parseInt(cols[12] || 0);
+        let totalSold = parseInt(cols[13] || 0);
 
         if(!category || !img) return;
 
