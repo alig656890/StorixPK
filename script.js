@@ -394,6 +394,7 @@ function goCheckout(){
     window.location.href = "checkout.html";
 }
 
+
 function renderCart(){
     let container = document.getElementById("cartItems");
     container.innerHTML = "";
@@ -669,28 +670,36 @@ function loadCategory(category, btn){
 ">
     <span class="hero-sold-badge"><i class="fas fa-fire"></i> ${sold} Sold</span>
     <h4>${item.name || ""}</h4>
-   ${(() => {
-    let price = parseFloat(item.price) || 0;
-    let increased = Math.round(price * 1.04);
+  ${(() => {
+    const price = parseFloat(item.price) || 0;
+    const original = parseFloat(item.originalPrice) || price;
+
     return `
         <div>
+            ${
+                original > price
+                ? `
+                <span style="
+                    text-decoration: line-through;
+                    color:#ddd;
+                    font-size:13px;
+                    margin-right:6px;
+                ">
+                    Rs. ${original}
+                </span>
+                `
+                : ""
+            }
+
             <span style="
-                text-decoration: line-through;
-                color: #ddd;
-                font-size: 13px;
-                margin-right: 6px;
+                color:#0f766e;
+                font-weight:800;
+                font-size:21px;
+                letter-spacing:.5px;
+                text-shadow:0 2px 6px rgba(15,118,110,.18);
             ">
-                Rs. ${increased}
+                Rs. ${price}
             </span>
-            <span style="
-    color:#0f766e;
-    font-weight:800;
-    font-size:21px;
-    letter-spacing:.5px;
-    text-shadow:0 2px 6px rgba(15,118,110,.18);
-">
-    Rs. ${price}
-</span>
         </div>
     `;
 })()}
