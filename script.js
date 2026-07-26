@@ -136,6 +136,7 @@ fetch(sheetURL)
     createMostSoldPills();
     updateMostSold("all");
     populateFooter();
+    renderAllProducts();
 });
 
 /* ==============================
