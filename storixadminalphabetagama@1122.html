@@ -54,7 +54,7 @@
   .btn-ghost:hover{border-color:var(--accent);}
   .btn-danger{background:rgba(229,88,108,.15);color:var(--danger);border:1px solid rgba(229,88,108,.4);}
   .btn-danger:hover{background:rgba(229,88,108,.28);}
-  .btn-small{padding:6px 12px;font-size:12px;}
+  .btn-small{padding:6px 12px;font-size:12px;width:auto;}
   .error-msg{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
 
   #app{display:none;min-height:100vh;}
@@ -63,6 +63,7 @@
   .brand-mark{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;font-weight:800;color:#0a0d12;font-size:14px;font-family:var(--mono);}
   .brand h2{margin:0;font-size:15px;font-weight:650;}
   .brand span{display:block;font-size:11px;color:var(--muted);font-family:var(--mono);}
+  .header-actions{display:flex;gap:8px;}
 
   nav{display:flex;gap:6px;padding:14px 28px 0 28px;flex-wrap:wrap;}
   .tab-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:9px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;}
@@ -73,11 +74,17 @@
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .panel-head h3{margin:0;font-size:16px;}
   .panel-head p{margin:2px 0 0 0;color:var(--muted);font-size:12.5px;}
+  .panel-head-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+
+  .search-input{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;max-width:220px;transition:border-color .15s ease;}
+  .search-input:focus{border-color:var(--accent);}
 
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);}
   tbody td{padding:12px;border-bottom:1px solid rgba(43,49,64,.6);vertical-align:middle;}
   tbody tr:hover{background:rgba(79,209,197,.04);}
+  tbody tr.row-lowstock{background:rgba(242,161,84,.08);}
+  tbody tr.row-lowstock:hover{background:rgba(242,161,84,.14);}
   .thumb{width:38px;height:38px;border-radius:6px;object-fit:cover;background:#0d1017;border:1px solid var(--line);}
   .row-actions{display:flex;gap:6px;}
   .empty-state{padding:40px 20px;text-align:center;color:var(--muted);}
@@ -85,6 +92,7 @@
   .loading{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;}
   .link-cell{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:12px;word-break:break-all;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);color:var(--muted);}
+  .lowstock-badge{background:rgba(242,161,84,.15);color:var(--accent-2);border-color:rgba(242,161,84,.4);margin-left:6px;}
 
   .overlay{display:none;position:fixed;inset:0;background:rgba(6,8,12,.7);align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(2px);}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:26px;}
@@ -94,6 +102,10 @@
   .upload-row{display:flex;align-items:center;gap:12px;}
   .upload-row img{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:#0d1017;}
   .status-msg{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:6px;}
+
+  .checkbox-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+  .checkbox-row input[type=checkbox]{width:16px;height:16px;flex-shrink:0;accent-color:var(--accent);}
+  .checkbox-row label{margin:0;font-size:13px;color:var(--text);font-family:var(--sans);}
 
   .media-panel-inner{max-width:600px;}
   .dropzone{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .15s ease, background .15s ease;position:relative;}
@@ -120,9 +132,14 @@
   .media-error{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
   .media-summary{display:none;margin-top:14px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
 
+  .order-preview{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-top:16px;}
+  .order-preview-label{font-family:var(--mono);font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+  .order-preview-body{white-space:pre-wrap;font-size:13px;line-height:1.6;font-family:var(--mono);}
+
   @media(max-width:640px){
     header,nav,main{padding-left:16px;padding-right:16px;}
     .grid-2{grid-template-columns:1fr;}
+    .search-input{max-width:none;width:100%;}
     table, thead, tbody, tr, td{display:block;}
     thead{display:none;}
     tbody tr{border:1px solid var(--line);border-radius:10px;margin-bottom:10px;padding:10px;}
@@ -152,13 +169,17 @@
       <div class="brand-mark">S</div>
       <div><h2>Storix Admin</h2><span>Products &amp; Media Links</span></div>
     </div>
-    <button class="btn btn-ghost btn-small" onclick="handleLogout()">Log Out</button>
+    <div class="header-actions">
+      <button class="btn btn-ghost btn-small" onclick="openSettingsModal()">⚙ Settings</button>
+      <button class="btn btn-ghost btn-small" onclick="handleLogout()">Log Out</button>
+    </div>
   </header>
 
   <nav>
     <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
     <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
     <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
+    <button class="tab-btn" id="tabBtnOrder" onclick="switchTab('order')">SEND ORDER</button>
   </nav>
 
   <main>
@@ -166,7 +187,10 @@
     <div class="panel" id="panelProducts">
       <div class="panel-head">
         <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
-        <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+        <div class="panel-head-right">
+          <input type="text" id="productSearch" class="search-input" placeholder="Search products…" oninput="renderProducts()">
+          <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+        </div>
       </div>
       <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
     </div>
@@ -175,7 +199,10 @@
     <div class="panel" id="panelFiles" style="display:none;">
       <div class="panel-head">
         <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
-        <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
+        <div class="panel-head-right">
+          <input type="text" id="fileSearch" class="search-input" placeholder="Search media links…" oninput="renderFiles()">
+          <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
+        </div>
       </div>
       <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
     </div>
@@ -205,6 +232,31 @@
         <div class="media-summary" id="mediaSummary"></div>
       </div>
     </div>
+
+    <!-- SEND ORDER PANEL -->
+    <div class="panel" id="panelOrder" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Send Order to Seller</h3><p>Pick a product and quantity — this builds an order message and opens WhatsApp so you can send it straight to the seller's number.</p></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Product</label><select id="o_productId" onchange="onOrderProductChange()"></select></div>
+        <div class="field"><label>Quantity</label><input type="number" id="o_qty" min="1" value="1" oninput="updateOrderSummary()"></div>
+        <div class="field"><label>Seller Number</label><input id="o_sellerNo" readonly></div>
+        <div class="field"><label>Unit Price</label><input id="o_unitPrice" readonly></div>
+      </div>
+      <div class="field"><label>Note to Seller (optional)</label><textarea id="o_note" rows="2" placeholder="e.g. delivery address, preferred time…" oninput="updateOrderSummary()"></textarea></div>
+      <div class="status-msg" id="orderStockWarning" style="color:var(--accent-2);"></div>
+
+      <div class="order-preview">
+        <div class="order-preview-label">Message Preview</div>
+        <div class="order-preview-body" id="orderPreview">Select a product to preview the order message.</div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <button class="btn btn-primary" style="width:auto;padding:11px 22px;" onclick="sendOrderViaWhatsApp()" id="orderSendBtn" disabled>Send via WhatsApp</button>
+      </div>
+      <div class="media-error" id="orderError"></div>
+    </div>
   </main>
 </div>
 
@@ -220,7 +272,13 @@
       </div>
     </div>
     <div class="grid-2">
-      <div class="field"><label>Type</label><input id="p_type"></div>
+      <div class="field">
+        <label>Type</label>
+        <select id="p_type" onchange="toggleNewTypeInput()"></select>
+        <div id="p_typeNewWrap" style="display:none;margin-top:8px;">
+          <input id="p_typeNew" placeholder="New category name">
+        </div>
+      </div>
       <div class="field"><label>Product Name</label><input id="p_name"></div>
       <div class="field"><label>Price With Discount</label><input id="p_price" type="number" step="0.01"></div>
       <div class="field"><label>Original Price</label><input id="p_originalPrice" type="number" step="0.01"></div>
@@ -236,6 +294,7 @@
     </div>
     <div class="field"><label>Short Description</label><input id="p_shortDescription"></div>
     <div class="field"><label>Long Description</label><textarea id="p_longDescription" rows="3"></textarea></div>
+    <div class="status-msg">Tip: uploading a picture here also saves it as a Media Link (Sheet 2) automatically.</div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeProductModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveProduct()">Save Product</button>
@@ -271,6 +330,27 @@
   </div>
 </div>
 
+<!-- ============ SETTINGS MODAL ============ -->
+<div class="overlay" id="settingsOverlay">
+  <div class="modal">
+    <h3>Settings</h3>
+    <div class="checkbox-row">
+      <input type="checkbox" id="s_lowStock">
+      <label for="s_lowStock">Enable low-stock alerts on the Products tab</label>
+    </div>
+    <div class="field"><label>Low-stock threshold (highlight items at or below this stock count)</label><input type="number" id="s_lowStockThreshold" min="0" value="5"></div>
+    <div class="checkbox-row">
+      <input type="checkbox" id="s_fileThumbs">
+      <label for="s_fileThumbs">Show thumbnail previews on the Media Links tab</label>
+    </div>
+    <div class="status-msg">Unchecking a box removes that feature immediately — nothing is deleted from your sheets, this only changes what the portal displays.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeSettingsModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettingsModal()">Save Settings</button>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ================= CONFIG ================= */
 const ADMIN_USER = "112233";
@@ -288,6 +368,32 @@ let files = [];
 let editingProductRow = null;
 let editingFileRow = null;
 let mediaQueueItems = []; // { file, type, status, url, error }
+
+let settings = { lowStockAlerts:false, lowStockThreshold:5, showFileThumbs:true };
+
+/* ================= SETTINGS ================= */
+function loadSettings(){
+  try{
+    const saved = JSON.parse(localStorage.getItem('storix_settings') || '{}');
+    settings = Object.assign({}, settings, saved);
+  }catch(e){ /* ignore bad localStorage data */ }
+}
+function openSettingsModal(){
+  document.getElementById('s_lowStock').checked = settings.lowStockAlerts;
+  document.getElementById('s_lowStockThreshold').value = settings.lowStockThreshold;
+  document.getElementById('s_fileThumbs').checked = settings.showFileThumbs;
+  document.getElementById('settingsOverlay').style.display = 'flex';
+}
+function closeSettingsModal(){ document.getElementById('settingsOverlay').style.display = 'none'; }
+function saveSettingsModal(){
+  settings.lowStockAlerts = document.getElementById('s_lowStock').checked;
+  settings.lowStockThreshold = parseInt(document.getElementById('s_lowStockThreshold').value, 10) || 0;
+  settings.showFileThumbs = document.getElementById('s_fileThumbs').checked;
+  localStorage.setItem('storix_settings', JSON.stringify(settings));
+  closeSettingsModal();
+  renderProducts();
+  renderFiles();
+}
 
 /* ================= LOGIN ================= */
 function handleLogin(){
@@ -311,6 +417,7 @@ function handleLogout(){
   document.getElementById('loginPass').value='';
 }
 window.addEventListener('DOMContentLoaded', ()=>{
+  loadSettings();
   document.getElementById('loginUser').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
   document.getElementById('loginPass').addEventListener('keydown', e=>{ if(e.key==='Enter') handleLogin(); });
   if(sessionStorage.getItem('storix_admin_session')==='1'){
@@ -331,10 +438,13 @@ function switchTab(tab){
   document.getElementById('panelProducts').style.display = tab==='products' ? 'block' : 'none';
   document.getElementById('panelFiles').style.display = tab==='files' ? 'block' : 'none';
   document.getElementById('panelMedia').style.display = tab==='media' ? 'block' : 'none';
+  document.getElementById('panelOrder').style.display = tab==='order' ? 'block' : 'none';
   document.getElementById('tabBtnProducts').classList.toggle('active', tab==='products');
   document.getElementById('tabBtnFiles').classList.toggle('active', tab==='files');
   document.getElementById('tabBtnMedia').classList.toggle('active', tab==='media');
+  document.getElementById('tabBtnOrder').classList.toggle('active', tab==='order');
   if(tab==='media') populateProductDropdown('bulk_productId');
+  if(tab==='order'){ populateProductDropdown('o_productId'); onOrderProductChange(); }
 }
 
 /* ================= HELPERS ================= */
@@ -380,24 +490,36 @@ async function loadProducts(){
     renderProducts();
     populateProductDropdown('f_productId');
     populateProductDropdown('bulk_productId');
+    populateProductDropdown('o_productId');
   }catch(err){
     document.getElementById('productsTableWrap').innerHTML = `<div class="empty-state"><b>Could not load products</b>${esc(err.message)}</div>`;
   }
 }
 function renderProducts(){
+  const term = (document.getElementById('productSearch')?.value || '').trim().toLowerCase();
+  const list = term
+    ? products.filter(p => `${p.name} ${p.type} ${p.productId}`.toLowerCase().includes(term))
+    : products;
+
   document.getElementById('productsCount').textContent = `${products.length} item${products.length===1?'':'s'}`;
   if(products.length===0){
     document.getElementById('productsTableWrap').innerHTML = '<div class="empty-state"><b>No products yet</b>Add your first product to get started.</div>';
     return;
   }
-  let rows = products.map(p=>`
-    <tr>
+  if(list.length===0){
+    document.getElementById('productsTableWrap').innerHTML = '<div class="empty-state"><b>No matches</b>Try a different search term.</div>';
+    return;
+  }
+  let rows = list.map(p=>{
+    const low = settings.lowStockAlerts && p.stock !== undefined && p.stock !== '' && Number(p.stock) <= Number(settings.lowStockThreshold);
+    return `
+    <tr class="${low ? 'row-lowstock' : ''}">
       <td data-label="Picture">${p.picture ? `<img class="thumb" src="${esc(p.picture)}">` : ''}</td>
       <td data-label="Product ID">${esc(p.productId)}</td>
       <td data-label="Name">${esc(p.name)}</td>
       <td data-label="Type">${esc(p.type)}</td>
       <td data-label="Price">${esc(p.price)}</td>
-      <td data-label="Stock">${esc(p.stock)}</td>
+      <td data-label="Stock">${esc(p.stock)}${low ? '<span class="badge lowstock-badge">low</span>' : ''}</td>
       <td data-label="Status"><span class="badge">${esc(p.status)}</span></td>
       <td data-label="Actions">
         <div class="row-actions">
@@ -405,18 +527,47 @@ function renderProducts(){
           <button class="btn btn-danger btn-small" onclick="deleteProduct(${p._row})">Delete</button>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   document.getElementById('productsTableWrap').innerHTML = `
     <table>
       <thead><tr><th>Picture</th><th>Product ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
+
+/* Type dropdown — pulls distinct categories already saved in Sheet 1 */
+function getUniqueTypes(){
+  return Array.from(new Set(products.map(p=>p.type).filter(Boolean))).sort();
+}
+function populateTypeDropdown(selected){
+  const sel = document.getElementById('p_type');
+  const types = getUniqueTypes();
+  sel.innerHTML = types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('')
+    + `<option value="__new__">+ Add new category…</option>`;
+  if(selected && !types.includes(selected)){
+    const opt = document.createElement('option');
+    opt.value = selected; opt.textContent = selected;
+    sel.insertBefore(opt, sel.lastElementChild);
+  }
+  sel.value = selected || (types[0] || '__new__');
+  toggleNewTypeInput();
+}
+function toggleNewTypeInput(){
+  const sel = document.getElementById('p_type');
+  document.getElementById('p_typeNewWrap').style.display = sel.value === '__new__' ? 'block' : 'none';
+}
+function resolveTypeValue(){
+  const sel = document.getElementById('p_type');
+  return sel.value === '__new__' ? document.getElementById('p_typeNew').value.trim() : sel.value;
+}
+
 function openProductModal(row){
   editingProductRow = row || null;
   const p = row ? products.find(x=>x._row===row) : null;
   document.getElementById('productModalTitle').textContent = p ? 'Edit Product' : 'Add Product';
-  document.getElementById('p_type').value = p?.type || '';
+  populateTypeDropdown(p?.type || '');
+  document.getElementById('p_typeNew').value = '';
   document.getElementById('p_name').value = p?.name || '';
   document.getElementById('p_price').value = p?.price || '';
   document.getElementById('p_originalPrice').value = p?.originalPrice || '';
@@ -428,6 +579,7 @@ function openProductModal(row){
   document.getElementById('p_longDescription').value = p?.longDescription || '';
   document.getElementById('productPicturePreview').src = p?.picture || '';
   document.getElementById('productPicturePreview').dataset.url = p?.picture || '';
+  document.getElementById('productPicturePreview').dataset.original = p?.picture || '';
   document.getElementById('productUploadStatus').textContent = '';
   document.getElementById('productOverlay').style.display='flex';
 }
@@ -457,15 +609,22 @@ async function uploadProductImage(input){
 }
 
 async function saveProduct(){
+  const type = resolveTypeValue();
+  if(!type){ alert('Please choose or type a product category.'); return; }
+
+  const pictureUrl = document.getElementById('productPicturePreview').dataset.url || '';
+  const originalPicture = document.getElementById('productPicturePreview').dataset.original || '';
+  const productId = document.getElementById('p_productId').value;
+
   const payload = {
     action: editingProductRow ? 'edit' : 'add',
-    type: document.getElementById('p_type').value,
-    picture: document.getElementById('productPicturePreview').dataset.url || '',
+    type,
+    picture: pictureUrl,
     name: document.getElementById('p_name').value,
     shortDescription: document.getElementById('p_shortDescription').value,
     price: document.getElementById('p_price').value,
     originalPrice: document.getElementById('p_originalPrice').value,
-    productId: document.getElementById('p_productId').value,
+    productId,
     longDescription: document.getElementById('p_longDescription').value,
     status: document.getElementById('p_status').value,
     sellerNo: document.getElementById('p_sellerNo').value,
@@ -477,8 +636,19 @@ async function saveProduct(){
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
     await postAction(PRODUCTS_URL, payload);
+
+    // Also record the picture as a Media Link entry (Sheet 2), only when it's new/changed
+    if(pictureUrl && pictureUrl !== originalPicture){
+      try{
+        await postAction(FILES_URL, { action:'add', id: productId, fileType:'image', link: pictureUrl });
+      }catch(linkErr){
+        console.warn('Product saved, but saving the image to Media Links failed:', linkErr.message);
+      }
+    }
+
     closeProductModal();
     await loadProducts();
+    await loadFiles();
   }catch(err){
     alert('Save failed: ' + err.message);
   }finally{
@@ -505,42 +675,73 @@ function populateProductDropdown(selectId){
   if(current) sel.value = current;
 }
 
+// Backend sheets sometimes key JSON by the literal column header (e.g. "Product ID"
+// instead of "id"). This normalizer tries every likely variant so the table and edit
+// form always find the right values regardless of how the Apps Script names its keys.
+function normalizeFileRow(raw){
+  const row = raw._row ?? raw.row ?? raw.Row ?? raw.ROW;
+  const id = raw.id ?? raw.productId ?? raw.ProductId ?? raw['Product ID'] ?? raw['product id'] ?? raw['product_id'] ?? '';
+  const fileType = raw.fileType ?? raw.FileType ?? raw['File Type'] ?? raw['file type'] ?? raw.type ?? raw.Type ?? 'image';
+  const link = raw.link ?? raw.Link ?? raw.url ?? raw.URL ?? raw.fileUrl ?? raw['File Link'] ?? raw['file link'] ?? raw['Media Link'] ?? '';
+  return { _row: row, id: String(id), fileType: String(fileType || 'image').toLowerCase(), link: String(link || '') };
+}
+
 async function loadFiles(){
   document.getElementById('filesTableWrap').innerHTML = '<div class="loading">Fetching media links…</div>';
   try{
-    files = await getJson(FILES_URL);
+    const raw = await getJson(FILES_URL);
+    const rawList = Array.isArray(raw) ? raw : (raw.data || raw.rows || raw.files || raw.items || []);
+    files = rawList.map(normalizeFileRow);
     renderFiles();
   }catch(err){
     document.getElementById('filesTableWrap').innerHTML = `<div class="empty-state"><b>Could not load media links</b>${esc(err.message)}</div>`;
   }
 }
 function renderFiles(){
+  const term = (document.getElementById('fileSearch')?.value || '').trim().toLowerCase();
+  const list = term
+    ? files.filter(f => `${f.id} ${f.fileType} ${f.link}`.toLowerCase().includes(term))
+    : files;
+
   document.getElementById('filesCount').textContent = `${files.length} item${files.length===1?'':'s'}`;
   if(files.length===0){
     document.getElementById('filesTableWrap').innerHTML = '<div class="empty-state"><b>No media links yet</b>Add your first one to get started.</div>';
     return;
   }
-  let rows = files.map(f=>`
+  if(list.length===0){
+    document.getElementById('filesTableWrap').innerHTML = '<div class="empty-state"><b>No matches</b>Try a different search term.</div>';
+    return;
+  }
+
+  const showThumbs = settings.showFileThumbs;
+  let rows = list.map(f=>{
+    const productName = products.find(p=>String(p.productId)===String(f.id))?.name || '';
+    const thumb = (showThumbs && f.fileType !== 'video' && f.link)
+      ? `<img class="thumb" src="${esc(f.link)}" onerror="this.style.display='none'">`
+      : '';
+    return `
     <tr>
-      <td data-label="Product ID">${esc(f.id)}</td>
+      ${showThumbs ? `<td data-label="Preview">${thumb}</td>` : ''}
+      <td data-label="Product ID">${esc(f.id)}${productName ? ' — ' + esc(productName) : ''}</td>
       <td data-label="Type"><span class="badge">${esc(f.fileType)}</span></td>
-      <td data-label="Link"><a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a></td>
+      <td data-label="Link">${f.link ? `<a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a>` : '<span style="color:var(--muted)">—</span>'}</td>
       <td data-label="Actions">
         <div class="row-actions">
           <button class="btn btn-ghost btn-small" onclick='openFileModal(${f._row})'>Edit</button>
           <button class="btn btn-danger btn-small" onclick='deleteFile(${f._row})'>Delete</button>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   document.getElementById('filesTableWrap').innerHTML = `
     <table>
-      <thead><tr><th>Product ID</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
+      <thead><tr>${showThumbs ? '<th>Preview</th>' : ''}<th>Product ID</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
 function openFileModal(row){
   editingFileRow = row || null;
-  const f = row ? files.find(x=>x._row===row) : null;
+  const f = row ? files.find(x=>String(x._row)===String(row)) : null;
   document.getElementById('fileModalTitle').textContent = f ? 'Edit Media Link' : 'Add Media Link';
   populateProductDropdown('f_productId');
   document.getElementById('f_productId').value = f?.id || '';
@@ -584,7 +785,9 @@ async function saveFile(){
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
     if(editingFileRow){
-      await postAction(FILES_URL, { action:'update', _row: editingFileRow, id, fileType, link });
+      // uses 'edit' (matching the Products sheet's action name) instead of 'update',
+      // which is the most likely reason edits weren't taking effect before
+      await postAction(FILES_URL, { action:'edit', _row: editingFileRow, id, fileType, link });
     } else {
       await postAction(FILES_URL, { action:'add', id, fileType, link });
     }
@@ -734,8 +937,64 @@ async function uploadAllMediaFiles(){
   if(succeeded > 0) await loadFiles();
 }
 
+/* ================= SEND ORDER ================= */
+function onOrderProductChange(){
+  const pid = document.getElementById('o_productId').value;
+  const p = products.find(x=>String(x.productId)===String(pid));
+  document.getElementById('o_sellerNo').value = p?.sellerNo || '';
+  document.getElementById('o_unitPrice').value = p?.price || '';
+  updateOrderSummary();
+}
+function updateOrderSummary(){
+  const pid = document.getElementById('o_productId').value;
+  const p = products.find(x=>String(x.productId)===String(pid));
+  const qty = parseInt(document.getElementById('o_qty').value, 10) || 0;
+  const errEl = document.getElementById('orderError');
+  const warnEl = document.getElementById('orderStockWarning');
+  const sendBtn = document.getElementById('orderSendBtn');
+  errEl.style.display = 'none';
+  warnEl.textContent = '';
+
+  if(!p){
+    document.getElementById('orderPreview').textContent = 'Select a product to preview the order message.';
+    sendBtn.disabled = true;
+    return;
+  }
+  if(p.stock !== undefined && p.stock !== '' && qty > Number(p.stock)){
+    warnEl.textContent = `Note: requested quantity (${qty}) exceeds current stock (${p.stock}).`;
+  }
+  const unitPrice = Number(p.price) || 0;
+  const total = (unitPrice * qty).toFixed(2);
+  const note = document.getElementById('o_note').value.trim();
+
+  const lines = [
+    'New Order Request',
+    `Product: ${p.name} (ID: ${p.productId})`,
+    `Quantity: ${qty}`,
+    `Unit Price: ${unitPrice}`,
+    `Total: ${total}`
+  ];
+  if(note) lines.push(`Note: ${note}`);
+  const message = lines.join('\n');
+  document.getElementById('orderPreview').textContent = message;
+  sendBtn.disabled = !p.sellerNo;
+}
+function sendOrderViaWhatsApp(){
+  const pid = document.getElementById('o_productId').value;
+  const p = products.find(x=>String(x.productId)===String(pid));
+  const errEl = document.getElementById('orderError');
+  errEl.style.display = 'none';
+  if(!p){ errEl.textContent = 'Select a product first.'; errEl.style.display='block'; return; }
+  const sellerDigits = String(p.sellerNo || '').replace(/[^0-9]/g,'');
+  if(!sellerDigits){ errEl.textContent = "This product has no seller number saved."; errEl.style.display='block'; return; }
+  const message = document.getElementById('orderPreview').textContent;
+  const url = `https://wa.me/${sellerDigits}?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+}
+
 document.getElementById('productOverlay').addEventListener('click', e=>{ if(e.target.id==='productOverlay') closeProductModal(); });
 document.getElementById('fileOverlay').addEventListener('click', e=>{ if(e.target.id==='fileOverlay') closeFileModal(); });
+document.getElementById('settingsOverlay').addEventListener('click', e=>{ if(e.target.id==='settingsOverlay') closeSettingsModal(); });
 </script>
 </body>
 </html>
