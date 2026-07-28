@@ -54,7 +54,7 @@
   .btn-ghost:hover{border-color:var(--accent);}
   .btn-danger{background:rgba(229,88,108,.15);color:var(--danger);border:1px solid rgba(229,88,108,.4);}
   .btn-danger:hover{background:rgba(229,88,108,.28);}
-  .btn-small{padding:6px 12px;font-size:12px;}
+  .btn-small{padding:6px 12px;font-size:12px;width:auto;}
   .error-msg{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
 
   #app{display:none;min-height:100vh;}
@@ -73,6 +73,9 @@
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .panel-head h3{margin:0;font-size:16px;}
   .panel-head p{margin:2px 0 0 0;color:var(--muted);font-size:12.5px;}
+  .panel-head-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+  .toggle-check{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--mono);cursor:pointer;user-select:none;white-space:nowrap;}
+  .toggle-check input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
 
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);}
@@ -85,6 +88,7 @@
   .loading{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;}
   .link-cell{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:12px;word-break:break-all;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);color:var(--muted);}
+  .warn-banner{background:rgba(242,161,84,.1);border:1px solid rgba(242,161,84,.35);color:var(--accent-2);font-size:12.5px;font-family:var(--mono);padding:10px 14px;border-radius:8px;margin-bottom:14px;line-height:1.5;}
 
   .overlay{display:none;position:fixed;inset:0;background:rgba(6,8,12,.7);align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(2px);}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:26px;}
@@ -119,6 +123,8 @@
 
   .media-error{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
   .media-summary{display:none;margin-top:14px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+
+  #order_preview{font-family:var(--mono);font-size:12.5px;resize:vertical;}
 
   @media(max-width:640px){
     header,nav,main{padding-left:16px;padding-right:16px;}
@@ -159,6 +165,7 @@
     <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
     <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
     <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
+    <button class="tab-btn" id="tabBtnOrder" onclick="switchTab('order')">ORDER TO SELLER</button>
   </nav>
 
   <main>
@@ -166,7 +173,13 @@
     <div class="panel" id="panelProducts">
       <div class="panel-head">
         <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
-        <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+        <div class="panel-head-actions">
+          <label class="toggle-check">
+            <input type="checkbox" id="lowStockToggle" onchange="renderProducts()">
+            Highlight low stock (&lt;5)
+          </label>
+          <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+        </div>
       </div>
       <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
     </div>
@@ -205,6 +218,30 @@
         <div class="media-summary" id="mediaSummary"></div>
       </div>
     </div>
+
+    <!-- ORDER TO SELLER PANEL -->
+    <div class="panel" id="panelOrder" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Send Order to Seller</h3><p>Pick a product and quantity — Storix builds the order message and opens WhatsApp with the seller's number.</p></div>
+      </div>
+      <div class="media-panel-inner">
+        <div class="field">
+          <label>Product</label>
+          <select id="order_productId" onchange="updateOrderPreview()"></select>
+        </div>
+        <div class="grid-2">
+          <div class="field"><label>Quantity</label><input type="number" id="order_qty" value="1" min="1" onkeyup="updateOrderPreview()" onchange="updateOrderPreview()"></div>
+          <div class="field"><label>Customer Name (optional)</label><input id="order_customerName" onkeyup="updateOrderPreview()"></div>
+        </div>
+        <div class="field"><label>Customer Phone / Address (optional)</label><input id="order_customerNote" onkeyup="updateOrderPreview()"></div>
+        <div class="field"><label>Message Preview</label><textarea id="order_preview" rows="8" readonly></textarea></div>
+        <div class="modal-actions" style="justify-content:flex-start;">
+          <button class="btn btn-primary btn-small" onclick="sendOrderToSeller()">Send via WhatsApp</button>
+          <button class="btn btn-ghost btn-small" onclick="copyOrderMessage()">Copy Message</button>
+        </div>
+        <div class="status-msg" id="orderStatus"></div>
+      </div>
+    </div>
   </main>
 </div>
 
@@ -220,7 +257,11 @@
       </div>
     </div>
     <div class="grid-2">
-      <div class="field"><label>Type</label><input id="p_type"></div>
+      <div class="field">
+        <label>Type</label>
+        <input id="p_type" list="typeOptions" placeholder="Pick existing or type a new one">
+        <datalist id="typeOptions"></datalist>
+      </div>
       <div class="field"><label>Product Name</label><input id="p_name"></div>
       <div class="field"><label>Price With Discount</label><input id="p_price" type="number" step="0.01"></div>
       <div class="field"><label>Original Price</label><input id="p_originalPrice" type="number" step="0.01"></div>
@@ -231,7 +272,7 @@
           <option value="inactive">Inactive</option>
         </select>
       </div>
-      <div class="field"><label>Seller No.</label><input id="p_sellerNo"></div>
+      <div class="field"><label>Seller No.</label><input id="p_sellerNo" placeholder="03xxxxxxxxx"></div>
       <div class="field"><label>In Stock</label><input id="p_stock" type="number"></div>
     </div>
     <div class="field"><label>Short Description</label><input id="p_shortDescription"></div>
@@ -331,10 +372,13 @@ function switchTab(tab){
   document.getElementById('panelProducts').style.display = tab==='products' ? 'block' : 'none';
   document.getElementById('panelFiles').style.display = tab==='files' ? 'block' : 'none';
   document.getElementById('panelMedia').style.display = tab==='media' ? 'block' : 'none';
+  document.getElementById('panelOrder').style.display = tab==='order' ? 'block' : 'none';
   document.getElementById('tabBtnProducts').classList.toggle('active', tab==='products');
   document.getElementById('tabBtnFiles').classList.toggle('active', tab==='files');
   document.getElementById('tabBtnMedia').classList.toggle('active', tab==='media');
+  document.getElementById('tabBtnOrder').classList.toggle('active', tab==='order');
   if(tab==='media') populateProductDropdown('bulk_productId');
+  if(tab==='order'){ populateProductDropdown('order_productId'); updateOrderPreview(); }
 }
 
 /* ================= HELPERS ================= */
@@ -378,11 +422,16 @@ async function loadProducts(){
   try{
     products = await getJson(PRODUCTS_URL);
     renderProducts();
+    populateTypeOptions();
     populateProductDropdown('f_productId');
     populateProductDropdown('bulk_productId');
   }catch(err){
     document.getElementById('productsTableWrap').innerHTML = `<div class="empty-state"><b>Could not load products</b>${esc(err.message)}</div>`;
   }
+}
+function populateTypeOptions(){
+  const types = [...new Set(products.map(p=>p.type).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
+  document.getElementById('typeOptions').innerHTML = types.map(t=>`<option value="${esc(t)}">`).join('');
 }
 function renderProducts(){
   document.getElementById('productsCount').textContent = `${products.length} item${products.length===1?'':'s'}`;
@@ -390,14 +439,20 @@ function renderProducts(){
     document.getElementById('productsTableWrap').innerHTML = '<div class="empty-state"><b>No products yet</b>Add your first product to get started.</div>';
     return;
   }
-  let rows = products.map(p=>`
+  const lowStockOn = document.getElementById('lowStockToggle').checked;
+  let rows = products.map(p=>{
+    const isLow = lowStockOn && Number(p.stock) < 5;
+    const stockCell = isLow
+      ? `<span style="color:var(--danger);font-weight:700;">${esc(p.stock)} ⚠ low</span>`
+      : esc(p.stock);
+    return `
     <tr>
       <td data-label="Picture">${p.picture ? `<img class="thumb" src="${esc(p.picture)}">` : ''}</td>
       <td data-label="Product ID">${esc(p.productId)}</td>
       <td data-label="Name">${esc(p.name)}</td>
       <td data-label="Type">${esc(p.type)}</td>
       <td data-label="Price">${esc(p.price)}</td>
-      <td data-label="Stock">${esc(p.stock)}</td>
+      <td data-label="Stock">${stockCell}</td>
       <td data-label="Status"><span class="badge">${esc(p.status)}</span></td>
       <td data-label="Actions">
         <div class="row-actions">
@@ -405,7 +460,8 @@ function renderProducts(){
           <button class="btn btn-danger btn-small" onclick="deleteProduct(${p._row})">Delete</button>
         </div>
       </td>
-    </tr>`).join('');
+    </tr>`;
+  }).join('');
   document.getElementById('productsTableWrap').innerHTML = `
     <table>
       <thead><tr><th>Picture</th><th>Product ID</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Status</th><th>Actions</th></tr></thead>
@@ -428,7 +484,9 @@ function openProductModal(row){
   document.getElementById('p_longDescription').value = p?.longDescription || '';
   document.getElementById('productPicturePreview').src = p?.picture || '';
   document.getElementById('productPicturePreview').dataset.url = p?.picture || '';
+  document.getElementById('productPicturePreview').dataset.originalUrl = p?.picture || '';
   document.getElementById('productUploadStatus').textContent = '';
+  populateTypeOptions();
   document.getElementById('productOverlay').style.display='flex';
 }
 function closeProductModal(){ document.getElementById('productOverlay').style.display='none'; }
@@ -457,15 +515,19 @@ async function uploadProductImage(input){
 }
 
 async function saveProduct(){
+  const pictureUrl = document.getElementById('productPicturePreview').dataset.url || '';
+  const originalUrl = document.getElementById('productPicturePreview').dataset.originalUrl || '';
+  const productId = document.getElementById('p_productId').value;
+
   const payload = {
     action: editingProductRow ? 'edit' : 'add',
     type: document.getElementById('p_type').value,
-    picture: document.getElementById('productPicturePreview').dataset.url || '',
+    picture: pictureUrl,
     name: document.getElementById('p_name').value,
     shortDescription: document.getElementById('p_shortDescription').value,
     price: document.getElementById('p_price').value,
     originalPrice: document.getElementById('p_originalPrice').value,
-    productId: document.getElementById('p_productId').value,
+    productId: productId,
     longDescription: document.getElementById('p_longDescription').value,
     status: document.getElementById('p_status').value,
     sellerNo: document.getElementById('p_sellerNo').value,
@@ -477,8 +539,20 @@ async function saveProduct(){
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
     await postAction(PRODUCTS_URL, payload);
+
+    // Keep Sheet 2 (media links) in sync: whenever a new/changed product picture
+    // is saved, also record it as a media link for that product.
+    if(pictureUrl && pictureUrl !== originalUrl){
+      try{
+        await postAction(FILES_URL, { action:'add', id: productId, fileType:'image', link: pictureUrl });
+      }catch(linkErr){
+        console.warn('Product saved, but could not also add the picture to Media Links:', linkErr.message);
+      }
+    }
+
     closeProductModal();
     await loadProducts();
+    await loadFiles();
   }catch(err){
     alert('Save failed: ' + err.message);
   }finally{
@@ -505,10 +579,25 @@ function populateProductDropdown(selectId){
   if(current) sel.value = current;
 }
 
+// The products sheet and the media-links sheet come from two separate Apps
+// Script backends, so their JSON keys aren't guaranteed to match. This maps
+// whatever shape comes back onto the fields the UI needs.
+function normalizeFileRecord(raw, idx){
+  return {
+    _row: raw._row ?? raw.row ?? raw.Row ?? raw.rowIndex ?? (idx + 2),
+    id: raw.id ?? raw.ID ?? raw.Id ?? raw.productId ?? raw.ProductId ?? '',
+    fileType: raw.fileType ?? raw.FileType ?? raw['File type'] ?? raw['file type'] ?? raw.filetype ?? raw.type ?? raw.Type ?? 'image',
+    link: raw.link ?? raw.Link ?? raw.url ?? raw.URL ?? ''
+  };
+}
+
 async function loadFiles(){
   document.getElementById('filesTableWrap').innerHTML = '<div class="loading">Fetching media links…</div>';
   try{
-    files = await getJson(FILES_URL);
+    const raw = await getJson(FILES_URL);
+    const list = Array.isArray(raw) ? raw : (raw.data || raw.rows || raw.items || []);
+    files = list.map((r, i)=>normalizeFileRecord(r, i));
+    console.log('Media Links — raw response from Apps Script:', raw);
     renderFiles();
   }catch(err){
     document.getElementById('filesTableWrap').innerHTML = `<div class="empty-state"><b>Could not load media links</b>${esc(err.message)}</div>`;
@@ -520,11 +609,15 @@ function renderFiles(){
     document.getElementById('filesTableWrap').innerHTML = '<div class="empty-state"><b>No media links yet</b>Add your first one to get started.</div>';
     return;
   }
+  const linksLookEmpty = files.every(f => !f.link);
+  const warning = linksLookEmpty
+    ? `<div class="warn-banner">Links are coming back empty from the Media Links sheet. This usually means the Apps Script for that sheet uses different column names than "id / fileType / link". Open your browser console — the raw response is logged there — and adjust the sheet headers (or tell me the exact keys) so this maps correctly.</div>`
+    : '';
   let rows = files.map(f=>`
     <tr>
       <td data-label="Product ID">${esc(f.id)}</td>
       <td data-label="Type"><span class="badge">${esc(f.fileType)}</span></td>
-      <td data-label="Link"><a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a></td>
+      <td data-label="Link">${f.link ? `<a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a>` : '<span style="color:var(--muted);">—</span>'}</td>
       <td data-label="Actions">
         <div class="row-actions">
           <button class="btn btn-ghost btn-small" onclick='openFileModal(${f._row})'>Edit</button>
@@ -533,6 +626,7 @@ function renderFiles(){
       </td>
     </tr>`).join('');
   document.getElementById('filesTableWrap').innerHTML = `
+    ${warning}
     <table>
       <thead><tr><th>Product ID</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
       <tbody>${rows}</tbody>
@@ -543,7 +637,7 @@ function openFileModal(row){
   const f = row ? files.find(x=>x._row===row) : null;
   document.getElementById('fileModalTitle').textContent = f ? 'Edit Media Link' : 'Add Media Link';
   populateProductDropdown('f_productId');
-  document.getElementById('f_productId').value = f?.id || '';
+  document.getElementById('f_productId').value = String(f?.id ?? '');
   document.getElementById('f_fileType').value = f?.fileType || 'image';
   document.getElementById('f_link').value = f?.link || '';
   document.getElementById('fileUploadStatus').textContent = '';
@@ -732,6 +826,57 @@ async function uploadAllMediaFiles(){
   summaryEl.style.display = 'block';
 
   if(succeeded > 0) await loadFiles();
+}
+
+/* ================= ORDER TO SELLER ================= */
+function formatSellerPhone(raw){
+  let digits = String(raw || '').replace(/\D/g, '');
+  if(!digits) return '';
+  if(digits.startsWith('0')) digits = '92' + digits.slice(1);      // local 03xx -> 923xx
+  else if(!digits.startsWith('92') && digits.length === 10) digits = '92' + digits;
+  return digits;
+}
+
+function updateOrderPreview(){
+  const pid = document.getElementById('order_productId').value;
+  const p = products.find(x => String(x.productId) === String(pid));
+  const previewEl = document.getElementById('order_preview');
+  if(!p){
+    previewEl.value = 'Select a product to preview the order message.';
+    return;
+  }
+  const qty = Math.max(1, parseInt(document.getElementById('order_qty').value) || 1);
+  const name = document.getElementById('order_customerName').value.trim();
+  const note = document.getElementById('order_customerNote').value.trim();
+  const unit = parseFloat(p.price) || 0;
+  const total = (unit * qty).toFixed(2);
+
+  let msg = `New Order Request\n\nProduct: ${p.name}\nProduct ID: ${p.productId}\nQuantity: ${qty}\nUnit Price: Rs. ${unit}\nTotal: Rs. ${total}`;
+  if(name) msg += `\nCustomer: ${name}`;
+  if(note) msg += `\nContact / Address: ${note}`;
+  previewEl.value = msg;
+}
+
+function sendOrderToSeller(){
+  const pid = document.getElementById('order_productId').value;
+  const p = products.find(x => String(x.productId) === String(pid));
+  const statusEl = document.getElementById('orderStatus');
+  if(!p){ statusEl.textContent = 'Select a product first.'; return; }
+  const phone = formatSellerPhone(p.sellerNo);
+  if(!phone){ statusEl.textContent = 'This product has no valid seller number saved.'; return; }
+  const msg = document.getElementById('order_preview').value;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+  statusEl.textContent = 'Opened WhatsApp with the order message.';
+}
+
+function copyOrderMessage(){
+  const msg = document.getElementById('order_preview').value;
+  const statusEl = document.getElementById('orderStatus');
+  navigator.clipboard.writeText(msg).then(()=>{
+    statusEl.textContent = 'Message copied to clipboard.';
+  }).catch(()=>{
+    statusEl.textContent = 'Could not copy automatically — select the text above and copy manually.';
+  });
 }
 
 document.getElementById('productOverlay').addEventListener('click', e=>{ if(e.target.id==='productOverlay') closeProductModal(); });
