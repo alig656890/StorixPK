@@ -1854,3 +1854,8 @@ border:1px solid #e2e8f0;
         padding:4px 0;
     }
 }
+img{
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
