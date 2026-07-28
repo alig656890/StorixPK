@@ -678,14 +678,14 @@ body{
 
    /* Make the product-id-nav visually match main page nav */
 .product-id-nav.mobile-nav{
-    width:0px;
-        height:0px;
-display:flex;
-align-items:center;
-gap:8px;
-padding:8px 12px;
-background:transparent;
-box-sizing:border-box;
+    width:100%;
+    height:auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:8px 12px;
+    background:transparent;
+    box-sizing:border-box;
 }
 
 .product-id-nav.mobile-nav .cat-arrow{
