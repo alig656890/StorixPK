@@ -586,3 +586,16 @@ async function init(){
     document.getElementById("productContent").style.display = "block";
 }
 init();
+// Disable right click on images and videos
+document.addEventListener("contextmenu", function(e) {
+    if (e.target.tagName === "IMG" || e.target.tagName === "VIDEO") {
+        e.preventDefault();
+    }
+});
+
+// Disable dragging images
+document.addEventListener("dragstart", function(e) {
+    if (e.target.tagName === "IMG") {
+        e.preventDefault();
+    }
+});
