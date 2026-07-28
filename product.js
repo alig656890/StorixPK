@@ -349,6 +349,7 @@ function renderVideos(){
         thumbVideo.preload = "metadata";
         thumbVideo.style.cssText = "width:100%;height:100%;object-fit:cover;pointer-events:none;";
         btn.appendChild(thumbVideo);
+        thumbVideo.oncontextmenu = () => false;
 
         const playIcon = document.createElement("span");
         playIcon.innerHTML = '<i class="fas fa-play"></i>';
