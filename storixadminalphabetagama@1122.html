@@ -27,6 +27,7 @@
     min-height:100vh;
   }
   ::selection{background:var(--accent);color:#08110f;}
+
   #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
   .login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 32px;position:relative;overflow:hidden;}
   .login-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
@@ -53,11 +54,9 @@
   .btn-ghost:hover{border-color:var(--accent);}
   .btn-danger{background:rgba(229,88,108,.15);color:var(--danger);border:1px solid rgba(229,88,108,.4);}
   .btn-danger:hover{background:rgba(229,88,108,.28);}
-  .btn-sent{background:rgba(79,209,197,.15);color:var(--accent);border:1px solid rgba(79,209,197,.4);}
-  .btn-sent:hover{background:rgba(79,209,197,.28);}
-  .btn-sent:disabled{opacity:.4;cursor:default;}
   .btn-small{padding:6px 12px;font-size:12px;}
   .error-msg{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
+
   #app{display:none;min-height:100vh;}
   header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--line);background:var(--panel);}
   .brand{display:flex;align-items:center;gap:10px;}
@@ -65,22 +64,16 @@
   .brand h2{margin:0;font-size:15px;font-weight:650;}
   .brand span{display:block;font-size:11px;color:var(--muted);font-family:var(--mono);}
 
-  /* ===== Vertical left-side tab layout ===== */
-  .body-flex{display:flex;align-items:flex-start;}
-  nav{display:flex;flex-direction:column;gap:6px;padding:20px 14px;width:200px;flex-shrink:0;border-right:1px solid var(--line);position:sticky;top:0;}
-  .tab-btn{
-    background:transparent;border:1px solid transparent;border-left:3px solid transparent;color:var(--muted);
-    padding:11px 14px;border-radius:8px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--mono);
-    letter-spacing:.03em;text-align:left;width:100%;
-  }
-  .tab-btn:hover{color:var(--text);}
-  .tab-btn.active{color:var(--text);border-left:3px solid var(--accent);background:var(--panel-2);}
-  main{flex:1;min-width:0;padding:20px 28px 40px 28px;}
-  .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:22px;}
+  nav{display:flex;gap:6px;padding:14px 28px 0 28px;flex-wrap:wrap;}
+  .tab-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:9px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;}
+  .tab-btn.active{color:var(--text);border:1px solid var(--line);border-bottom-color:var(--ink);background:var(--panel-2);}
 
+  main{padding:0 28px 40px 28px;}
+  .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:22px;margin-top:-1px;}
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .panel-head h3{margin:0;font-size:16px;}
   .panel-head p{margin:2px 0 0 0;color:var(--muted);font-size:12.5px;}
+
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);}
   tbody td{padding:12px;border-bottom:1px solid rgba(43,49,64,.6);vertical-align:middle;}
@@ -92,17 +85,6 @@
   .loading{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;}
   .link-cell{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:12px;word-break:break-all;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);color:var(--muted);}
-  .badge-pending{background:rgba(242,161,84,.15);color:var(--accent-2);border-color:rgba(242,161,84,.4);}
-  .badge-sent{background:rgba(79,209,197,.15);color:var(--accent);border-color:rgba(79,209,197,.4);}
-  .badge-cancelled{background:rgba(229,88,108,.15);color:var(--danger);border-color:rgba(229,88,108,.4);}
-  .badge-returned{background:rgba(139,147,167,.18);color:var(--text);border-color:var(--line);}
-  .badge-other{background:rgba(139,147,167,.1);color:var(--muted);border-color:var(--line);}
-
-  /* Order status filter pills */
-  .status-filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-  .status-filter-btn{background:transparent;border:1px solid var(--line);color:var(--muted);padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;font-family:var(--mono);}
-  .status-filter-btn:hover{color:var(--text);}
-  .status-filter-btn.active{background:var(--panel);color:var(--text);border-color:var(--accent);}
 
   .overlay{display:none;position:fixed;inset:0;background:rgba(6,8,12,.7);align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(2px);}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:26px;}
@@ -112,6 +94,7 @@
   .upload-row{display:flex;align-items:center;gap:12px;}
   .upload-row img{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:#0d1017;}
   .status-msg{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:6px;}
+
   .media-panel-inner{max-width:600px;}
   .dropzone{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .15s ease, background .15s ease;position:relative;}
   .dropzone:hover, .dropzone.dragover{border-color:var(--accent);background:rgba(79,209,197,.05);}
@@ -119,6 +102,7 @@
   .dropzone .dz-icon{font-size:26px;margin-bottom:8px;}
   .dropzone .dz-title{font-weight:600;font-size:14px;}
   .dropzone .dz-sub{font-size:12px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
+
   .queue{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
   .queue-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
   .queue-item .qi-icon{width:34px;height:34px;border-radius:6px;object-fit:cover;background:#0d1017;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);flex-shrink:0;}
@@ -132,14 +116,12 @@
   .queue-item select{width:auto;padding:6px 8px;font-size:12px;flex-shrink:0;}
   .queue-item .qi-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;flex-shrink:0;}
   .queue-item .qi-remove:hover{color:var(--danger);}
+
   .media-error{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
   .media-summary{display:none;margin-top:14px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
+
   @media(max-width:640px){
-    header,main{padding-left:16px;padding-right:16px;}
-    .body-flex{flex-direction:column;}
-    nav{flex-direction:row;width:100%;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);padding:12px 16px;position:static;}
-    .tab-btn{width:auto;white-space:nowrap;border-left:none;border-bottom:3px solid transparent;border-radius:8px 8px 0 0;}
-    .tab-btn.active{border-left:none;border-bottom:3px solid var(--accent);}
+    header,nav,main{padding-left:16px;padding-right:16px;}
     .grid-2{grid-template-columns:1fr;}
     table, thead, tbody, tr, td{display:block;}
     thead{display:none;}
@@ -150,6 +132,7 @@
 </style>
 </head>
 <body>
+
 <!-- ================= LOGIN ================= -->
 <div id="loginScreen">
   <div class="login-card">
@@ -161,72 +144,70 @@
     <div class="error-msg" id="loginError">Incorrect username or password.</div>
   </div>
 </div>
+
 <!-- ================= APP ================= -->
 <div id="app">
   <header>
     <div class="brand">
       <div class="brand-mark">S</div>
-      <div><h2>Storix Admin</h2><span>Products, Media &amp; Orders</span></div>
+      <div><h2>Storix Admin</h2><span>Products &amp; Media Links</span></div>
     </div>
     <button class="btn btn-ghost btn-small" onclick="handleLogout()">Log Out</button>
   </header>
-  <div class="body-flex">
-    <nav>
-      <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">Products</button>
-      <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">Media Links</button>
-      <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">Bulk Upload</button>
-      <button class="tab-btn" id="tabBtnOrders" onclick="switchTab('orders')">Manage Orders</button>
-    </nav>
-    <main>
-      <!-- PRODUCTS PANEL -->
-      <div class="panel" id="panelProducts">
-        <div class="panel-head">
-          <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
-          <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
-        </div>
-        <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
+
+  <nav>
+    <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
+    <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
+    <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
+  </nav>
+
+  <main>
+    <!-- PRODUCTS PANEL -->
+    <div class="panel" id="panelProducts">
+      <div class="panel-head">
+        <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
+        <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
       </div>
-      <!-- FILES PANEL -->
-      <div class="panel" id="panelFiles" style="display:none;">
-        <div class="panel-head">
-          <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
-          <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
-        </div>
-        <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
+      <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
+    </div>
+
+    <!-- FILES PANEL -->
+    <div class="panel" id="panelFiles" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
+        <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
       </div>
-      <!-- BULK UPLOAD PANEL -->
-      <div class="panel" id="panelMedia" style="display:none;">
-        <div class="panel-head">
-          <div><h3>Bulk Media Upload</h3><p>Pick a product, add several files, and each one gets uploaded to Cloudinary and saved as its own row in Sheet 2.</p></div>
-        </div>
-        <div class="media-panel-inner">
-          <div class="field">
-            <label>Product</label>
-            <select id="bulk_productId"></select>
-          </div>
-          <div class="dropzone" id="mediaDropzone">
-            <input type="file" id="mediaFileInput" multiple onchange="handleMediaFilesSelect(this.files)">
-            <div class="dz-icon">⇪</div>
-            <div class="dz-title">Click to choose files, or drag several here</div>
-            <div class="dz-sub">Images and videos — type is auto-detected per file, editable below</div>
-          </div>
-          <div class="queue" id="mediaQueue"></div>
-          <button class="btn btn-primary btn-small" id="mediaUploadAllBtn" style="margin-top:16px;display:none;" onclick="uploadAllMediaFiles()">Upload &amp; Save All</button>
-          <div class="media-error" id="mediaError"></div>
-          <div class="media-summary" id="mediaSummary"></div>
-        </div>
+      <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
+    </div>
+
+    <!-- BULK UPLOAD PANEL -->
+    <div class="panel" id="panelMedia" style="display:none;">
+      <div class="panel-head">
+        <div><h3>Bulk Media Upload</h3><p>Pick a product, add several files, and each one gets uploaded to Cloudinary and saved as its own row in Sheet 2.</p></div>
       </div>
-      <!-- ORDERS PANEL -->
-      <div class="panel" id="panelOrders" style="display:none;">
-        <div class="panel-head">
-          <div><h3>Manage Orders</h3><p id="ordersCount">Loading…</p></div>
+      <div class="media-panel-inner">
+        <div class="field">
+          <label>Product</label>
+          <select id="bulk_productId"></select>
         </div>
-        <div class="status-filters" id="orderStatusFilters"></div>
-        <div id="ordersTableWrap"><div class="loading">Fetching orders…</div></div>
+
+        <div class="dropzone" id="mediaDropzone">
+          <input type="file" id="mediaFileInput" multiple onchange="handleMediaFilesSelect(this.files)">
+          <div class="dz-icon">⇪</div>
+          <div class="dz-title">Click to choose files, or drag several here</div>
+          <div class="dz-sub">Images and videos — type is auto-detected per file, editable below</div>
+        </div>
+
+        <div class="queue" id="mediaQueue"></div>
+
+        <button class="btn btn-primary btn-small" id="mediaUploadAllBtn" style="margin-top:16px;display:none;" onclick="uploadAllMediaFiles()">Upload &amp; Save All</button>
+        <div class="media-error" id="mediaError"></div>
+        <div class="media-summary" id="mediaSummary"></div>
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </div>
+
 <!-- ============ PRODUCT MODAL ============ -->
 <div class="overlay" id="productOverlay">
   <div class="modal">
@@ -261,6 +242,7 @@
     </div>
   </div>
 </div>
+
 <!-- ============ FILE MODAL ============ -->
 <div class="overlay" id="fileOverlay">
   <div class="modal">
@@ -288,52 +270,25 @@
     </div>
   </div>
 </div>
-<!-- ============ ORDER MODAL ============ -->
-<div class="overlay" id="orderOverlay">
-  <div class="modal">
-    <h3>Edit Order</h3>
-    <div class="grid-2">
-      <div class="field"><label>Order ID</label><input id="o_orderId" disabled></div>
-      <div class="field"><label>Product ID</label><input id="o_productId"></div>
-      <div class="field"><label>Product Name</label><input id="o_productName"></div>
-      <div class="field"><label>Quantity</label><input id="o_quantity" type="number"></div>
-      <div class="field"><label>Unit Price</label><input id="o_unitPrice" type="number" step="0.01"></div>
-      <div class="field"><label>Payment Method</label><input id="o_paymentMethod"></div>
-      <div class="field"><label>Delivery Status</label>
-        <select id="o_deliveryStatus">
-          <option value="pending">Pending</option>
-          <option value="sent">Sent</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="returned">Returned</option>
-        </select>
-      </div>
-    </div>
-    <div class="field"><label>User Message</label><textarea id="o_userMessage" rows="3"></textarea></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeOrderModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveOrder()">Save Order</button>
-    </div>
-  </div>
-</div>
+
 <script>
 /* ================= CONFIG ================= */
 const ADMIN_USER = "112233";
 const ADMIN_PASS = "P@kistan";
+
 const PRODUCTS_URL = "https://script.google.com/macros/s/AKfycbxg-irSc9cHevNptiQm_bLPas1KTkgPidTVMhk-_35FwZ9D5_rdbdWtEqXeyKe_h505/exec";
 const FILES_URL = "https://script.google.com/macros/s/AKfycbyuLMFuxoCQ1iEesrOA2uy9v8JrrMUVqXKlo21a7Pktf0_0eFRFbPlQr4vn16_PIXqR/exec";
-const ORDERS_URL = "https://script.google.com/macros/s/AKfycbwN6oNazPpEYEvWHuu8pATtTa0duBBCdo1LJT7KNqUXSV_r2gl_qOvQ4zPflyMe-4jc/exec";
+
 const CLOUDINARY_CLOUD = "dgnprxuay";
 const CLOUDINARY_PRESET = "storix_upload";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`;
+
 let products = [];
 let files = [];
-let orders = [];
 let editingProductRow = null;
 let editingFileRow = null;
-let editingOrderRow = null;
 let mediaQueueItems = []; // { file, type, status, url, error }
-const ORDER_STATUSES = ['pending','sent','cancelled','returned'];
-let currentOrderFilter = 'pending';
+
 /* ================= LOGIN ================= */
 function handleLogin(){
   const u = document.getElementById('loginUser').value.trim();
@@ -344,7 +299,6 @@ function handleLogin(){
     document.getElementById('app').style.display='block';
     loadProducts();
     loadFiles();
-    loadOrders();
   } else {
     document.getElementById('loginError').style.display='block';
   }
@@ -364,25 +318,25 @@ window.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('app').style.display='block';
     loadProducts();
     loadFiles();
-    loadOrders();
   }
+
   const dz = document.getElementById('mediaDropzone');
   ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.add('dragover'); }));
   ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.remove('dragover'); }));
   dz.addEventListener('drop', e=>{ if(e.dataTransfer.files.length) handleMediaFilesSelect(e.dataTransfer.files); });
 });
+
 /* ================= TABS ================= */
 function switchTab(tab){
   document.getElementById('panelProducts').style.display = tab==='products' ? 'block' : 'none';
   document.getElementById('panelFiles').style.display = tab==='files' ? 'block' : 'none';
   document.getElementById('panelMedia').style.display = tab==='media' ? 'block' : 'none';
-  document.getElementById('panelOrders').style.display = tab==='orders' ? 'block' : 'none';
   document.getElementById('tabBtnProducts').classList.toggle('active', tab==='products');
   document.getElementById('tabBtnFiles').classList.toggle('active', tab==='files');
   document.getElementById('tabBtnMedia').classList.toggle('active', tab==='media');
-  document.getElementById('tabBtnOrders').classList.toggle('active', tab==='orders');
   if(tab==='media') populateProductDropdown('bulk_productId');
 }
+
 /* ================= HELPERS ================= */
 async function postAction(url, payload){
   const res = await fetch(url, {
@@ -390,12 +344,7 @@ async function postAction(url, payload){
     headers:{'Content-Type':'text/plain;charset=utf-8'},
     body: JSON.stringify(payload)
   });
-  let json;
-  try{
-    json = await res.json();
-  }catch(e){
-    throw new Error('Server did not return valid JSON (check the Apps Script backend).');
-  }
+  const json = await res.json();
   if(json && json.error) throw new Error(json.error);
   return json;
 }
@@ -422,6 +371,7 @@ function nextProductId(){
   if(nums.length === 0) return '1';
   return String(Math.max(...nums) + 1);
 }
+
 /* ================= PRODUCTS ================= */
 async function loadProducts(){
   document.getElementById('productsTableWrap').innerHTML = '<div class="loading">Fetching products…</div>';
@@ -482,6 +432,7 @@ function openProductModal(row){
   document.getElementById('productOverlay').style.display='flex';
 }
 function closeProductModal(){ document.getElementById('productOverlay').style.display='none'; }
+
 async function uploadProductImage(input){
   const file = input.files[0];
   if(!file) return;
@@ -504,6 +455,7 @@ async function uploadProductImage(input){
     statusEl.textContent = 'Upload failed: ' + err.message;
   }
 }
+
 async function saveProduct(){
   const payload = {
     action: editingProductRow ? 'edit' : 'add',
@@ -520,6 +472,7 @@ async function saveProduct(){
     stock: document.getElementById('p_stock').value
   };
   if(editingProductRow) payload._row = editingProductRow;
+
   const btn = event.target;
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
@@ -541,6 +494,7 @@ async function deleteProduct(row){
     alert('Delete failed: ' + err.message);
   }
 }
+
 /* ================= FILES (MEDIA LINKS) ================= */
 function populateProductDropdown(selectId){
   const sel = document.getElementById(selectId);
@@ -550,6 +504,7 @@ function populateProductDropdown(selectId){
   ).join('') || '<option value="">No products yet</option>';
   if(current) sel.value = current;
 }
+
 async function loadFiles(){
   document.getElementById('filesTableWrap').innerHTML = '<div class="loading">Fetching media links…</div>';
   try{
@@ -595,6 +550,7 @@ function openFileModal(row){
   document.getElementById('fileOverlay').style.display='flex';
 }
 function closeFileModal(){ document.getElementById('fileOverlay').style.display='none'; }
+
 async function uploadFileLink(input){
   const file = input.files[0];
   if(!file) return;
@@ -616,12 +572,14 @@ async function uploadFileLink(input){
     statusEl.textContent = 'Upload failed: ' + err.message;
   }
 }
+
 async function saveFile(){
   const id = document.getElementById('f_productId').value;
   const fileType = document.getElementById('f_fileType').value;
   const link = document.getElementById('f_link').value;
   if(!id){ alert('Select a product first.'); return; }
   if(!link){ alert('Upload a file or paste a link first.'); return; }
+
   const btn = event.target;
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
@@ -641,13 +599,13 @@ async function saveFile(){
 async function deleteFile(row){
   if(!confirm('Delete this media link? This cannot be undone.')) return;
   try{
-    const result = await postAction(FILES_URL, { action:'delete', _row: row });
-    console.log('Delete response from FILES_URL:', result);
+    await postAction(FILES_URL, { action:'delete', _row: row });
     await loadFiles();
   }catch(err){
     alert('Delete failed: ' + err.message);
   }
 }
+
 /* ================= BULK MEDIA UPLOAD ================= */
 function handleMediaFilesSelect(fileList){
   const newFiles = Array.from(fileList);
@@ -701,6 +659,7 @@ function renderMediaQueue(){
       </div>`;
   }).join('');
 }
+
 function uploadSingleToCloudinary(item, idx){
   return new Promise((resolve, reject)=>{
     const fd = new FormData();
@@ -725,12 +684,14 @@ function uploadSingleToCloudinary(item, idx){
     xhr.send(fd);
   });
 }
+
 async function uploadAllMediaFiles(){
   const productId = document.getElementById('bulk_productId').value;
   const errEl = document.getElementById('mediaError');
   const summaryEl = document.getElementById('mediaSummary');
   errEl.style.display = 'none';
   summaryEl.style.display = 'none';
+
   if(!productId){
     errEl.textContent = 'Select a product first.';
     errEl.style.display = 'block';
@@ -738,10 +699,13 @@ async function uploadAllMediaFiles(){
   }
   const pending = mediaQueueItems.filter(i => i.status === 'pending' || i.status === 'error');
   if(pending.length === 0) return;
+
   const btn = document.getElementById('mediaUploadAllBtn');
   btn.disabled = true;
   btn.textContent = 'Uploading…';
+
   let succeeded = 0, failed = 0;
+
   for(let idx=0; idx<mediaQueueItems.length; idx++){
     const item = mediaQueueItems[idx];
     if(item.status === 'done') continue;
@@ -761,139 +725,17 @@ async function uploadAllMediaFiles(){
     }
     renderMediaQueue();
   }
+
   btn.disabled = false;
   btn.textContent = 'Upload & Save All';
   summaryEl.textContent = `${succeeded} saved, ${failed} failed.`;
   summaryEl.style.display = 'block';
+
   if(succeeded > 0) await loadFiles();
 }
-/* ================= ORDERS (MANAGE & TRANSFER TO SELLER) ================= */
-async function loadOrders(){
-  document.getElementById('ordersTableWrap').innerHTML = '<div class="loading">Fetching orders…</div>';
-  try{
-    orders = await getJson(ORDERS_URL);
-    renderOrderFilters();
-    renderOrders();
-  }catch(err){
-    document.getElementById('ordersTableWrap').innerHTML = `<div class="empty-state"><b>Could not load orders</b>${esc(err.message)}</div>`;
-  }
-}
-function normalizeStatus(s){
-  const v = (s||'').toString().trim().toLowerCase();
-  if(ORDER_STATUSES.includes(v)) return v;
-  return v ? 'other' : 'pending';
-}
-function statusLabel(key){ return key.charAt(0).toUpperCase()+key.slice(1); }
-function renderOrderFilters(){
-  const counts = { pending:0, sent:0, cancelled:0, returned:0, other:0 };
-  orders.forEach(o=> counts[normalizeStatus(o.deliveryStatus)]++ );
-  const keys = ['pending','sent','cancelled','returned'];
-  if(counts.other>0) keys.push('other');
-  document.getElementById('orderStatusFilters').innerHTML = keys.map(k=>
-    `<button class="status-filter-btn ${currentOrderFilter===k?'active':''}" onclick="setOrderFilter('${k}')">${statusLabel(k)} (${counts[k]})</button>`
-  ).join('');
-  document.getElementById('ordersCount').textContent = `${orders.length} order${orders.length===1?'':'s'} total`;
-}
-function setOrderFilter(key){
-  currentOrderFilter = key;
-  renderOrderFilters();
-  renderOrders();
-}
-function renderOrders(){
-  const list = orders.filter(o=> normalizeStatus(o.deliveryStatus)===currentOrderFilter);
-  if(list.length===0){
-    document.getElementById('ordersTableWrap').innerHTML = `<div class="empty-state"><b>No ${statusLabel(currentOrderFilter).toLowerCase()} orders</b>Nothing here right now.</div>`;
-    return;
-  }
-  let rows = list.map(o=>{
-    const key = normalizeStatus(o.deliveryStatus);
-    const isSent = key==='sent';
-    return `
-    <tr>
-      <td data-label="Order ID">${esc(o.orderId)}</td>
-      <td data-label="Product">${esc(o.productName)} <span class="badge">${esc(o.productId)}</span></td>
-      <td data-label="Qty">${esc(o.quantity)}</td>
-      <td data-label="Unit Price">${esc(o.unitPrice)}</td>
-      <td data-label="Payment">${esc(o.paymentMethod)}</td>
-      <td data-label="Message">${esc(o.userMessage)}</td>
-      <td data-label="Status"><span class="badge badge-${key}">${esc(o.deliveryStatus || 'Pending')}</span></td>
-      <td data-label="Actions">
-        <div class="row-actions">
-          <button class="btn btn-ghost btn-small" onclick='openOrderModal(${o._row})'>Edit</button>
-          <button class="btn btn-sent btn-small" onclick='markOrderSent(${o._row})' ${isSent?'disabled':''}>Sent</button>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-  document.getElementById('ordersTableWrap').innerHTML = `
-    <table>
-      <thead><tr><th>Order ID</th><th>Product</th><th>Qty</th><th>Unit Price</th><th>Payment</th><th>Message</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table>`;
-}
-function openOrderModal(row){
-  editingOrderRow = row;
-  const o = orders.find(x=>x._row===row);
-  if(!o) return;
-  document.getElementById('o_orderId').value = o.orderId || '';
-  document.getElementById('o_productId').value = o.productId || '';
-  document.getElementById('o_productName').value = o.productName || '';
-  document.getElementById('o_quantity').value = o.quantity || '';
-  document.getElementById('o_unitPrice').value = o.unitPrice || '';
-  document.getElementById('o_userMessage').value = o.userMessage || '';
-  document.getElementById('o_paymentMethod').value = o.paymentMethod || '';
-  const key = normalizeStatus(o.deliveryStatus);
-  document.getElementById('o_deliveryStatus').value = key==='other' ? 'pending' : key;
-  document.getElementById('orderOverlay').style.display='flex';
-}
-function closeOrderModal(){ document.getElementById('orderOverlay').style.display='none'; }
-function orderPayloadFromForm(){
-  return {
-    orderId: document.getElementById('o_orderId').value,
-    productId: document.getElementById('o_productId').value,
-    productName: document.getElementById('o_productName').value,
-    quantity: document.getElementById('o_quantity').value,
-    unitPrice: document.getElementById('o_unitPrice').value,
-    userMessage: document.getElementById('o_userMessage').value,
-    paymentMethod: document.getElementById('o_paymentMethod').value,
-    deliveryStatus: document.getElementById('o_deliveryStatus').value
-  };
-}
-async function saveOrder(){
-  if(!editingOrderRow) return;
-  const payload = Object.assign({ action:'edit', _row: editingOrderRow }, orderPayloadFromForm());
-  const btn = event.target;
-  btn.disabled = true; btn.textContent = 'Saving…';
-  try{
-    await postAction(ORDERS_URL, payload);
-    closeOrderModal();
-    await loadOrders();
-  }catch(err){
-    alert('Save failed: ' + err.message);
-  }finally{
-    btn.disabled = false; btn.textContent = 'Save Order';
-  }
-}
-async function markOrderSent(row){
-  const o = orders.find(x=>x._row===row);
-  if(!o) return;
-  if(!confirm(`Mark order ${o.orderId} as sent to the seller?`)) return;
-  const payload = {
-    action:'edit', _row: row,
-    orderId:o.orderId, productId:o.productId, productName:o.productName,
-    quantity:o.quantity, unitPrice:o.unitPrice, userMessage:o.userMessage,
-    paymentMethod:o.paymentMethod, deliveryStatus:'Sent'
-  };
-  try{
-    await postAction(ORDERS_URL, payload);
-    await loadOrders();
-  }catch(err){
-    alert('Could not update order: ' + err.message);
-  }
-}
+
 document.getElementById('productOverlay').addEventListener('click', e=>{ if(e.target.id==='productOverlay') closeProductModal(); });
 document.getElementById('fileOverlay').addEventListener('click', e=>{ if(e.target.id==='fileOverlay') closeFileModal(); });
-document.getElementById('orderOverlay').addEventListener('click', e=>{ if(e.target.id==='orderOverlay') closeOrderModal(); });
 </script>
 </body>
 </html>
