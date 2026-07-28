@@ -328,7 +328,6 @@ function renderImages(){
 function renderVideos(){
     hideAllViewers();
     thumbnailStrip.innerHTML = "";
-    thumbVideo.oncontextmenu = () => false;
     if(media.videos.length === 0){
         showEmpty("No videos available for this product.");
         return;
