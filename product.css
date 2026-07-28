@@ -536,12 +536,10 @@ body{
     line-height:2;
     white-space:pre-line;
     letter-spacing:.2px;
-     counter-reset:item;
+
 }
 
-.long-desc br{
-    margin-bottom:12px;
-}
+
 
 #relatedSection{ display:none; }
 
