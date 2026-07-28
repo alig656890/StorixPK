@@ -741,3 +741,9 @@ flex:0 0 auto;
         text-align:center;
     }
 }
+img,
+video{
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
