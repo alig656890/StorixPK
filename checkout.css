@@ -42,6 +42,8 @@ body{
 .checkout-page{
     max-width:1200px;
     margin:36px auto 60px;
+    padding-left:16px;
+    padding-right:16px;
 }
 
 /* ================= STEPS ================= */
@@ -127,9 +129,10 @@ body{
 
 .checkout-card h6 i{ color:#0f766e; }
 
+/* Simplified form: one clean column top-to-bottom, easiest to fill on mobile */
 .field-grid{
     display:grid;
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:1fr;
     gap:16px;
 }
 
@@ -148,8 +151,8 @@ body{
     width:100%;
     border:1px solid #e5e7eb;
     border-radius:12px;
-    padding:11px 14px;
-    font-size:14px;
+    padding:12px 14px;
+    font-size:16px; /* 16px avoids iOS auto-zoom on focus */
     font-family:inherit;
     color:#1f2937;
     outline:none;
@@ -178,6 +181,73 @@ body{
 }
 
 .field.invalid .field-error{ display:block; }
+
+/* ================= OPTIONAL LOCATION PICKER ================= */
+.locate-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    border:1.5px dashed #99e5db;
+    background:#f8fffd;
+    color:#0f766e;
+    font-weight:700;
+    font-size:13px;
+    border-radius:12px;
+    padding:11px 14px;
+    transition:.2s;
+}
+
+.locate-btn:hover{
+    background:#ecfdf5;
+    border-color:#14B8A6;
+}
+
+.map-picker{
+    margin-top:10px;
+    border-radius:14px;
+    overflow:hidden;
+    border:1px solid #e5e7eb;
+}
+
+#mapEl{
+    width:100%;
+    height:220px;
+}
+
+.map-hint{
+    margin:0;
+    font-size:11.5px;
+    color:#6b7280;
+    text-align:center;
+    padding:8px;
+    background:#f8fafc;
+}
+
+.location-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+    font-size:12px;
+    font-weight:700;
+    color:#0f766e;
+    background:#ecfdf5;
+    border-radius:10px;
+    padding:6px 10px;
+}
+
+.location-tag button{
+    border:none;
+    background:none;
+    color:#0f766e;
+    font-size:12px;
+    cursor:pointer;
+    opacity:.7;
+}
+
+.location-tag button:hover{ opacity:1; }
 
 /* ================= PAYMENT OPTION ================= */
 .payment-option{
@@ -443,9 +513,19 @@ body{
 }
 
 @media(max-width:768px){
-    .field-grid{ grid-template-columns:1fr; }
+    .checkout-page{ margin-top:20px; }
     .checkout-title-wrap{ display:none; }
     .checkout-card,
-    .summary-card{ padding:20px; }
-    .success-state{ padding:30px 20px; }
+    .summary-card{ padding:18px; border-radius:16px; }
+    .checkout-steps{ gap:8px; margin-bottom:22px; }
+    .step-line{ width:24px; }
+    .step span:first-child{ font-size:0; } /* keep dot compact on small phones */
+    .success-state{ padding:30px 18px; }
+    #mapEl{ height:180px; }
+}
+
+@media(max-width:420px){
+    .checkout-page{ padding-left:10px; padding-right:10px; }
+    .step{ font-size:11px; }
+    .place-order-final-btn{ font-size:14px; }
 }
