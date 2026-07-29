@@ -1,23 +1,23 @@
 // ==============================================================
-// CONFIG — edit these two values before going live
+// CONFIG
 // ==============================================================
 
 // WhatsApp number that receives the order message (no + or spaces)
 const STORE_WHATSAPP = "923428453606";
 
-// Google Apps Script Web App URL that updates the product sheet
-// (decreases "In Stock", increases "Sold Quantity"/"Total Sold",
-// and logs the order). See apps-script-setup.md + Code.gs for the
-// exact script to deploy against your product sheet
-// (spreadsheet id: 1Z516TmqefcNcyGVPgTamh_OpNXjzO_s84udPnYN3new).
-// Leave the placeholder in place and the site will simply skip the
-// sheet update step — everything else still works.
-const APPS_SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+// Google Apps Script Web App URL — writes one row per cart item to
+// the Orders sheet (order id / product id / product name / qty /
+// unit price / buyer name / buyer number / payment method /
+// user message / delivery status) and assigns the next order id.
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLt6qlIk8y0OvOURsUX3dYLbLcmDRwdaRRZYDROm06zrdaBHhJaQ1PltySqaCJjB22/exec";
 
 // ==============================================================
 // STATE
 // ==============================================================
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let pickedLocation = null; // {lat, lng} — set only if the user drops a pin
+let leafletMap = null;
+let leafletMarker = null;
 
 // ==============================================================
 // CART HELPERS (mirrors product.js so the dropdown behaves the same)
@@ -181,9 +181,78 @@ document.querySelectorAll("#detailsForm input, #detailsForm textarea").forEach(e
 });
 
 // ==============================================================
+// OPTIONAL: PINPOINT LOCATION (Leaflet + OpenStreetMap, no API key)
+// ==============================================================
+function initMapAt(lat, lng){
+    if(leafletMap){
+        leafletMap.setView([lat, lng], 16);
+        leafletMarker.setLatLng([lat, lng]);
+        return;
+    }
+
+    leafletMap = L.map("mapEl").setView([lat, lng], 16);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap"
+    }).addTo(leafletMap);
+
+    leafletMarker = L.marker([lat, lng], { draggable: true }).addTo(leafletMap);
+    leafletMarker.on("dragend", () => {
+        const pos = leafletMarker.getLatLng();
+        pickedLocation = { lat: pos.lat, lng: pos.lng };
+        markLocationAttached();
+    });
+
+    leafletMap.on("click", (e) => {
+        leafletMarker.setLatLng(e.latlng);
+        pickedLocation = { lat: e.latlng.lat, lng: e.latlng.lng };
+        markLocationAttached();
+    });
+}
+
+function markLocationAttached(){
+    document.getElementById("locationTag").style.display = "inline-flex";
+}
+
+document.getElementById("locateBtn").addEventListener("click", () => {
+    const picker = document.getElementById("mapPicker");
+    const isOpen = picker.style.display !== "none";
+
+    if(isOpen){
+        picker.style.display = "none";
+        return;
+    }
+
+    picker.style.display = "block";
+
+    const fallback = { lat: 24.8607, lng: 67.0011 }; // Karachi, used only if geolocation is unavailable
+
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude, lng = pos.coords.longitude;
+                pickedLocation = { lat, lng };
+                setTimeout(() => { initMapAt(lat, lng); markLocationAttached(); leafletMap.invalidateSize(); }, 50);
+            },
+            () => { setTimeout(() => { initMapAt(fallback.lat, fallback.lng); leafletMap.invalidateSize(); }, 50); }
+        );
+    } else {
+        setTimeout(() => { initMapAt(fallback.lat, fallback.lng); leafletMap.invalidateSize(); }, 50);
+    }
+});
+
+document.getElementById("clearLocationBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    pickedLocation = null;
+    document.getElementById("locationTag").style.display = "none";
+    document.getElementById("mapPicker").style.display = "none";
+});
+
+// ==============================================================
 // ORDER OBJECT
 // ==============================================================
-function generateOrderId(){
+function generateFallbackOrderId(){
+    // Only used if the sheet couldn't be reached to assign a real one.
     const stamp = Date.now().toString().slice(-6);
     const rand = Math.floor(10 + Math.random() * 89);
     return "STX" + stamp + rand;
@@ -191,16 +260,15 @@ function generateOrderId(){
 
 function buildOrder(){
     return {
-        id: generateOrderId(),
+        id: null, // filled in after the sheet assigns the next order id
         date: new Date(),
         customer: {
             name: document.getElementById("fullName").value.trim(),
             phone: document.getElementById("phone").value.trim(),
-            email: document.getElementById("email").value.trim(),
             address: document.getElementById("address").value.trim(),
             city: document.getElementById("city").value.trim(),
-            postal: document.getElementById("postal").value.trim(),
-            notes: document.getElementById("notes").value.trim()
+            notes: document.getElementById("notes").value.trim(),
+            location: pickedLocation ? { ...pickedLocation } : null
         },
         items: cart.map(item => ({
             id: item.id,
@@ -210,6 +278,18 @@ function buildOrder(){
         })),
         total: cartTotal()
     };
+}
+
+// A single combined message field for WhatsApp/invoice/sheet: the
+// user's note plus a Google Maps link if they dropped a pin.
+function buildUserMessage(order){
+    let msg = order.customer.notes || "";
+    if(order.customer.location){
+        const { lat, lng } = order.customer.location;
+        const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+        msg = msg ? `${msg}\nPin: ${mapsLink}` : `Pin: ${mapsLink}`;
+    }
+    return msg;
 }
 
 // ==============================================================
@@ -252,13 +332,13 @@ function buildInvoicePdf(order){
     y += 16;
     doc.text(order.customer.name, marginX, y); y += 14;
     doc.text(order.customer.phone, marginX, y); y += 14;
-    if(order.customer.email){ doc.text(order.customer.email, marginX, y); y += 14; }
-    const addressLine = `${order.customer.address}, ${order.customer.city}${order.customer.postal ? " " + order.customer.postal : ""}`;
+    const addressLine = `${order.customer.address}, ${order.customer.city}`;
     const addressWrapped = doc.splitTextToSize(addressLine, 260);
     doc.text(addressWrapped, marginX, y);
     y += addressWrapped.length * 14;
-    if(order.customer.notes){
-        const notesWrapped = doc.splitTextToSize("Note: " + order.customer.notes, 260);
+    const userMessage = buildUserMessage(order);
+    if(userMessage){
+        const notesWrapped = doc.splitTextToSize("Note: " + userMessage, 260);
         doc.text(notesWrapped, marginX, y);
         y += notesWrapped.length * 14;
     }
@@ -347,9 +427,10 @@ function buildWhatsappMessage(order){
         "",
         `Name: ${order.customer.name}`,
         `Phone: ${order.customer.phone}`,
-        `Address: ${order.customer.address}, ${order.customer.city}${order.customer.postal ? " " + order.customer.postal : ""}`,
+        `Address: ${order.customer.address}, ${order.customer.city}`,
     ];
-    if(order.customer.notes) lines.push(`Notes: ${order.customer.notes}`);
+    const userMessage = buildUserMessage(order);
+    if(userMessage) lines.push(`Note: ${userMessage}`);
     lines.push("", "*Items:*");
     order.items.forEach(item => {
         lines.push(`• ${item.name} x${item.qty} — Rs. ${item.price * item.qty}`);
@@ -383,35 +464,43 @@ async function tryShareInvoiceFile(pdfDoc, order){
 }
 
 // ==============================================================
-// GOOGLE SHEETS — decrease stock, increase sold, log the order
+// GOOGLE SHEETS — assigns the next order id and logs one row per
+// item: order id, product id, product name, quantity, unit price,
+// buyer name, buyer number, payment method, user message, delivery status
 // ==============================================================
-async function updateSheetStock(order){
-    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")){
-        console.info("Apps Script URL not configured — skipping sheet stock update.");
-        return;
-    }
-
+async function submitOrderToSheet(order){
     const payload = {
-        orderId: order.id,
         date: order.date.toISOString(),
-        customerName: order.customer.name,
-        customerPhone: order.customer.phone,
-        total: order.total,
-        items: order.items.map(item => ({ id: item.id, qty: item.qty }))
+        buyerName: order.customer.name,
+        buyerPhone: order.customer.phone,
+        address: `${order.customer.address}, ${order.customer.city}`,
+        paymentMethod: "Cash on Delivery",
+        userMessage: buildUserMessage(order),
+        deliveryStatus: "Pending",
+        items: order.items.map(item => ({
+            productId: item.id,
+            productName: item.name,
+            quantity: item.qty,
+            unitPrice: item.price
+        }))
     };
 
+    if(!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")){
+        console.info("Apps Script URL not configured — skipping sheet update.");
+        return null;
+    }
+
     try{
-        // Apps Script web apps don't return CORS headers by default, so the
-        // response can't be read here — this is a fire-and-forget call, the
-        // script still runs and updates the sheet server-side.
-        await fetch(APPS_SCRIPT_URL, {
+        const res = await fetch(APPS_SCRIPT_URL, {
             method: "POST",
-            mode: "no-cors",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids a CORS preflight
             body: JSON.stringify(payload)
         });
+        const data = await res.json();
+        return data && data.orderId ? data.orderId : null;
     } catch(err){
-        console.warn("Sheet stock update failed:", err);
+        console.warn("Sheet order submit failed, using a locally generated order id instead:", err);
+        return null;
     }
 }
 
@@ -432,18 +521,21 @@ async function placeOrder(){
 
     const order = buildOrder();
 
-    // 1) Generate the invoice and download it to the device
+    // 1) Ask the sheet to assign the next sequential order id and log the order.
+    //    Falls back to a locally generated id if the sheet can't be reached,
+    //    so the customer's flow never gets blocked.
+    const assignedId = await submitOrderToSheet(order);
+    order.id = assignedId || generateFallbackOrderId();
+
+    // 2) Generate the invoice and download it to the device
     const pdfDoc = buildInvoicePdf(order);
     pdfDoc.save(`StorixPK-Invoice-${order.id}.pdf`);
 
-    // 2) Open WhatsApp with the order details pre-filled
+    // 3) Open WhatsApp with the order details pre-filled
     openWhatsappMessage(order);
 
-    // 3) Best-effort: share the same invoice file via the device share sheet
+    // 4) Best-effort: share the same invoice file via the device share sheet
     tryShareInvoiceFile(pdfDoc, order);
-
-    // 4) Best-effort: update stock / sold counts on the product sheet
-    updateSheetStock(order);
 
     // Keep the last invoice + order in memory so "Download Again" works
     window._lastOrder = order;
@@ -466,7 +558,6 @@ function showSuccess(order){
     state.scrollIntoView({ behavior: "smooth", block: "start" });
 
     document.getElementById("successOrderId").textContent = "#" + order.id;
-    document.getElementById("successPhoneNote").textContent = STORE_WHATSAPP ? "" : "";
     document.getElementById("successTotal").textContent = "Rs. " + order.total;
 
     document.getElementById("successItems").innerHTML = order.items.map(item => `
