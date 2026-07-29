@@ -9,8 +9,7 @@ const STORE_WHATSAPP = "923428453606";
 // the Orders sheet (order id / product id / product name / qty /
 // unit price / buyer name / buyer number / payment method /
 // user message / delivery status) and assigns the next order id.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxLt6qlIk8y0OvOURsUX3dYLbLcmDRwdaRRZYDROm06zrdaBHhJaQ1PltySqaCJjB22/exec";
-
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxDySAqjtu4H3cxz4XEOyq97273ua-m_WtV8VbFZGXbBrz8bKjdebLJKDYOcdAvaqw/exec";
 // ==============================================================
 // STATE
 // ==============================================================
