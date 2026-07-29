@@ -27,7 +27,6 @@
     min-height:100vh;
   }
   ::selection{background:var(--accent);color:#08110f;}
-
   #loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
   .login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 32px;position:relative;overflow:hidden;}
   .login-card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent-2));}
@@ -56,7 +55,6 @@
   .btn-danger:hover{background:rgba(229,88,108,.28);}
   .btn-small{padding:6px 12px;font-size:12px;width:auto;}
   .error-msg{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
-
   #app{display:none;min-height:100vh;}
   header{display:flex;align-items:center;justify-content:space-between;padding:18px 28px;border-bottom:1px solid var(--line);background:var(--panel);}
   .brand{display:flex;align-items:center;gap:10px;}
@@ -64,19 +62,30 @@
   .brand h2{margin:0;font-size:15px;font-weight:650;}
   .brand span{display:block;font-size:11px;color:var(--muted);font-family:var(--mono);}
 
-  nav{display:flex;gap:6px;padding:14px 28px 0 28px;flex-wrap:wrap;}
-  .tab-btn{background:transparent;border:1px solid transparent;color:var(--muted);padding:9px 16px;border-radius:8px 8px 0 0;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--mono);letter-spacing:.03em;}
-  .tab-btn.active{color:var(--text);border:1px solid var(--line);border-bottom-color:var(--ink);background:var(--panel-2);}
+  /* ============ APP BODY / VERTICAL TABS ============ */
+  .app-body{display:flex;align-items:flex-start;}
+  nav{
+    display:flex;flex-direction:column;gap:4px;
+    padding:20px 14px;width:196px;flex-shrink:0;
+    border-right:1px solid var(--line);
+    min-height:calc(100vh - 68px);
+  }
+  .tab-btn{
+    background:transparent;border:1px solid transparent;color:var(--muted);
+    padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+    font-family:var(--mono);letter-spacing:.03em;text-align:left;width:100%;
+  }
+  .tab-btn:hover{color:var(--text);border-color:var(--line);}
+  .tab-btn.active{color:var(--ink);background:var(--accent);border-color:var(--accent);}
+  main{flex:1;min-width:0;padding:22px 28px 40px 28px;}
 
-  main{padding:0 28px 40px 28px;}
-  .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:0 10px 10px 10px;padding:22px;margin-top:-1px;}
+  .panel{background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:22px;}
   .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;}
   .panel-head h3{margin:0;font-size:16px;}
   .panel-head p{margin:2px 0 0 0;color:var(--muted);font-size:12.5px;}
   .panel-head-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
   .toggle-check{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);font-family:var(--mono);cursor:pointer;user-select:none;white-space:nowrap;}
   .toggle-check input{accent-color:var(--accent);width:14px;height:14px;cursor:pointer;}
-
   table{width:100%;border-collapse:collapse;font-size:13px;}
   thead th{text-align:left;color:var(--muted);font-family:var(--mono);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);}
   tbody td{padding:12px;border-bottom:1px solid rgba(43,49,64,.6);vertical-align:middle;}
@@ -87,9 +96,14 @@
   .empty-state b{color:var(--text);display:block;margin-bottom:4px;}
   .loading{padding:30px;text-align:center;color:var(--muted);font-family:var(--mono);font-size:12px;}
   .link-cell{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:12px;word-break:break-all;}
+  .link-input{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:7px 9px;color:var(--text);font-family:var(--mono);font-size:12px;outline:none;transition:border-color .3s ease;}
+  .link-input:focus{border-color:var(--accent);}
+  .reorder-btns{display:flex;gap:4px;}
+  .reorder-btns .btn{padding:4px 9px;}
   .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-family:var(--mono);border:1px solid var(--line);color:var(--muted);}
+  .badge.pending{color:var(--accent-2);border-color:rgba(242,161,84,.4);}
+  .badge.delivered{color:var(--accent);border-color:rgba(79,209,197,.4);}
   .warn-banner{background:rgba(242,161,84,.1);border:1px solid rgba(242,161,84,.35);color:var(--accent-2);font-size:12.5px;font-family:var(--mono);padding:10px 14px;border-radius:8px;margin-bottom:14px;line-height:1.5;}
-
   .overlay{display:none;position:fixed;inset:0;background:rgba(6,8,12,.7);align-items:center;justify-content:center;z-index:50;padding:20px;backdrop-filter:blur(2px);}
   .modal{background:var(--panel);border:1px solid var(--line);border-radius:14px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;padding:26px;}
   .modal h3{margin:0 0 18px 0;font-size:17px;}
@@ -98,7 +112,6 @@
   .upload-row{display:flex;align-items:center;gap:12px;}
   .upload-row img{width:52px;height:52px;border-radius:8px;object-fit:cover;border:1px solid var(--line);background:#0d1017;}
   .status-msg{font-size:12px;font-family:var(--mono);color:var(--muted);margin-top:6px;}
-
   .media-panel-inner{max-width:600px;}
   .dropzone{border:2px dashed var(--line);border-radius:12px;padding:34px 20px;text-align:center;cursor:pointer;transition:border-color .15s ease, background .15s ease;position:relative;}
   .dropzone:hover, .dropzone.dragover{border-color:var(--accent);background:rgba(79,209,197,.05);}
@@ -106,7 +119,6 @@
   .dropzone .dz-icon{font-size:26px;margin-bottom:8px;}
   .dropzone .dz-title{font-weight:600;font-size:14px;}
   .dropzone .dz-sub{font-size:12px;color:var(--muted);margin-top:4px;font-family:var(--mono);}
-
   .queue{margin-top:18px;display:flex;flex-direction:column;gap:8px;}
   .queue-item{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;}
   .queue-item .qi-icon{width:34px;height:34px;border-radius:6px;object-fit:cover;background:#0d1017;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--muted);flex-shrink:0;}
@@ -120,14 +132,28 @@
   .queue-item select{width:auto;padding:6px 8px;font-size:12px;flex-shrink:0;}
   .queue-item .qi-remove{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;flex-shrink:0;}
   .queue-item .qi-remove:hover{color:var(--danger);}
-
   .media-error{color:var(--danger);font-size:13px;margin-top:14px;display:none;font-family:var(--mono);}
   .media-summary{display:none;margin-top:14px;font-size:12.5px;color:var(--muted);font-family:var(--mono);}
 
-  #order_preview{font-family:var(--mono);font-size:12.5px;resize:vertical;}
+  /* ============ ORDERS ============ */
+  .order-card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;}
+  .order-card-head{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+  .order-card-head h4{margin:0 0 4px 0;font-size:14px;font-family:var(--mono);}
+  .order-card-head .oc-meta{font-size:12px;color:var(--muted);line-height:1.6;}
+  .order-items{display:flex;flex-direction:column;gap:8px;}
+  .order-item-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--panel-2);border-radius:8px;padding:9px 12px;font-size:12.5px;flex-wrap:wrap;}
+  .order-item-row .oi-name{flex:1;min-width:160px;}
+  .order-item-row .oi-nums{color:var(--muted);font-family:var(--mono);font-size:11.5px;}
+  .order-card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);flex-wrap:wrap;gap:10px;}
+  .order-card-foot .oc-total{font-weight:700;font-size:14px;}
+  .order-card-foot .oc-total span{color:var(--accent);}
 
+  #order_preview{font-family:var(--mono);font-size:12.5px;resize:vertical;}
   @media(max-width:640px){
-    header,nav,main{padding-left:16px;padding-right:16px;}
+    header,main{padding-left:16px;padding-right:16px;}
+    .app-body{flex-direction:column;}
+    nav{width:100%;flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--line);min-height:auto;padding:12px 16px;}
+    .tab-btn{width:auto;white-space:nowrap;}
     .grid-2{grid-template-columns:1fr;}
     table, thead, tbody, tr, td{display:block;}
     thead{display:none;}
@@ -138,7 +164,6 @@
 </style>
 </head>
 <body>
-
 <!-- ================= LOGIN ================= -->
 <div id="loginScreen">
   <div class="login-card">
@@ -150,7 +175,6 @@
     <div class="error-msg" id="loginError">Incorrect username or password.</div>
   </div>
 </div>
-
 <!-- ================= APP ================= -->
 <div id="app">
   <header>
@@ -161,90 +185,74 @@
     <button class="btn btn-ghost btn-small" onclick="handleLogout()">Log Out</button>
   </header>
 
-  <nav>
-    <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
-    <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
-    <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
-    <button class="tab-btn" id="tabBtnOrder" onclick="switchTab('order')">ORDER TO SELLER</button>
-  </nav>
+  <div class="app-body">
+    <nav>
+      <button class="tab-btn active" id="tabBtnProducts" onclick="switchTab('products')">PRODUCTS</button>
+      <button class="tab-btn" id="tabBtnFiles" onclick="switchTab('files')">MEDIA LINKS</button>
+      <button class="tab-btn" id="tabBtnMedia" onclick="switchTab('media')">BULK UPLOAD</button>
+      <button class="tab-btn" id="tabBtnOrder" onclick="switchTab('order')">ORDERS</button>
+    </nav>
 
-  <main>
-    <!-- PRODUCTS PANEL -->
-    <div class="panel" id="panelProducts">
-      <div class="panel-head">
-        <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
-        <div class="panel-head-actions">
-          <label class="toggle-check">
-            <input type="checkbox" id="lowStockToggle" onchange="renderProducts()">
-            Highlight low stock (&lt;5)
-          </label>
-          <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+    <main>
+      <!-- PRODUCTS PANEL -->
+      <div class="panel" id="panelProducts">
+        <div class="panel-head">
+          <div><h3>Products</h3><p id="productsCount">Loading…</p></div>
+          <div class="panel-head-actions">
+            <label class="toggle-check">
+              <input type="checkbox" id="lowStockToggle" onchange="renderProducts()">
+              Highlight low stock (&lt;5)
+            </label>
+            <button class="btn btn-primary btn-small" onclick="openProductModal()">+ Add Product</button>
+          </div>
+        </div>
+        <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
+      </div>
+
+      <!-- FILES PANEL -->
+      <div class="panel" id="panelFiles" style="display:none;">
+        <div class="panel-head">
+          <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
+          <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
+        </div>
+        <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
+        <p class="status-msg" style="margin-top:14px;">Edit a link directly in the table — it saves automatically when you click away. Use the ↑ / ↓ buttons to reorder rows; this also reorders them in the sheet.</p>
+      </div>
+
+      <!-- BULK UPLOAD PANEL -->
+      <div class="panel" id="panelMedia" style="display:none;">
+        <div class="panel-head">
+          <div><h3>Bulk Media Upload</h3><p>Pick a product, add several files, and each one gets uploaded to Cloudinary and saved as its own row in Sheet 2.</p></div>
+        </div>
+        <div class="media-panel-inner">
+          <div class="field">
+            <label>Product</label>
+            <select id="bulk_productId"></select>
+          </div>
+          <div class="dropzone" id="mediaDropzone">
+            <input type="file" id="mediaFileInput" multiple onchange="handleMediaFilesSelect(this.files)">
+            <div class="dz-icon">⇪</div>
+            <div class="dz-title">Click to choose files, or drag several here</div>
+            <div class="dz-sub">Images and videos — type is auto-detected per file, editable below</div>
+          </div>
+          <div class="queue" id="mediaQueue"></div>
+          <button class="btn btn-primary btn-small" id="mediaUploadAllBtn" style="margin-top:16px;display:none;" onclick="uploadAllMediaFiles()">Upload &amp; Save All</button>
+          <div class="media-error" id="mediaError"></div>
+          <div class="media-summary" id="mediaSummary"></div>
         </div>
       </div>
-      <div id="productsTableWrap"><div class="loading">Fetching products…</div></div>
-    </div>
 
-    <!-- FILES PANEL -->
-    <div class="panel" id="panelFiles" style="display:none;">
-      <div class="panel-head">
-        <div><h3>Media Links</h3><p id="filesCount">Loading…</p></div>
-        <button class="btn btn-primary btn-small" onclick="openFileModal()">+ Add Media</button>
-      </div>
-      <div id="filesTableWrap"><div class="loading">Fetching media links…</div></div>
-    </div>
-
-    <!-- BULK UPLOAD PANEL -->
-    <div class="panel" id="panelMedia" style="display:none;">
-      <div class="panel-head">
-        <div><h3>Bulk Media Upload</h3><p>Pick a product, add several files, and each one gets uploaded to Cloudinary and saved as its own row in Sheet 2.</p></div>
-      </div>
-      <div class="media-panel-inner">
-        <div class="field">
-          <label>Product</label>
-          <select id="bulk_productId"></select>
+      <!-- ORDERS PANEL -->
+      <div class="panel" id="panelOrder" style="display:none;">
+        <div class="panel-head">
+          <div><h3>Orders</h3><p id="ordersCount">Loading…</p></div>
+          <button class="btn btn-ghost btn-small" onclick="loadOrders()">Refresh</button>
         </div>
-
-        <div class="dropzone" id="mediaDropzone">
-          <input type="file" id="mediaFileInput" multiple onchange="handleMediaFilesSelect(this.files)">
-          <div class="dz-icon">⇪</div>
-          <div class="dz-title">Click to choose files, or drag several here</div>
-          <div class="dz-sub">Images and videos — type is auto-detected per file, editable below</div>
-        </div>
-
-        <div class="queue" id="mediaQueue"></div>
-
-        <button class="btn btn-primary btn-small" id="mediaUploadAllBtn" style="margin-top:16px;display:none;" onclick="uploadAllMediaFiles()">Upload &amp; Save All</button>
-        <div class="media-error" id="mediaError"></div>
-        <div class="media-summary" id="mediaSummary"></div>
+        <div id="ordersTableWrap"><div class="loading">Fetching orders…</div></div>
       </div>
-    </div>
-
-    <!-- ORDER TO SELLER PANEL -->
-    <div class="panel" id="panelOrder" style="display:none;">
-      <div class="panel-head">
-        <div><h3>Send Order to Seller</h3><p>Pick a product and quantity — Storix builds the order message and opens WhatsApp with the seller's number.</p></div>
-      </div>
-      <div class="media-panel-inner">
-        <div class="field">
-          <label>Product</label>
-          <select id="order_productId" onchange="updateOrderPreview()"></select>
-        </div>
-        <div class="grid-2">
-          <div class="field"><label>Quantity</label><input type="number" id="order_qty" value="1" min="1" onkeyup="updateOrderPreview()" onchange="updateOrderPreview()"></div>
-          <div class="field"><label>Customer Name (optional)</label><input id="order_customerName" onkeyup="updateOrderPreview()"></div>
-        </div>
-        <div class="field"><label>Customer Phone / Address (optional)</label><input id="order_customerNote" onkeyup="updateOrderPreview()"></div>
-        <div class="field"><label>Message Preview</label><textarea id="order_preview" rows="8" readonly></textarea></div>
-        <div class="modal-actions" style="justify-content:flex-start;">
-          <button class="btn btn-primary btn-small" onclick="sendOrderToSeller()">Send via WhatsApp</button>
-          <button class="btn btn-ghost btn-small" onclick="copyOrderMessage()">Copy Message</button>
-        </div>
-        <div class="status-msg" id="orderStatus"></div>
-      </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>
-
 <!-- ============ PRODUCT MODAL ============ -->
 <div class="overlay" id="productOverlay">
   <div class="modal">
@@ -283,7 +291,6 @@
     </div>
   </div>
 </div>
-
 <!-- ============ FILE MODAL ============ -->
 <div class="overlay" id="fileOverlay">
   <div class="modal">
@@ -311,25 +318,23 @@
     </div>
   </div>
 </div>
-
 <script>
 /* ================= CONFIG ================= */
 const ADMIN_USER = "112233";
 const ADMIN_PASS = "P@kistan";
-
 const PRODUCTS_URL = "https://script.google.com/macros/s/AKfycbxg-irSc9cHevNptiQm_bLPas1KTkgPidTVMhk-_35FwZ9D5_rdbdWtEqXeyKe_h505/exec";
 const FILES_URL = "https://script.google.com/macros/s/AKfycbyuLMFuxoCQ1iEesrOA2uy9v8JrrMUVqXKlo21a7Pktf0_0eFRFbPlQr4vn16_PIXqR/exec";
-
+const ORDERS_URL = "https://script.google.com/macros/s/AKfycbxf3i4fI9emlDsnCarFZhTlaZH0RzSl4pkzmOM58NkQYfiVbo8cBJyR_B-VeuvW5npD/exec";
 const CLOUDINARY_CLOUD = "dgnprxuay";
 const CLOUDINARY_PRESET = "storix_upload";
 const CLOUDINARY_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`;
-
 let products = [];
 let files = [];
+let ordersCache = [];
+let orders = [];
 let editingProductRow = null;
 let editingFileRow = null;
 let mediaQueueItems = []; // { file, type, status, url, error }
-
 /* ================= LOGIN ================= */
 function handleLogin(){
   const u = document.getElementById('loginUser').value.trim();
@@ -340,6 +345,7 @@ function handleLogin(){
     document.getElementById('app').style.display='block';
     loadProducts();
     loadFiles();
+    loadOrders();
   } else {
     document.getElementById('loginError').style.display='block';
   }
@@ -359,14 +365,13 @@ window.addEventListener('DOMContentLoaded', ()=>{
     document.getElementById('app').style.display='block';
     loadProducts();
     loadFiles();
+    loadOrders();
   }
-
   const dz = document.getElementById('mediaDropzone');
   ['dragenter','dragover'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.add('dragover'); }));
   ['dragleave','drop'].forEach(evt=> dz.addEventListener(evt, e=>{ e.preventDefault(); dz.classList.remove('dragover'); }));
   dz.addEventListener('drop', e=>{ if(e.dataTransfer.files.length) handleMediaFilesSelect(e.dataTransfer.files); });
 });
-
 /* ================= TABS ================= */
 function switchTab(tab){
   document.getElementById('panelProducts').style.display = tab==='products' ? 'block' : 'none';
@@ -378,9 +383,8 @@ function switchTab(tab){
   document.getElementById('tabBtnMedia').classList.toggle('active', tab==='media');
   document.getElementById('tabBtnOrder').classList.toggle('active', tab==='order');
   if(tab==='media') populateProductDropdown('bulk_productId');
-  if(tab==='order'){ populateProductDropdown('order_productId'); updateOrderPreview(); }
+  if(tab==='order') loadOrders();
 }
-
 /* ================= HELPERS ================= */
 async function postAction(url, payload){
   const res = await fetch(url, {
@@ -415,7 +419,13 @@ function nextProductId(){
   if(nums.length === 0) return '1';
   return String(Math.max(...nums) + 1);
 }
-
+function formatSellerPhone(raw){
+  let digits = String(raw || '').replace(/\D/g, '');
+  if(!digits) return '';
+  if(digits.startsWith('0')) digits = '92' + digits.slice(1);      // local 03xx -> 923xx
+  else if(!digits.startsWith('92') && digits.length === 10) digits = '92' + digits;
+  return digits;
+}
 /* ================= PRODUCTS ================= */
 async function loadProducts(){
   document.getElementById('productsTableWrap').innerHTML = '<div class="loading">Fetching products…</div>';
@@ -429,6 +439,32 @@ async function loadProducts(){
     document.getElementById('productsTableWrap').innerHTML = `<div class="empty-state"><b>Could not load products</b>${esc(err.message)}</div>`;
   }
 }
+async function loadOrders(){
+
+    document.getElementById("ordersTableWrap").innerHTML =
+        '<div class="loading">Fetching orders...</div>';
+
+    try{
+
+        orders = await getJson(ORDERS_URL);
+
+        renderOrders();
+
+    }catch(err){
+
+        document.getElementById("ordersTableWrap").innerHTML =
+
+        `<div class="empty-state">
+            <b>Could not load orders</b>
+            ${err.message}
+        </div>`;
+
+    }
+
+}
+
+
+
 function populateTypeOptions(){
   const types = [...new Set(products.map(p=>p.type).filter(Boolean))].sort((a,b)=>String(a).localeCompare(String(b)));
   document.getElementById('typeOptions').innerHTML = types.map(t=>`<option value="${esc(t)}">`).join('');
@@ -490,7 +526,6 @@ function openProductModal(row){
   document.getElementById('productOverlay').style.display='flex';
 }
 function closeProductModal(){ document.getElementById('productOverlay').style.display='none'; }
-
 async function uploadProductImage(input){
   const file = input.files[0];
   if(!file) return;
@@ -513,12 +548,10 @@ async function uploadProductImage(input){
     statusEl.textContent = 'Upload failed: ' + err.message;
   }
 }
-
 async function saveProduct(){
   const pictureUrl = document.getElementById('productPicturePreview').dataset.url || '';
   const originalUrl = document.getElementById('productPicturePreview').dataset.originalUrl || '';
   const productId = document.getElementById('p_productId').value;
-
   const payload = {
     action: editingProductRow ? 'edit' : 'add',
     type: document.getElementById('p_type').value,
@@ -534,12 +567,10 @@ async function saveProduct(){
     stock: document.getElementById('p_stock').value
   };
   if(editingProductRow) payload._row = editingProductRow;
-
   const btn = event.target;
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
     await postAction(PRODUCTS_URL, payload);
-
     // Keep Sheet 2 (media links) in sync: whenever a new/changed product picture
     // is saved, also record it as a media link for that product.
     if(pictureUrl && pictureUrl !== originalUrl){
@@ -549,7 +580,6 @@ async function saveProduct(){
         console.warn('Product saved, but could not also add the picture to Media Links:', linkErr.message);
       }
     }
-
     closeProductModal();
     await loadProducts();
     await loadFiles();
@@ -568,7 +598,6 @@ async function deleteProduct(row){
     alert('Delete failed: ' + err.message);
   }
 }
-
 /* ================= FILES (MEDIA LINKS) ================= */
 function populateProductDropdown(selectId){
   const sel = document.getElementById(selectId);
@@ -578,7 +607,6 @@ function populateProductDropdown(selectId){
   ).join('') || '<option value="">No products yet</option>';
   if(current) sel.value = current;
 }
-
 // The products sheet and the media-links sheet come from two separate Apps
 // Script backends, so their JSON keys aren't guaranteed to match. This maps
 // whatever shape comes back onto the fields the UI needs.
@@ -590,7 +618,6 @@ function normalizeFileRecord(raw, idx){
     link: raw.link ?? raw.Link ?? raw.url ?? raw.URL ?? ''
   };
 }
-
 async function loadFiles(){
   document.getElementById('filesTableWrap').innerHTML = '<div class="loading">Fetching media links…</div>';
   try{
@@ -613,11 +640,21 @@ function renderFiles(){
   const warning = linksLookEmpty
     ? `<div class="warn-banner">Links are coming back empty from the Media Links sheet. This usually means the Apps Script for that sheet uses different column names than "id / fileType / link". Open your browser console — the raw response is logged there — and adjust the sheet headers (or tell me the exact keys) so this maps correctly.</div>`
     : '';
-  let rows = files.map(f=>`
+  let rows = files.map((f, idx)=>`
     <tr>
       <td data-label="Product ID">${esc(f.id)}</td>
       <td data-label="Type"><span class="badge">${esc(f.fileType)}</span></td>
-      <td data-label="Link">${f.link ? `<a class="link-cell" href="${esc(f.link)}" target="_blank" rel="noopener">${esc(f.link)}</a>` : '<span style="color:var(--muted);">—</span>'}</td>
+      <td data-label="Link">
+        <input class="link-input" type="text" value="${esc(f.link)}"
+               onchange="saveLinkInline(${f._row}, this.value, this)"
+               placeholder="https://...">
+      </td>
+      <td data-label="Order">
+        <div class="reorder-btns">
+          <button class="btn btn-ghost btn-small" onclick="moveFileRow(${idx}, -1)" ${idx===0 ? 'disabled' : ''} title="Move up">↑</button>
+          <button class="btn btn-ghost btn-small" onclick="moveFileRow(${idx}, 1)" ${idx===files.length-1 ? 'disabled' : ''} title="Move down">↓</button>
+        </div>
+      </td>
       <td data-label="Actions">
         <div class="row-actions">
           <button class="btn btn-ghost btn-small" onclick='openFileModal(${f._row})'>Edit</button>
@@ -628,9 +665,39 @@ function renderFiles(){
   document.getElementById('filesTableWrap').innerHTML = `
     ${warning}
     <table>
-      <thead><tr><th>Product ID</th><th>Type</th><th>Link</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Product ID</th><th>Type</th><th>Link</th><th>Order</th><th>Actions</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+}
+// Saves a link the moment you click away from the input — no modal needed.
+async function saveLinkInline(row, value, inputEl){
+  const record = files.find(f=>f._row===row);
+  if(!record) return;
+  inputEl.style.borderColor = '';
+  try{
+    await postAction(FILES_URL, { action:'update', _row: row, id: record.id, fileType: record.fileType, link: value });
+    record.link = value;
+    inputEl.style.borderColor = 'var(--accent)';
+    setTimeout(()=>{ inputEl.style.borderColor = ''; }, 800);
+  }catch(err){
+    inputEl.style.borderColor = 'var(--danger)';
+    alert('Could not save this link: ' + err.message);
+  }
+}
+// Swaps two rows on screen immediately, then asks the sheet to persist the
+// new order. Requires the Media Links Apps Script to support
+// { action:'reorder', order:[rowNumbers...] } — see reorder-snippet.gs.
+async function moveFileRow(idx, direction){
+  const newIdx = idx + direction;
+  if(newIdx < 0 || newIdx >= files.length) return;
+  [files[idx], files[newIdx]] = [files[newIdx], files[idx]];
+  renderFiles();
+  try{
+    await postAction(FILES_URL, { action:'reorder', order: files.map(f=>f._row) });
+  }catch(err){
+    alert('The new order didn\'t save to the sheet (' + err.message + '). Reverting — this needs "reorder" support added to the Media Links Apps Script.');
+    await loadFiles();
+  }
 }
 function openFileModal(row){
   editingFileRow = row || null;
@@ -644,7 +711,6 @@ function openFileModal(row){
   document.getElementById('fileOverlay').style.display='flex';
 }
 function closeFileModal(){ document.getElementById('fileOverlay').style.display='none'; }
-
 async function uploadFileLink(input){
   const file = input.files[0];
   if(!file) return;
@@ -666,14 +732,12 @@ async function uploadFileLink(input){
     statusEl.textContent = 'Upload failed: ' + err.message;
   }
 }
-
 async function saveFile(){
   const id = document.getElementById('f_productId').value;
   const fileType = document.getElementById('f_fileType').value;
   const link = document.getElementById('f_link').value;
   if(!id){ alert('Select a product first.'); return; }
   if(!link){ alert('Upload a file or paste a link first.'); return; }
-
   const btn = event.target;
   btn.disabled = true; btn.textContent = 'Saving…';
   try{
@@ -699,7 +763,6 @@ async function deleteFile(row){
     alert('Delete failed: ' + err.message);
   }
 }
-
 /* ================= BULK MEDIA UPLOAD ================= */
 function handleMediaFilesSelect(fileList){
   const newFiles = Array.from(fileList);
@@ -753,7 +816,6 @@ function renderMediaQueue(){
       </div>`;
   }).join('');
 }
-
 function uploadSingleToCloudinary(item, idx){
   return new Promise((resolve, reject)=>{
     const fd = new FormData();
@@ -778,14 +840,12 @@ function uploadSingleToCloudinary(item, idx){
     xhr.send(fd);
   });
 }
-
 async function uploadAllMediaFiles(){
   const productId = document.getElementById('bulk_productId').value;
   const errEl = document.getElementById('mediaError');
   const summaryEl = document.getElementById('mediaSummary');
   errEl.style.display = 'none';
   summaryEl.style.display = 'none';
-
   if(!productId){
     errEl.textContent = 'Select a product first.';
     errEl.style.display = 'block';
@@ -793,13 +853,10 @@ async function uploadAllMediaFiles(){
   }
   const pending = mediaQueueItems.filter(i => i.status === 'pending' || i.status === 'error');
   if(pending.length === 0) return;
-
   const btn = document.getElementById('mediaUploadAllBtn');
   btn.disabled = true;
   btn.textContent = 'Uploading…';
-
   let succeeded = 0, failed = 0;
-
   for(let idx=0; idx<mediaQueueItems.length; idx++){
     const item = mediaQueueItems[idx];
     if(item.status === 'done') continue;
@@ -819,66 +876,111 @@ async function uploadAllMediaFiles(){
     }
     renderMediaQueue();
   }
-
   btn.disabled = false;
   btn.textContent = 'Upload & Save All';
   summaryEl.textContent = `${succeeded} saved, ${failed} failed.`;
   summaryEl.style.display = 'block';
-
   if(succeeded > 0) await loadFiles();
 }
-
-/* ================= ORDER TO SELLER ================= */
-function formatSellerPhone(raw){
-  let digits = String(raw || '').replace(/\D/g, '');
-  if(!digits) return '';
-  if(digits.startsWith('0')) digits = '92' + digits.slice(1);      // local 03xx -> 923xx
-  else if(!digits.startsWith('92') && digits.length === 10) digits = '92' + digits;
-  return digits;
+/* ================= ORDERS ================= */
+async function loadOrders(){
+  document.getElementById('ordersTableWrap').innerHTML = '<div class="loading">Fetching orders…</div>';
+  try{
+    const raw = await getJson(ORDERS_URL);
+    ordersCache = raw.orders || [];
+    renderOrders();
+  }catch(err){
+    document.getElementById('ordersTableWrap').innerHTML = `<div class="empty-state"><b>Could not load orders</b>${esc(err.message)}</div>`;
+  }
 }
-
-function updateOrderPreview(){
-  const pid = document.getElementById('order_productId').value;
-  const p = products.find(x => String(x.productId) === String(pid));
-  const previewEl = document.getElementById('order_preview');
-  if(!p){
-    previewEl.value = 'Select a product to preview the order message.';
+function findSellerPhoneForProduct(productId){
+  const p = products.find(x => String(x.productId) === String(productId));
+  return p ? formatSellerPhone(p.sellerNo) : '';
+}
+function buildFullOrderMessage(order){
+  const lines = [
+    `*Order ${order.orderId}*`,
+    '',
+    `Buyer: ${order.buyerName}`,
+    `Phone: ${order.buyerPhone}`
+  ];
+  if(order.userMessage) lines.push(`Note: ${order.userMessage}`);
+  lines.push('', '*Items:*');
+  order.items.forEach(it=>{
+    lines.push(`• ${it.productName} x${it.quantity} — Rs. ${(it.unitPrice * it.quantity).toFixed(2)}`);
+  });
+  lines.push('', `*Total: Rs. ${order.total.toFixed(2)}* (${order.paymentMethod || 'Cash on Delivery'})`);
+  return lines.join('\n');
+}
+function renderOrders(){
+  document.getElementById('ordersCount').textContent = `${ordersCache.length} order${ordersCache.length===1?'':'s'}`;
+  if(ordersCache.length === 0){
+    document.getElementById('ordersTableWrap').innerHTML = '<div class="empty-state"><b>No orders yet</b>Orders placed at checkout will show up here.</div>';
     return;
   }
-  const qty = Math.max(1, parseInt(document.getElementById('order_qty').value) || 1);
-  const name = document.getElementById('order_customerName').value.trim();
-  const note = document.getElementById('order_customerNote').value.trim();
-  const unit = parseFloat(p.price) || 0;
-  const total = (unit * qty).toFixed(2);
-
-  let msg = `New Order Request\n\nProduct: ${p.name}\nProduct ID: ${p.productId}\nQuantity: ${qty}\nUnit Price: Rs. ${unit}\nTotal: Rs. ${total}`;
-  if(name) msg += `\nCustomer: ${name}`;
-  if(note) msg += `\nContact / Address: ${note}`;
-  previewEl.value = msg;
+  const cards = ordersCache.slice().reverse().map(order=>{
+    const statusClass = String(order.deliveryStatus||'').toLowerCase()==='delivered' ? 'delivered' : 'pending';
+    const itemRows = order.items.map((it, i)=>{
+      const sellerPhone = findSellerPhoneForProduct(it.productId);
+      return `
+        <div class="order-item-row">
+          <span class="oi-name">${esc(it.productName)}</span>
+          <span class="oi-nums">x${esc(it.quantity)} · Rs. ${esc(it.unitPrice)} · Rs. ${(it.unitPrice*it.quantity).toFixed(2)}</span>
+          <button class="btn btn-ghost btn-small" onclick="sendItemToSeller('${esc(order.orderId)}', ${i})" ${sellerPhone ? '' : 'disabled title="No seller number on file for this product"'}>
+            Send to Seller
+          </button>
+        </div>`;
+    }).join('');
+    return `
+      <div class="order-card">
+        <div class="order-card-head">
+          <div>
+            <h4>${esc(order.orderId)}</h4>
+            <div class="oc-meta">${esc(order.buyerName)} · ${esc(order.buyerPhone)}${order.userMessage ? '<br>' + esc(order.userMessage) : ''}</div>
+          </div>
+          <span class="badge ${statusClass}">${esc(order.deliveryStatus || 'Pending')}</span>
+        </div>
+        <div class="order-items">${itemRows}</div>
+        <div class="order-card-foot">
+          <div class="oc-total">Total: <span>Rs. ${order.total.toFixed(2)}</span></div>
+          <div class="row-actions">
+            <button class="btn btn-ghost btn-small" onclick="copyFullOrder('${esc(order.orderId)}')">Copy Full Order</button>
+            <button class="btn btn-primary btn-small" onclick="shareFullOrder('${esc(order.orderId)}')">Share via WhatsApp</button>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+  document.getElementById('ordersTableWrap').innerHTML = cards;
 }
-
-function sendOrderToSeller(){
-  const pid = document.getElementById('order_productId').value;
-  const p = products.find(x => String(x.productId) === String(pid));
-  const statusEl = document.getElementById('orderStatus');
-  if(!p){ statusEl.textContent = 'Select a product first.'; return; }
-  const phone = formatSellerPhone(p.sellerNo);
-  if(!phone){ statusEl.textContent = 'This product has no valid seller number saved.'; return; }
-  const msg = document.getElementById('order_preview').value;
+function sendItemToSeller(orderId, itemIdx){
+  const order = ordersCache.find(o=>o.orderId===orderId);
+  if(!order) return;
+  const item = order.items[itemIdx];
+  const phone = findSellerPhoneForProduct(item.productId);
+  if(!phone){ alert('No seller number on file for this product.'); return; }
+  const msg = [
+    `*Order ${order.orderId}*`,
+    `Product: ${item.productName}`,
+    `Product ID: ${item.productId}`,
+    `Quantity: ${item.quantity}`,
+    `Unit Price: Rs. ${item.unitPrice}`,
+    `Buyer: ${order.buyerName} (${order.buyerPhone})`
+  ].join('\n');
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
-  statusEl.textContent = 'Opened WhatsApp with the order message.';
 }
-
-function copyOrderMessage(){
-  const msg = document.getElementById('order_preview').value;
-  const statusEl = document.getElementById('orderStatus');
-  navigator.clipboard.writeText(msg).then(()=>{
-    statusEl.textContent = 'Message copied to clipboard.';
-  }).catch(()=>{
-    statusEl.textContent = 'Could not copy automatically — select the text above and copy manually.';
+function shareFullOrder(orderId){
+  const order = ordersCache.find(o=>o.orderId===orderId);
+  if(!order) return;
+  const msg = buildFullOrderMessage(order);
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+function copyFullOrder(orderId){
+  const order = ordersCache.find(o=>o.orderId===orderId);
+  if(!order) return;
+  navigator.clipboard.writeText(buildFullOrderMessage(order)).catch(()=>{
+    alert('Could not copy automatically — select and copy the message manually.');
   });
 }
-
 document.getElementById('productOverlay').addEventListener('click', e=>{ if(e.target.id==='productOverlay') closeProductModal(); });
 document.getElementById('fileOverlay').addEventListener('click', e=>{ if(e.target.id==='fileOverlay') closeFileModal(); });
 </script>
