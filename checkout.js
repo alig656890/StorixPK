@@ -496,12 +496,45 @@ async function submitOrderToSheet(order){
             headers: { "Content-Type": "text/plain;charset=utf-8" }, // avoids a CORS preflight
             body: JSON.stringify(payload)
         });
-        const data = await res.json();
-        return data && data.orderId ? data.orderId : null;
+
+        const raw = await res.text();
+        let data;
+        try{
+            data = JSON.parse(raw);
+        } catch(parseErr){
+            // The Apps Script URL returned something that isn't JSON — usually
+            // an HTML error/login page, which means the deployment itself is
+            // misconfigured (not redeployed, access not set to "Anyone", wrong
+            // function name, etc.) rather than a network problem.
+            console.error("Apps Script did not return JSON. Raw response:", raw);
+            showSheetWarning("Order wasn't saved to the sheet (bad response from the script). Your invoice/WhatsApp still went through.");
+            return null;
+        }
+
+        if(!data || !data.orderId){
+            console.error("Apps Script response missing orderId:", data);
+            showSheetWarning("Order wasn't saved to the sheet (no order id returned). Your invoice/WhatsApp still went through.");
+            return null;
+        }
+
+        return data.orderId;
     } catch(err){
         console.warn("Sheet order submit failed, using a locally generated order id instead:", err);
+        showSheetWarning("Couldn't reach the order sheet, so it wasn't logged there. Your invoice/WhatsApp still went through.");
         return null;
     }
+}
+
+function showSheetWarning(message){
+    let banner = document.getElementById("sheetWarningBanner");
+    if(!banner){
+        banner = document.createElement("div");
+        banner.id = "sheetWarningBanner";
+        banner.className = "sheet-warning-banner";
+        document.querySelector(".checkout-page")?.prepend(banner);
+    }
+    banner.innerHTML = `<i class="fas fa-triangle-exclamation"></i> ${message}`;
+    banner.style.display = "flex";
 }
 
 // ==============================================================
