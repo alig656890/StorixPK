@@ -18,7 +18,7 @@
 <!-- MINI NAV -->
 <nav class="spin-nav">
     <a href="index.html" class="brand-link">
-        <img src="2.png" style="height:32px; margin-right:8px;">
+        <img src="2.png" class="brand-logo-img">
         <span class="logo-text">Storix<span>PK</span></span>
     </a>
     <div class="spin-nav-right">
@@ -40,9 +40,16 @@
 <!-- MACHINE -->
 <div class="machine-wrap">
 
+    <div class="spin-error" id="spinError"></div>
+
     <!-- Budget input -->
     <div class="budget-box">
-        <label for="budgetInput">Your Budget</label>
+        <div class="budget-box-head">
+            <label for="budgetInput">Your Budget</label>
+            <button class="info-btn" id="infoBtn" type="button" aria-label="Show available products">
+                <i class="fas fa-info"></i>
+            </button>
+        </div>
         <div class="budget-input-row">
             <span class="budget-currency">Rs.</span>
             <input id="budgetInput" type="number" min="1" step="1" placeholder="e.g. 3000" inputmode="numeric">
@@ -96,6 +103,19 @@
         </div>
     </div>
 
+</div>
+
+<!-- INFO MODAL: available products -->
+<div class="info-modal" id="infoModal">
+    <div class="info-modal-backdrop" id="infoModalBackdrop"></div>
+    <div class="info-modal-inner">
+        <div class="info-modal-head">
+            <h3><i class="fas fa-boxes"></i> Products Available This Spin</h3>
+            <button class="info-modal-close" id="infoModalClose" aria-label="Close">&times;</button>
+        </div>
+        <p class="info-modal-sub" id="infoModalSub"></p>
+        <div class="info-modal-list" id="infoModalList"></div>
+    </div>
 </div>
 
 <!-- FOOTER -->
