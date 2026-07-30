@@ -23,6 +23,21 @@ const footerYearEl = document.getElementById("footerYear");
 if (footerYearEl) footerYearEl.textContent = new Date().getFullYear();
 
 /* ==============================
+   ERROR BANNER
+============================== */
+const spinErrorEl = document.getElementById("spinError");
+function showError(msg) {
+    if (!spinErrorEl) return;
+    spinErrorEl.innerText = msg;
+    spinErrorEl.classList.add("show");
+}
+function clearError() {
+    if (!spinErrorEl) return;
+    spinErrorEl.classList.remove("show");
+    spinErrorEl.innerText = "";
+}
+
+/* ==============================
    FETCH + PARSE
    The Apps Script endpoint may return either:
    - an array of row objects keyed by the sheet's header names, or
@@ -40,7 +55,10 @@ const COLUMN_ORDER = [
 ];
 
 fetch(sheetURL)
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+        return res.json();
+    })
     .then(payload => {
         let rows = Array.isArray(payload)
             ? payload
@@ -95,13 +113,55 @@ fetch(sheetURL)
             });
         });
 
+        if (allProducts.length === 0) {
+            showError("No products were found from the sheet. Please check back later.");
+            document.getElementById("machineStatus").innerText = "No products available right now.";
+            return;
+        }
+
+        const eligibleCount = allProducts.filter(p => parseMoney(p.price) > 0).length;
+        if (eligibleCount === 0) {
+            console.error("Storix Spin: every product parsed with a Rs. 0 price. Sample →", allProducts[0]);
+            showError("Product prices couldn't be read correctly from the sheet. Please refresh, or let us know if this keeps happening.");
+            document.getElementById("machineStatus").innerText =
+                `${allProducts.length} products loaded, but prices look wrong — see the notice above.`;
+            return;
+        }
+
+        clearError();
+        const minBudget = getMinBudgetForThreeCategories();
+        const suggestion = minBudget
+            ? ` Try at least Rs. ${minBudget.toLocaleString()} to guarantee 3 different picks.`
+            : "";
         document.getElementById("machineStatus").innerText =
-            `${allProducts.length} products loaded — enter a budget and pull the lever`;
+            `${allProducts.length} products loaded — enter a budget and pull the lever.${suggestion}`;
     })
-    .catch(() => {
+    .catch(err => {
+        console.error("Storix Spin: failed to load products →", err);
+        showError("Couldn't load products right now. Please check your connection and refresh the page.");
         document.getElementById("machineStatus").innerText =
             "Couldn't load products right now. Please refresh and try again.";
     });
+
+// Minimum budget needed to guarantee 3 picks from 3 DIFFERENT categories —
+// the price of the 3rd-cheapest "cheapest item per category". Falls back to
+// the 3rd-cheapest product overall if there are fewer than 3 categories total.
+function getMinBudgetForThreeCategories() {
+    const eligible = allProducts.filter(p => parseMoney(p.price) > 0 && (isNaN(p.inStock) || p.inStock > 0));
+    const cheapestPerCategory = {};
+    eligible.forEach(p => {
+        const price = parseMoney(p.price);
+        if (!(p.type in cheapestPerCategory) || price < cheapestPerCategory[p.type]) {
+            cheapestPerCategory[p.type] = price;
+        }
+    });
+    const categoryMins = Object.values(cheapestPerCategory).sort((a, b) => a - b);
+    if (categoryMins.length >= 3) return categoryMins[2];
+
+    // Fewer than 3 categories exist at all — fall back to "3 distinct products" logic
+    const allPrices = eligible.map(p => parseMoney(p.price)).sort((a, b) => a - b);
+    return allPrices.length >= 3 ? allPrices[2] : null;
+}
 
 // Case-insensitive, whitespace-tolerant lookup of a value by header name
 function getField(row, ...names) {
@@ -169,51 +229,146 @@ const resultsGrid = document.getElementById("resultsGrid");
 const finalizeBtn = document.getElementById("finalizeBtn");
 const addAllBtn = document.getElementById("addAllBtn");
 const spinAgainBtn = document.getElementById("spinAgainBtn");
+const infoBtn = document.getElementById("infoBtn");
+const infoModal = document.getElementById("infoModal");
+const infoModalBackdrop = document.getElementById("infoModalBackdrop");
+const infoModalClose = document.getElementById("infoModalClose");
+const infoModalList = document.getElementById("infoModalList");
+const infoModalSub = document.getElementById("infoModalSub");
 
 leverBtn.addEventListener("click", pullLever);
 addAllBtn.addEventListener("click", addAllPicksToCart);
 finalizeBtn.addEventListener("click", finalizeOrder);
 spinAgainBtn.addEventListener("click", resetMachine);
+infoBtn.addEventListener("click", openInfoModal);
+infoModalBackdrop.addEventListener("click", closeInfoModal);
+infoModalClose.addEventListener("click", closeInfoModal);
+
+/* ==============================
+   INFO MODAL — "what products are available right now"
+============================== */
+function openInfoModal() {
+    if (allProducts.length === 0) {
+        infoModalSub.innerText = "Products haven't loaded yet — try again in a second.";
+        infoModalList.innerHTML = "";
+        infoModal.classList.add("show");
+        return;
+    }
+
+    const budget = parseFloat(budgetInput.value);
+    let list = allProducts.filter(p => parseMoney(p.price) > 0 && (isNaN(p.inStock) || p.inStock > 0));
+
+    if (budget && budget > 0) {
+        list = list.filter(p => parseMoney(p.price) <= budget);
+        infoModalSub.innerText = `${list.length} product(s) fit inside Rs. ${budget.toLocaleString()}`;
+    } else {
+        infoModalSub.innerText = `${list.length} product(s) currently available — enter a budget to narrow this down`;
+    }
+
+    if (list.length === 0) {
+        infoModalList.innerHTML = `<div class="info-modal-empty">No products match yet — try a higher budget.</div>`;
+    } else {
+        infoModalList.innerHTML = list
+            .sort((a, b) => parseMoney(a.price) - parseMoney(b.price))
+            .map(p => `
+                <div class="info-modal-item">
+                    <img src="${p.img}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
+                    <div class="info-modal-item-main">
+                        <div class="info-modal-item-name">${p.name}</div>
+                        <div class="info-modal-item-cat">${p.type}</div>
+                    </div>
+                    <div class="info-modal-item-price">Rs. ${parseMoney(p.price).toLocaleString()}</div>
+                </div>
+            `).join("");
+    }
+    infoModal.classList.add("show");
+}
+function closeInfoModal() {
+    infoModal.classList.remove("show");
+}
 
 function pullLever() {
     if (spinning) return;
+    clearError();
 
-    const budget = parseFloat(budgetInput.value);
-    if (!budget || budget <= 0) {
-        budgetHint.innerText = "Enter a valid budget first (e.g. 3000).";
-        budgetHint.style.color = "#ff8b8b";
-        budgetInput.focus();
-        return;
-    }
-    if (allProducts.length === 0) {
-        statusEl.innerText = "Products are still loading — try again in a second.";
-        return;
-    }
+    try {
+        const budget = parseFloat(budgetInput.value);
+        if (!budget || budget <= 0) {
+            budgetHint.innerText = "Enter a valid budget first (e.g. 3000).";
+            budgetHint.style.color = "#ff8b8b";
+            budgetInput.focus();
+            return;
+        }
+        if (allProducts.length === 0) {
+            statusEl.innerText = "Products are still loading — try again in a second.";
+            return;
+        }
 
-    const pool = allProducts.filter(p => {
-        const price = parseMoney(p.price);
-        const stockOk = isNaN(p.inStock) || p.inStock > 0;
-        return price > 0 && price <= budget && stockOk;
+        const pool = allProducts.filter(p => {
+            const price = parseMoney(p.price);
+            const stockOk = isNaN(p.inStock) || p.inStock > 0;
+            return price > 0 && price <= budget && stockOk;
+        });
+
+        if (pool.length === 0) {
+            console.log("Storix Spin: no matches. Sample product →", allProducts[0], "budget →", budget);
+            const minBudget = getMinBudgetForThreeCategories();
+            const suggestion = minBudget
+                ? ` Try at least Rs. ${minBudget.toLocaleString()} to get 3 different picks.`
+                : "";
+            statusEl.innerText = `No products found within Rs. ${budget}.${suggestion}`;
+            return;
+        }
+
+        const distinctCategories = new Set(pool.map(p => p.type)).size;
+        if (pool.length < REEL_COUNT || distinctCategories < REEL_COUNT) {
+            const minBudget = getMinBudgetForThreeCategories();
+            budgetHint.style.color = "#ffd27a";
+            budgetHint.innerText = minBudget
+                ? `Only ${distinctCategories} categor${distinctCategories === 1 ? "y" : "ies"} fit this budget — some picks may repeat. Rs. ${minBudget.toLocaleString()}+ guarantees 3 different ones.`
+                : `Only ${distinctCategories} categor${distinctCategories === 1 ? "y" : "ies"} fit this budget — some picks may repeat.`;
+        } else {
+            budgetHint.style.color = "";
+            budgetHint.innerText = "We'll only load products that fit inside this amount.";
+        }
+
+        const picks = pickThreeAcrossCategories(pool);
+        currentPicks = picks;
+
+        startSpin(pool, picks, budget);
+    } catch (err) {
+        console.error("Storix Spin: pullLever failed →", err);
+        showError("Something went wrong while spinning. Please try again.");
+        spinning = false;
+        leverBtn.disabled = false;
+        budgetInput.disabled = false;
+    }
+}
+
+// Tries to land each reel on a DIFFERENT category (electronics/fashion/etc).
+// Falls back to distinct products (allowing repeat categories, then repeat
+// products) only when the budget's pool doesn't stretch across 3 categories.
+function pickThreeAcrossCategories(pool) {
+    const byCategory = {};
+    pool.forEach(p => {
+        (byCategory[p.type] = byCategory[p.type] || []).push(p);
     });
+    const categories = Object.keys(byCategory).sort(() => Math.random() - 0.5);
 
-    if (pool.length === 0) {
-        console.log("Storix Spin: no matches. Sample product →", allProducts[0], "budget →", budget);
-        statusEl.innerText = `No products found within Rs. ${budget}. Try a higher budget.`;
-        return;
+    if (categories.length >= REEL_COUNT) {
+        return categories.slice(0, REEL_COUNT).map(cat => {
+            const items = byCategory[cat];
+            return items[Math.floor(Math.random() * items.length)];
+        });
     }
 
-    budgetHint.style.color = "";
-    budgetHint.innerText = "We'll only load products that fit inside this amount.";
-
-    // Pick 3 targets — without repeats if the pool is big enough
+    // Fewer than 3 categories available — fall back to distinct products, then repeats
     const shuffled = [...pool].sort(() => Math.random() - 0.5);
     const picks = [];
     for (let i = 0; i < REEL_COUNT; i++) {
         picks.push(shuffled.length > i ? shuffled[i] : pool[Math.floor(Math.random() * pool.length)]);
     }
-    currentPicks = picks;
-
-    startSpin(pool, picks, budget);
+    return picks;
 }
 
 function startSpin(pool, picks, budget) {
@@ -272,11 +427,13 @@ function spinReel(reelIndex, pool, target, duration) {
     }, duration);
 }
 
+const FALLBACK_IMG = "data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56 56'%3E%3Crect width='56' height='56' rx='8' fill='%230e2e2a'/%3E%3Ctext x='28' y='33' font-size='22' text-anchor='middle' fill='%237fb0a8'%3E%3F%3C/text%3E%3C/svg%3E";
+
 function itemToReelHTML(item) {
     const price = parseMoney(item.price);
     return `
         <div class="reel-item">
-            <img src="${item.img}" loading="lazy">
+            <img src="${item.img}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
             <span>Rs. ${price.toLocaleString()}</span>
         </div>
     `;
@@ -310,7 +467,7 @@ function resultCardHTML(item, idx) {
     const price = parseMoney(item.price);
     return `
         <div class="result-card" data-idx="${idx}">
-            <img src="${item.img}" loading="lazy">
+            <img src="${item.img}" loading="lazy" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
             <div class="rc-name">${item.name}</div>
             <div class="rc-price">Rs. ${price.toLocaleString()}</div>
             <button class="btn rc-add-btn">Add to Cart</button>
