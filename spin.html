@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin & Win — StorixPK</title>
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" rel="stylesheet">
+<!-- Icons -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="spin.css">
+</head>
+<body class="spin-page">
+
+<!-- MINI NAV -->
+<nav class="spin-nav">
+    <a href="index.html" class="brand-link">
+        <img src="2.png" style="height:32px; margin-right:8px;">
+        <span class="logo-text">Storix<span>PK</span></span>
+    </a>
+    <div class="spin-nav-right">
+        <a href="index.html" class="spin-back-link"><i class="fas fa-arrow-left"></i> Back to Shop</a>
+        <button class="btn btn-light position-relative" onclick="window.location.href='index.html'">
+            <i class="fas fa-shopping-cart"></i>
+            <span id="cartCount" class="badge cart-count">0</span>
+        </button>
+    </div>
+</nav>
+
+<!-- HEADER -->
+<div class="spin-hero">
+    <span class="spin-eyebrow"><i class="fas fa-dice"></i> LUCKY DRAW</span>
+    <h1>Pull the Lever, <span>Win Your Picks</span></h1>
+    <p>Set your budget, pull the lever, and let the reels surprise you with three products worth grabbing.</p>
+</div>
+
+<!-- MACHINE -->
+<div class="machine-wrap">
+
+    <!-- Budget input -->
+    <div class="budget-box">
+        <label for="budgetInput">Your Budget</label>
+        <div class="budget-input-row">
+            <span class="budget-currency">Rs.</span>
+            <input id="budgetInput" type="number" min="1" step="1" placeholder="e.g. 3000" inputmode="numeric">
+        </div>
+        <p class="budget-hint" id="budgetHint">We'll only load products that fit inside this amount.</p>
+    </div>
+
+    <div class="machine">
+        <div class="machine-cabinet">
+            <div class="machine-marquee"><i class="fas fa-star"></i> STORIX SPIN <i class="fas fa-star"></i></div>
+
+            <div class="reels" id="reels">
+                <div class="reel-window" data-reel="0">
+                    <div class="reel-strip" id="strip0"></div>
+                </div>
+                <div class="reel-window" data-reel="1">
+                    <div class="reel-strip" id="strip1"></div>
+                </div>
+                <div class="reel-window" data-reel="2">
+                    <div class="reel-strip" id="strip2"></div>
+                </div>
+                <div class="reel-shine"></div>
+            </div>
+
+            <div class="machine-status" id="machineStatus">Enter a budget and pull the lever to begin</div>
+        </div>
+
+        <!-- Lever -->
+        <button class="lever" id="leverBtn" aria-label="Pull the lever to spin">
+            <span class="lever-track">
+                <span class="lever-knob" id="leverKnob"></span>
+            </span>
+            <span class="lever-base"></span>
+        </button>
+    </div>
+
+    <!-- Results -->
+    <div class="results-panel" id="resultsPanel">
+        <h3><i class="fas fa-trophy"></i> Your Draw</h3>
+        <div class="results-grid" id="resultsGrid"></div>
+        <div class="results-actions">
+            <button class="btn spin-again-btn" id="spinAgainBtn">
+                <i class="fas fa-redo"></i> Spin Again
+            </button>
+            <button class="btn add-all-btn" id="addAllBtn">
+                <i class="fas fa-shopping-cart"></i> Add All to Cart
+            </button>
+            <button class="btn finalize-btn" id="finalizeBtn" disabled>
+                Finalize & Checkout <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer class="spin-footer">
+    <div class="spin-footer-top">
+        <div class="spin-footer-brand">
+            <div class="spin-footer-logo">Storix<span>PK</span></div>
+            <p>Pakistan's spin-to-win way to shop — set a budget, pull the lever, and let the reels pick your next favorites.</p>
+        </div>
+
+        <div class="spin-footer-col">
+            <h4>Quick Links</h4>
+            <a href="index.html">Home</a>
+            <a href="index.html">Shop All Products</a>
+            <a href="index.html">My Cart</a>
+        </div>
+
+        <div class="spin-footer-col">
+            <h4>Support</h4>
+            <a href="checkout.html">Checkout</a>
+            <a href="mailto:support@storixpk.com">support@storixpk.com</a>
+            <a href="tel:+920000000000">+92 000 0000000</a>
+        </div>
+
+        <div class="spin-footer-col">
+            <h4>Follow Us</h4>
+            <div class="spin-footer-socials">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="spin-footer-bottom">
+        <span>© <span id="footerYear"></span> StorixPK. All rights reserved.</span>
+    </div>
+</footer>
+
+<script src="spin.js"></script>
+</body>
+</html>
