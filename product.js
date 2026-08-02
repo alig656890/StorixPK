@@ -295,6 +295,7 @@ function hideAllViewers(){
     videoViewer.pause();
     videoViewer.removeAttribute("src");
     youtubeViewer.src = "";
+    modelViewer.src = "";
 }
 function showEmpty(text){
     viewerEmpty.style.display = "flex";
@@ -399,7 +400,30 @@ function renderModel(){
         return;
     }
     modelViewer.style.display = "block";
-    modelViewer.setAttribute("src", media.model3d[0]);
+    modelViewer.src = media.model3d[0];
+}
+
+// ==============================
+// MEDIA TAB AVAILABILITY
+// Colors a tab if its link exists in the media sheet, greys it out
+// and makes it unclickable if there's nothing for that product.
+// ==============================
+function setTabState(tab, available){
+    if(available){
+        tab.disabled = false;
+        tab.classList.remove("tab-disabled");
+        tab.classList.add("tab-available");
+    } else {
+        tab.disabled = true;
+        tab.classList.remove("tab-available");
+        tab.classList.add("tab-disabled");
+    }
+}
+function updateMediaTabAvailability(){
+    setTabState(imageTab, media.images.length > 0);
+    setTabState(videoTab, media.videos.length > 0);
+    setTabState(youtubeTab, media.youtube.length > 0);
+    setTabState(modelTab, media.model3d.length > 0);
 }
 imageTab.onclick = () => { setActiveTab(imageTab); renderImages(); };
 videoTab.onclick = () => { setActiveTab(videoTab); renderVideos(); };
@@ -581,6 +605,7 @@ async function init(){
     }
     await loadMedia();
     renderProduct();
+    updateMediaTabAvailability();
     renderImages();
     document.getElementById("productLoader").style.display = "none";
     document.getElementById("productContent").style.display = "block";
