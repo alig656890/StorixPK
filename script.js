@@ -283,10 +283,13 @@ function syncSecondaryCategoryUI(cat){
         p.classList.toggle("active", p.dataset.cat === cat);
     });
 
-    const resetBtn = document.getElementById("catResetBtn");
-    if(resetBtn){
-        resetBtn.classList.toggle("enabled", cat !== "all");
-    }
+    const enabled = cat !== "all";
+
+    document.getElementById("catResetBtnLeft")
+        ?.classList.toggle("enabled", enabled);
+
+    document.getElementById("catResetBtnRight")
+        ?.classList.toggle("enabled", enabled);
 }
 
 // ❮ / ❯ arrows: step through categories one at a time, sliding the row
