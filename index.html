@@ -157,7 +157,11 @@ class="btn w-100 checkout-btn">
     </div>
 </div>
        <!-- Category Navigation -->
+        
 <div class="category-carousel">
+     <button class="cat-reset-btn" id="catResetBtnLeft" onclick="resetCategoryCarousel()">
+    <i class="fas fa-exchange-alt"></i>
+</button>
     <button class="cat-nav-btn" onclick="moveCategory(-1)">
         <i class="fas fa-chevron-left"></i>
     </button>
@@ -166,9 +170,9 @@ class="btn w-100 checkout-btn">
     <button class="cat-nav-btn" onclick="moveCategory(1)">
         <i class="fas fa-chevron-right"></i>
     </button>
-    <button class="cat-reset-btn" id="catResetBtn" onclick="resetCategoryCarousel()" title="Reset to All Products">
-        <i class="fas fa-recycle"></i>
-    </button>
+    <button class="cat-reset-btn" id="catResetBtnRight" onclick="resetCategoryCarousel()">
+    <i class="fas fa-exchange-alt"></i>
+</button>
 </div>
     <div id="allProductsContainer" class="row g-3">
         <div class="col-6 col-md-4 col-lg-3 mb-4">
