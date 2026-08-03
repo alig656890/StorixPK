@@ -439,6 +439,60 @@ transform:scale(.95);
     transform:scale(.94);
 }
 
+.cat-reset-btn2{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:44px;
+    height:44px;
+    padding:0;
+    border:none;
+    border-radius:50%;
+    background:#fff;
+    color:#9ca3af;
+    cursor:pointer;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+    transition:.35s cubic-bezier(.22,.9,.32,1);
+    flex-shrink:0;
+    margin-left:10px;
+    font-size:16px;
+}
+.cat-reset-btn2 i{
+    font-size:16px;
+    transition:transform .35s ease;
+}
+.cat-reset-btn:hover{
+    background:#f3f4f6;
+    color:#6b7280;
+}
+.cat-reset-btn2:hover i{
+    transform:rotate(-35deg);
+}
+.cat-reset-btn2.enabled{
+    background:linear-gradient(135deg,#0F766E,#14B8A6);
+    color:#fff;
+    box-shadow:0 10px 25px rgba(15,118,110,.35);
+}
+.cat-reset-btn2.enabled i{
+    transform:rotate(-35deg);
+}
+.cat-reset-btn2.enabled:hover{
+    background:linear-gradient(135deg,#115e59,#0f766e);
+    box-shadow:0 14px 30px rgba(15,118,110,.4);
+    transform:scale(1.06);
+}
+.cat-reset-btn2.enabled:active{
+    transform:scale(.94);
+}
+
+
+
+
+
+
+
+
+
 /* SIDEBAR */
 .sidebar {
     width: 220px;
